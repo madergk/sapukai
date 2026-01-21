@@ -17,6 +17,25 @@ const preview: Preview = {
         { name: 'dark', value: '#09090b' },
       ],
     },
+    options: {
+      storySort: {
+        order: [
+          'Introduction',
+          'Foundation',
+          ['Design Tokens', 'Components Overview'],
+          'Primitives',
+          ['Button', 'Badge', 'Avatar', 'Divider', 'Heading', 'Text'],
+          'Forms',
+          ['Input', 'TextArea', 'Checkbox', 'Radio', 'Switch', 'Select', 'Listbox'],
+          'Data',
+          ['Table', 'DescriptionList'],
+          'Feedback',
+          ['Dialog'],
+          'Navigation',
+          ['Dropdown', 'Pagination', 'Navbar', 'Sidebar'],
+        ],
+      },
+    },
   },
   globalTypes: {
     theme: {
