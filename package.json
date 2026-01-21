@@ -12,6 +12,7 @@
     "build-storybook": "storybook build",
     "sync-tokens": "tsx scripts/sync-tokens.ts",
     "sync-figma": "tsx scripts/sync-figma-tokens.ts",
+    "convert-tokens": "tsx scripts/convert-tokens-studio.ts",
     "build-tokens": "tsx style-dictionary.config.ts",
     "validate-components": "tsx scripts/validate-components.ts",
     "update-docs": "tsx scripts/update-docs.ts",

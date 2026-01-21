@@ -32,6 +32,8 @@ export const Default: Story = {
 export const WithLabel: Story = {
   args: {
     label: 'Enable notifications',
+    description: "",
+    labelPosition: "trailing"
   },
 }
 

@@ -23,6 +23,7 @@ interface SyncOptions {
   skipValidation: boolean
   skipDocs: boolean
   tagOnly: boolean
+  skipFigma: boolean
 }
 
 /**
@@ -39,6 +40,7 @@ function parseArgs(): SyncOptions {
     skipValidation: normalizedArgs.includes('--skip-validation'),
     skipDocs: normalizedArgs.includes('--skip-docs'),
     tagOnly: normalizedArgs.includes('--tag-only'),
+    skipFigma: normalizedArgs.includes('--skip-figma'),
   }
 }
 
@@ -159,6 +161,7 @@ ${chalk.yellow('Options:')}
   --force           Sync even if no changes detected
   --skip-validation Skip component validation
   --skip-docs       Skip documentation update
+  --skip-figma      Skip Figma fetch, use existing tokens/figma-tokens.json
   --tag-only        Skip version bump and tag current version
   --help            Show this help message
 
@@ -193,14 +196,24 @@ async function main(): Promise<void> {
     console.log(chalk.yellow('Running in dry-run mode - no changes will be made\n'))
   }
 
-  // Step 1: Fetch tokens from Figma
-  console.log(chalk.cyan('Step 1/6: Fetching tokens from Figma'))
-  const fetchArgs = options.dryRun ? ['--dry-run'] : []
-  const fetchResult = await runScript('scripts/sync-figma-tokens.ts', fetchArgs)
-  
-  if (fetchResult.code !== 0) {
-    console.error(chalk.red('\n✗ Failed to fetch tokens from Figma'))
-    process.exit(1)
+  // Step 1: Fetch tokens from Figma (or skip)
+  if (options.skipFigma) {
+    console.log(chalk.gray('Step 1/6: Skipping Figma fetch (using existing tokens)'))
+    
+    if (!fs.existsSync(TOKENS_FILE)) {
+      console.error(chalk.red('Error: tokens/figma-tokens.json not found'))
+      console.error(chalk.yellow('Run `npm run convert-tokens` first if you have tokens/tokens.json'))
+      process.exit(1)
+    }
+  } else {
+    console.log(chalk.cyan('Step 1/6: Fetching tokens from Figma'))
+    const fetchArgs = options.dryRun ? ['--dry-run'] : []
+    const fetchResult = await runScript('scripts/sync-figma-tokens.ts', fetchArgs)
+    
+    if (fetchResult.code !== 0) {
+      console.error(chalk.red('\n✗ Failed to fetch tokens from Figma'))
+      process.exit(1)
+    }
   }
 
   // Check if tokens changed (skip remaining steps if no changes)

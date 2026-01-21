@@ -52,34 +52,53 @@ const formatTypeScriptColors: Format = {
   name: 'typescript/colors',
   format: ({ dictionary }) => {
     const primitives: Record<string, any> = {}
-    const semantic: Record<string, any> = {}
+    const semantic: Record<string, any> = { light: {}, dark: {} }
 
     dictionary.allTokens.forEach(token => {
-      const category = token.path[0]
-      const isColor = token.$type === 'color' || token.type === 'color'
+      // Style Dictionary v4 stores resolved value in $value
+      const tokenValue = token.$value ?? token.value
+      
+      // Only process leaf tokens with actual values
+      if (tokenValue === undefined || tokenValue === null) return
+      if (typeof tokenValue === 'object') return
+      
+      // Path can be array or string, normalize to array
+      const pathArray = Array.isArray(token.path) ? token.path : token.path.split('.')
+      const category = pathArray[0]
+      
+      const originalToken = token.original || {}
+      const isColor = originalToken.$type === 'color' || token.$type === 'color' ||
+                      (typeof tokenValue === 'string' && tokenValue.startsWith('#'))
       
       if (!isColor) return
 
-      if (category === 'primitives' || token.filePath?.includes('primitives')) {
-        let current = primitives
-        const tokenPath = token.path.slice(1) // Remove 'primitives' prefix
-        
-        for (let i = 0; i < tokenPath.length - 1; i++) {
-          const key = tokenPath[i]
-          if (!current[key]) current[key] = {}
-          current = current[key]
+      if (category === 'primitives') {
+        // Handle primitives.colors.zinc.500 etc
+        if (pathArray[1] === 'colors') {
+          let current = primitives
+          const tokenPath = pathArray.slice(2) // Remove 'primitives.colors' prefix
+          
+          for (let i = 0; i < tokenPath.length - 1; i++) {
+            const key = tokenPath[i]
+            if (!current[key]) current[key] = {}
+            current = current[key]
+          }
+          current[tokenPath[tokenPath.length - 1]] = tokenValue
         }
-        current[tokenPath[tokenPath.length - 1]] = token.value
-      } else {
-        let current = semantic
-        const tokenPath = token.path
-        
-        for (let i = 0; i < tokenPath.length - 1; i++) {
-          const key = tokenPath[i]
-          if (!current[key]) current[key] = {}
-          current = current[key]
+      } else if (category === 'semantic') {
+        // Handle semantic.light.content.primary etc
+        const mode = pathArray[1] // 'light' or 'dark'
+        if (mode === 'light' || mode === 'dark') {
+          let current = semantic[mode]
+          const tokenPath = pathArray.slice(2) // Remove 'semantic.light' or 'semantic.dark'
+          
+          for (let i = 0; i < tokenPath.length - 1; i++) {
+            const key = tokenPath[i]
+            if (!current[key]) current[key] = {}
+            current = current[key]
+          }
+          current[tokenPath[tokenPath.length - 1]] = tokenValue
         }
-        current[tokenPath[tokenPath.length - 1]] = token.value
       }
     })
 
@@ -151,21 +170,30 @@ const formatTypeScriptSpacing: Format = {
   format: ({ dictionary }) => {
     const spacing: Record<string, any> = {}
     const borderRadius: Record<string, any> = {}
+    const screens: Record<string, any> = {}
 
     dictionary.allTokens.forEach(token => {
-      const isSpacing = token.path.some(p => 
-        ['spacing', 'space', 'gap', 'padding', 'margin'].includes(p.toLowerCase())
-      )
-      const isRadius = token.path.some(p => 
-        ['radius', 'borderRadius', 'rounded'].includes(p.toLowerCase())
-      )
+      const tokenValue = token.$value ?? token.value
       
-      if (isSpacing) {
-        const key = token.path[token.path.length - 1]
-        spacing[key] = token.value
-      } else if (isRadius) {
-        const key = token.path[token.path.length - 1]
-        borderRadius[key] = token.value
+      // Only process leaf tokens
+      if (tokenValue === undefined || tokenValue === null) return
+      if (typeof tokenValue === 'object') return
+      
+      // Path can be array or string
+      const pathArray = Array.isArray(token.path) ? token.path : token.path.split('.')
+      const category = pathArray[0]
+      
+      if (category !== 'primitives') return
+      
+      const subcategory = pathArray[1]
+      const key = pathArray[pathArray.length - 1]
+      
+      if (subcategory === 'spacing') {
+        spacing[key] = tokenValue
+      } else if (subcategory === 'borderRadius') {
+        borderRadius[key] = tokenValue
+      } else if (subcategory === 'screens') {
+        screens[key] = tokenValue
       }
     })
 
@@ -179,8 +207,11 @@ export const spacing = ${JSON.stringify(spacing, null, 2)} as const
 
 export const borderRadius = ${JSON.stringify(borderRadius, null, 2)} as const
 
+export const screens = ${JSON.stringify(screens, null, 2)} as const
+
 export type SpacingKey = keyof typeof spacing
 export type BorderRadiusKey = keyof typeof borderRadius
+export type ScreenKey = keyof typeof screens
 `
   },
 }
@@ -228,24 +259,35 @@ const formatCssTheme: Format = {
     let darkVars = ''
 
     dictionary.allTokens.forEach(token => {
-      const cssName = token.path.map(p => p.toLowerCase().replace(/\s+/g, '-')).join('-')
-      const value = token.value
+      const value = token.$value ?? token.value
+
+      // Only process leaf tokens
+      if (value === undefined || value === null) return
+      if (typeof value === 'object') return
 
       // Skip non-primitive values that are aliases (contain references)
       if (typeof value === 'string' && value.startsWith('{')) {
         return
       }
 
-      const category = token.path[0]?.toLowerCase()
+      // Path can be array or string
+      const pathArray = Array.isArray(token.path) ? token.path : token.path.split('.')
+      const category = pathArray[0]
       
-      if (category === 'primitives' || token.filePath?.includes('primitives')) {
-        primitiveVars += `  --${cssName.replace('primitives-', '')}: ${value};\n`
-      } else if (category === 'light' || token.filePath?.includes('light')) {
-        lightVars += `  --${cssName.replace('light-', '')}: ${value};\n`
-      } else if (category === 'dark' || token.filePath?.includes('dark')) {
-        darkVars += `  --${cssName.replace('dark-', '')}: ${value};\n`
-      } else {
+      if (category === 'primitives') {
+        // Create CSS var name from path: primitives.colors.zinc.500 -> --colors-zinc-500
+        const cssName = pathArray.slice(1).map((p: string) => p.toLowerCase().replace(/\s+/g, '-')).join('-')
         primitiveVars += `  --${cssName}: ${value};\n`
+      } else if (category === 'semantic') {
+        const mode = pathArray[1]
+        // Create CSS var name: semantic.light.content.primary -> --content-primary
+        const cssName = pathArray.slice(2).map((p: string) => p.toLowerCase().replace(/\s+/g, '-')).join('-')
+        
+        if (mode === 'light') {
+          lightVars += `  --${cssName}: ${value};\n`
+        } else if (mode === 'dark') {
+          darkVars += `  --${cssName}: ${value};\n`
+        }
       }
     })
 

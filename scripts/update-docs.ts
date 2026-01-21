@@ -158,7 +158,7 @@ function generateMdxContent(tokens: TokensData): string {
       })
     : 'Unknown'
 
-  return `import { Meta, ColorPalette, ColorItem } from '@storybook/blocks'
+  return `import { Meta } from '@storybook/addon-docs/blocks'
 
 <Meta title="Foundation/Design Tokens" />
 
@@ -295,7 +295,7 @@ async function updateDocs(): Promise<void> {
     spinner.warn('No tokens file found, using placeholder documentation')
     
     // Create placeholder documentation
-    const placeholderContent = `import { Meta } from '@storybook/blocks'
+    const placeholderContent = `import { Meta } from '@storybook/addon-docs/blocks'
 
 <Meta title="Foundation/Design Tokens" />
 
