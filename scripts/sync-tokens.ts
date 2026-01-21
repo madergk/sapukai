@@ -22,6 +22,7 @@ interface SyncOptions {
   force: boolean
   skipValidation: boolean
   skipDocs: boolean
+  tagOnly: boolean
 }
 
 /**
@@ -29,13 +30,15 @@ interface SyncOptions {
  */
 function parseArgs(): SyncOptions {
   const args = process.argv.slice(2)
+  const normalizedArgs = args.map((arg) => (arg.startsWith('---') ? `--${arg.slice(3)}` : arg))
   
   return {
-    dryRun: args.includes('--dry-run'),
-    noVersion: args.includes('--no-version'),
-    force: args.includes('--force'),
-    skipValidation: args.includes('--skip-validation'),
-    skipDocs: args.includes('--skip-docs'),
+    dryRun: normalizedArgs.includes('--dry-run'),
+    noVersion: normalizedArgs.includes('--no-version'),
+    force: normalizedArgs.includes('--force'),
+    skipValidation: normalizedArgs.includes('--skip-validation'),
+    skipDocs: normalizedArgs.includes('--skip-docs'),
+    tagOnly: normalizedArgs.includes('--tag-only'),
   }
 }
 
@@ -123,33 +126,20 @@ function tokensHaveChanged(): boolean {
 /**
  * Create git commit and tag
  */
-async function createGitCommit(version: string): Promise<void> {
-  const spinner = ora('Creating git commit...').start()
+async function createGitTag(version: string): Promise<void> {
+  const spinner = ora('Creating git tag...').start()
   
   try {
-    // Stage token-related files
     const { execSync } = await import('child_process')
     
-    execSync('git add tokens/ src/tokens/ CHANGELOG.md package.json', {
-      cwd: process.cwd(),
-      stdio: 'pipe',
-    })
-
-    // Create commit
-    execSync(`git commit -m "chore(tokens): sync design tokens v${version}"`, {
-      cwd: process.cwd(),
-      stdio: 'pipe',
-    })
-
-    // Create tag
     execSync(`git tag -a v${version} -m "Design tokens v${version}"`, {
       cwd: process.cwd(),
       stdio: 'pipe',
     })
 
-    spinner.succeed(`Created commit and tag: v${version}`)
+    spinner.succeed(`Created tag: v${version}`)
   } catch (error) {
-    spinner.warn('Git commit skipped (no changes or not a git repo)')
+    spinner.warn('Git tag skipped (already exists or not a git repo)')
   }
 }
 
@@ -169,6 +159,7 @@ ${chalk.yellow('Options:')}
   --force           Sync even if no changes detected
   --skip-validation Skip component validation
   --skip-docs       Skip documentation update
+  --tag-only        Skip version bump and tag current version
   --help            Show this help message
 
 ${chalk.yellow('Examples:')}
@@ -204,7 +195,8 @@ async function main(): Promise<void> {
 
   // Step 1: Fetch tokens from Figma
   console.log(chalk.cyan('Step 1/6: Fetching tokens from Figma'))
-  const fetchResult = await runScript('scripts/sync-figma-tokens.ts')
+  const fetchArgs = options.dryRun ? ['--dry-run'] : []
+  const fetchResult = await runScript('scripts/sync-figma-tokens.ts', fetchArgs)
   
   if (fetchResult.code !== 0) {
     console.error(chalk.red('\n✗ Failed to fetch tokens from Figma'))
@@ -274,7 +266,11 @@ async function main(): Promise<void> {
   // Step 5: Bump version
   let newVersion = ''
   
-  if (!options.noVersion) {
+  if (options.tagOnly) {
+    const packageJson = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf-8'))
+    newVersion = packageJson.version
+    console.log(chalk.gray(`\nStep 5/6: Skipping version bump (tag-only for v${newVersion})`))
+  } else if (!options.noVersion) {
     console.log(chalk.cyan('\nStep 5/6: Bumping version'))
     
     if (!options.dryRun) {
@@ -290,15 +286,15 @@ async function main(): Promise<void> {
     console.log(chalk.gray('\nStep 5/6: Skipping version bump'))
   }
 
-  // Step 6: Git commit (only if not dry run and version was bumped)
+  // Step 6: Git tag (only if not dry run and version was bumped)
   console.log(chalk.cyan('\nStep 6/6: Git operations'))
   
   if (!options.dryRun && newVersion && !options.noVersion) {
-    await createGitCommit(newVersion)
+    await createGitTag(newVersion)
   } else if (options.dryRun) {
-    console.log(chalk.gray('  [Dry run] Would create git commit and tag'))
+    console.log(chalk.gray('  [Dry run] Would create git tag'))
   } else {
-    console.log(chalk.gray('  Skipping git commit (no version bump)'))
+    console.log(chalk.gray('  Skipping git tag (no version bump)'))
   }
 
   // Summary

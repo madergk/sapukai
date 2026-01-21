@@ -87,6 +87,22 @@ const FIGMA_FILE_KEY = process.env.FIGMA_FILE_KEY
 const TOKENS_DIR = path.join(process.cwd(), 'tokens')
 const OUTPUT_FILE = path.join(TOKENS_DIR, 'figma-tokens.json')
 const BACKUP_FILE = path.join(TOKENS_DIR, '.figma-tokens.prev.json')
+const TOKENS_FILE = path.join(TOKENS_DIR, 'figma-tokens.json')
+
+interface SyncOptions {
+  dryRun: boolean
+}
+
+/**
+ * Parse command line arguments
+ */
+function parseArgs(): SyncOptions {
+  const args = process.argv.slice(2)
+  const normalizedArgs = args.map((arg) => (arg.startsWith('---') ? `--${arg.slice(3)}` : arg))
+  return {
+    dryRun: normalizedArgs.includes('--dry-run'),
+  }
+}
 
 /**
  * Validate environment variables
@@ -346,14 +362,25 @@ function saveTokens(tokens: TokensOutput): void {
 }
 
 /**
+ * Read tokens from disk
+ */
+function readTokensFile(filePath: string): TokensOutput | null {
+  if (!fs.existsSync(filePath)) {
+    return null
+  }
+  return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as TokensOutput
+}
+
+/**
  * Compare tokens and report changes
  */
-function compareTokens(newTokens: TokensOutput): { added: number; modified: number; removed: number } {
-  if (!fs.existsSync(BACKUP_FILE)) {
+function compareTokens(
+  newTokens: TokensOutput,
+  previousTokens: TokensOutput | null
+): { added: number; modified: number; removed: number } {
+  if (!previousTokens) {
     return { added: 0, modified: 0, removed: 0 }
   }
-
-  const oldTokens = JSON.parse(fs.readFileSync(BACKUP_FILE, 'utf-8')) as TokensOutput
   
   let added = 0
   let modified = 0
@@ -376,7 +403,7 @@ function compareTokens(newTokens: TokensOutput): { added: number; modified: numb
     return tokens
   }
 
-  const oldFlat = countTokens(oldTokens.primitives)
+  const oldFlat = countTokens(previousTokens.primitives)
   const newFlat = countTokens(newTokens.primitives)
 
   for (const [key, value] of newFlat) {
@@ -400,23 +427,33 @@ function compareTokens(newTokens: TokensOutput): { added: number; modified: numb
  * Main execution
  */
 async function main(): Promise<void> {
+  const options = parseArgs()
   console.log(chalk.blue('\n🎨 Syncing design tokens from Figma...\n'))
 
   // Validate environment
   validateEnv()
 
   // Backup existing tokens
-  backupExistingTokens()
+  if (!options.dryRun) {
+    backupExistingTokens()
+  } else {
+    console.log(chalk.gray('Dry run: skipping backup and file writes'))
+  }
 
   // Fetch and process variables
   const figmaData = await fetchFigmaVariables()
   const tokens = processVariables(figmaData)
 
   // Save tokens
-  saveTokens(tokens)
+  if (!options.dryRun) {
+    saveTokens(tokens)
+  }
 
   // Report changes
-  const changes = compareTokens(tokens)
+  const previousTokens = options.dryRun
+    ? readTokensFile(TOKENS_FILE)
+    : readTokensFile(BACKUP_FILE)
+  const changes = compareTokens(tokens, previousTokens)
   
   console.log(chalk.green('\n✓ Token extraction complete!\n'))
   console.log('Changes:')
