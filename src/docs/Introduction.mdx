@@ -1,0 +1,136 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Introduction" />
+
+# Catalyst UI Design System
+
+<div className="sb-unstyled" style={{ marginTop: '2rem', marginBottom: '2rem' }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+    <div style={{ 
+      width: '64px', 
+      height: '64px', 
+      borderRadius: '16px', 
+      background: 'linear-gradient(135deg, #6366f1 0%, #818cf8 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: 'white',
+      fontSize: '2rem',
+      fontWeight: 'bold'
+    }}>
+      C
+    </div>
+    <div>
+      <div style={{ fontSize: '1.5rem', fontWeight: '600', color: 'var(--sb-color-text-dark)' }}>Catalyst UI</div>
+      <div style={{ color: 'var(--sb-color-text-muted)', fontSize: '0.875rem' }}>React + Tailwind Design System</div>
+    </div>
+  </div>
+</div>
+
+A comprehensive, accessible React component library built with **Tailwind CSS v4**, **TypeScript**, and **Radix UI** primitives. Extracted from the [Catalyst UI Figma](https://www.figma.com/design/rxkEYwOrbpifrqowduvVHM/Catalyst-UI) design system.
+
+---
+
+## Quick Start
+
+### Installation
+
+```bash
+npm install
+```
+
+### Usage
+
+```tsx
+import { Button, Badge, Avatar, Input } from '@/components'
+
+function App() {
+  return (
+    <div>
+      <Button>Click me</Button>
+      <Badge color="green">Active</Badge>
+      <Avatar initials="JD" />
+      <Input label="Email" placeholder="you@example.com" />
+    </div>
+  )
+}
+```
+
+---
+
+## Features
+
+<div className="sb-unstyled" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
+  <div style={{ padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--sb-color-border)', background: 'var(--sb-color-bg)' }}>
+    <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🎨</div>
+    <div style={{ fontWeight: '600', marginBottom: '0.5rem' }}>Design Tokens</div>
+    <div style={{ fontSize: '0.875rem', color: 'var(--sb-color-text-muted)' }}>
+      Consistent colors, typography, spacing, and shadows extracted from Figma.
+    </div>
+  </div>
+  
+  <div style={{ padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--sb-color-border)', background: 'var(--sb-color-bg)' }}>
+    <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🌓</div>
+    <div style={{ fontWeight: '600', marginBottom: '0.5rem' }}>Dark Mode</div>
+    <div style={{ fontSize: '0.875rem', color: 'var(--sb-color-text-muted)' }}>
+      Full light and dark theme support with CSS custom properties.
+    </div>
+  </div>
+  
+  <div style={{ padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--sb-color-border)', background: 'var(--sb-color-bg)' }}>
+    <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>♿</div>
+    <div style={{ fontWeight: '600', marginBottom: '0.5rem' }}>Accessible</div>
+    <div style={{ fontSize: '0.875rem', color: 'var(--sb-color-text-muted)' }}>
+      Built on Radix UI primitives for keyboard navigation and screen readers.
+    </div>
+  </div>
+  
+  <div style={{ padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--sb-color-border)', background: 'var(--sb-color-bg)' }}>
+    <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📦</div>
+    <div style={{ fontWeight: '600', marginBottom: '0.5rem' }}>20+ Components</div>
+    <div style={{ fontSize: '0.875rem', color: 'var(--sb-color-text-muted)' }}>
+      Buttons, forms, data display, navigation, and feedback components.
+    </div>
+  </div>
+</div>
+
+---
+
+## Component Categories
+
+### Primitives
+Basic building blocks: **Button**, **Badge**, **Avatar**, **Divider**, **Heading**, **Text**
+
+### Forms
+Input components: **Input**, **TextArea**, **Checkbox**, **Radio**, **Switch**, **Select**, **Listbox**
+
+### Data Display
+Data presentation: **Table**, **DescriptionList**
+
+### Feedback
+User feedback: **Dialog**
+
+### Navigation
+Navigation patterns: **Dropdown**, **Pagination**, **Navbar**, **Sidebar**
+
+---
+
+## Tech Stack
+
+| Technology | Purpose |
+|------------|---------|
+| React 18 | UI Framework |
+| TypeScript | Type Safety |
+| Tailwind CSS v4 | Styling |
+| Radix UI | Accessible Primitives |
+| CVA | Component Variants |
+| Heroicons | Icons |
+| Storybook 10 | Documentation |
+
+---
+
+## Resources
+
+- [Figma Design File](https://www.figma.com/design/rxkEYwOrbpifrqowduvVHM/Catalyst-UI)
+- [Tailwind CSS](https://tailwindcss.com)
+- [Radix UI](https://www.radix-ui.com)
