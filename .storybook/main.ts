@@ -13,7 +13,7 @@ const config: StorybookConfig = {
   async viteFinal(config) {
     return {
       ...config,
-      base: '/sapukai/storybook-static/',
+      base: '/sapukai/',
     }
   },
 }
