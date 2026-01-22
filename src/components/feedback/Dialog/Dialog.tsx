@@ -31,7 +31,7 @@ interface DialogProps {
   open?: boolean
   defaultOpen?: boolean
   onOpenChange?: (open: boolean) => void
-  children: React.ReactNode
+  children?: React.ReactNode
 }
 
 const Dialog = ({ open, defaultOpen = false, onOpenChange, children }: DialogProps) => {

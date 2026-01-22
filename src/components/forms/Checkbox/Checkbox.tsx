@@ -20,7 +20,7 @@ const Checkbox = React.forwardRef<HTMLSpanElement, CheckboxProps>(
       <HeadlessCheckbox
         ref={ref}
         id={checkboxId}
-        className={({ checked }) =>
+        className={({ checked }: { checked: boolean }) =>
           cn(
             'group relative flex size-4 shrink-0 items-center justify-center rounded',
             'border border-zinc-300 bg-white text-white shadow-sm transition-colors',
@@ -35,7 +35,7 @@ const Checkbox = React.forwardRef<HTMLSpanElement, CheckboxProps>(
         }
         {...props}
       >
-        {({ checked }) => (
+        {({ checked }: { checked: boolean }) => (
           <CheckIcon
             className={cn('size-3 transition-opacity', checked ? 'opacity-100' : 'opacity-0')}
           />

@@ -22,7 +22,7 @@ const RadioGroupItem = React.forwardRef<HTMLDivElement, RadioGroupItemProps>(
     return (
       <HeadlessRadioGroup.Option
         ref={ref}
-        className={({ disabled }) =>
+        className={({ disabled }: { disabled: boolean }) =>
           cn(
             'group flex cursor-pointer items-start gap-3 rounded-lg p-2 transition-colors',
             'hover:bg-zinc-50 dark:hover:bg-zinc-900',
@@ -32,7 +32,7 @@ const RadioGroupItem = React.forwardRef<HTMLDivElement, RadioGroupItemProps>(
         }
         {...props}
       >
-        {({ checked }) => (
+        {({ checked }: { checked: boolean }) => (
           <>
             <span
               className={cn(

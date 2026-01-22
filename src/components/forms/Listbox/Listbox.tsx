@@ -18,18 +18,24 @@ const ListboxGroup = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLD
 )
 ListboxGroup.displayName = 'ListboxGroup'
 
-const ListboxValue = React.forwardRef<
-  HTMLSpanElement,
-  React.ComponentPropsWithoutRef<typeof ListboxSelectedOption>
->(({ className, placeholder, options = null, ...props }, ref) => (
-  <ListboxSelectedOption
-    ref={ref}
-    className={cn('truncate text-left', className)}
-    placeholder={placeholder}
-    options={options}
-    {...props}
-  />
-))
+interface ListboxValueProps extends Omit<
+  React.ComponentPropsWithoutRef<typeof ListboxSelectedOption>,
+  'options'
+> {
+  options?: React.ReactNode
+}
+
+const ListboxValue = React.forwardRef<HTMLSpanElement, ListboxValueProps>(
+  ({ className, placeholder, options = null, ...props }, ref) => (
+    <ListboxSelectedOption
+      ref={ref}
+      className={cn('truncate text-left', className)}
+      placeholder={placeholder}
+      options={options}
+      {...props}
+    />
+  )
+)
 ListboxValue.displayName = 'ListboxValue'
 
 const ListboxTrigger = React.forwardRef<
@@ -55,7 +61,7 @@ const ListboxTrigger = React.forwardRef<
     )}
     {...props}
   >
-    {children}
+    {children as React.ReactNode}
     <ChevronDownIcon className="size-4 text-zinc-400" />
   </ListboxButton>
 ))
@@ -92,7 +98,15 @@ const ListboxItem = React.forwardRef<HTMLDivElement, ListboxItemProps>(
   ({ className, children, avatar, icon, description, ...props }, ref) => (
     <ListboxOption
       ref={ref}
-      className={({ focus, selected, disabled }) =>
+      className={({
+        focus,
+        selected,
+        disabled,
+      }: {
+        focus: boolean
+        selected: boolean
+        disabled: boolean
+      }) =>
         cn(
           'relative flex w-full cursor-pointer select-none items-center gap-3 rounded-md py-2 pl-2 pr-8 text-sm',
           focus && 'bg-zinc-100 dark:bg-zinc-800',
@@ -104,12 +118,12 @@ const ListboxItem = React.forwardRef<HTMLDivElement, ListboxItemProps>(
       }
       {...props}
     >
-      {({ selected }) => (
+      {({ selected }: { selected: boolean }) => (
         <>
           {avatar && <Avatar size={6} src={avatar} />}
           {icon && <span className="text-zinc-500">{icon}</span>}
           <div className="flex flex-col">
-            <span className="truncate">{children}</span>
+            <span className="truncate">{children as React.ReactNode}</span>
             {description && (
               <span className="text-xs text-zinc-500 dark:text-zinc-400">{description}</span>
             )}

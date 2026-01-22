@@ -17,18 +17,24 @@ const SelectGroup = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDi
 )
 SelectGroup.displayName = 'SelectGroup'
 
-const SelectValue = React.forwardRef<
-  HTMLSpanElement,
-  React.ComponentPropsWithoutRef<typeof ListboxSelectedOption>
->(({ className, placeholder, options = null, ...props }, ref) => (
-  <ListboxSelectedOption
-    ref={ref}
-    className={cn('truncate text-left', className)}
-    placeholder={placeholder}
-    options={options}
-    {...props}
-  />
-))
+interface SelectValueProps extends Omit<
+  React.ComponentPropsWithoutRef<typeof ListboxSelectedOption>,
+  'options'
+> {
+  options?: React.ReactNode
+}
+
+const SelectValue = React.forwardRef<HTMLSpanElement, SelectValueProps>(
+  ({ className, placeholder, options = null, ...props }, ref) => (
+    <ListboxSelectedOption
+      ref={ref}
+      className={cn('truncate text-left', className)}
+      placeholder={placeholder}
+      options={options}
+      {...props}
+    />
+  )
+)
 SelectValue.displayName = 'SelectValue'
 
 const SelectTrigger = React.forwardRef<
@@ -54,7 +60,7 @@ const SelectTrigger = React.forwardRef<
     )}
     {...props}
   >
-    {children}
+    {children as React.ReactNode}
     <ChevronDownIcon className="size-4 text-zinc-400" />
   </ListboxButton>
 ))
@@ -99,7 +105,15 @@ const SelectItem = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <ListboxOption
     ref={ref}
-    className={({ focus, selected, disabled }) =>
+    className={({
+      focus,
+      selected,
+      disabled,
+    }: {
+      focus: boolean
+      selected: boolean
+      disabled: boolean
+    }) =>
       cn(
         'relative flex w-full cursor-pointer select-none items-center rounded-md py-1.5 pl-2 pr-8 text-sm',
         focus && 'bg-zinc-100 dark:bg-zinc-800',
@@ -111,9 +125,9 @@ const SelectItem = React.forwardRef<
     }
     {...props}
   >
-    {({ selected }) => (
+    {({ selected }: { selected: boolean }) => (
       <>
-        <span className="truncate">{children}</span>
+        <span className="truncate">{children as React.ReactNode}</span>
         {selected && (
           <span className="absolute right-2 flex size-4 items-center justify-center">
             <CheckIcon className="size-4" />

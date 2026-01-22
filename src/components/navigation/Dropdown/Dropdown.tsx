@@ -72,7 +72,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
     )}
     {...props}
   >
-    {children}
+    {children as React.ReactNode}
     <ChevronRightIcon className="ml-auto size-4" />
   </MenuButton>
 ))
@@ -125,8 +125,7 @@ const DropdownMenuItem = React.forwardRef<
   <MenuItem
     ref={ref}
     as="button"
-    type="button"
-    className={({ focus, disabled }) =>
+    className={({ focus, disabled }: { focus: boolean; disabled: boolean }) =>
       cn(
         'relative flex cursor-pointer select-none items-center gap-2 rounded-md px-2 py-1.5 text-sm outline-none',
         'transition-colors',

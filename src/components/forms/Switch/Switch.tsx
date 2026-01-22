@@ -17,7 +17,7 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
       <HeadlessSwitch
         ref={ref}
         id={switchId}
-        className={({ checked }) =>
+        className={({ checked }: { checked: boolean }) =>
           cn(
             'inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full',
             'border border-transparent transition-colors',
@@ -30,7 +30,7 @@ const Switch = React.forwardRef<HTMLButtonElement, SwitchProps>(
         }
         {...props}
       >
-        {({ checked }) => (
+        {({ checked }: { checked: boolean }) => (
           <span
             className={cn(
               'pointer-events-none inline-block size-4 rounded-full bg-white shadow ring-0',

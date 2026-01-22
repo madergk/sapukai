@@ -1,9 +1,21 @@
 import * as React from 'react'
 import { useMotion } from '@/context/MotionContext'
-import { easingTokens, durationTokens, m3MotionPresets, resolveM3Preset, type M3MotionPreset } from '@/tokens/motion'
+import {
+  easingTokens,
+  durationTokens,
+  m3MotionPresets,
+  resolveM3Preset,
+  type M3MotionPreset,
+} from '@/tokens/motion'
 import { BezierCanvas } from './BezierCanvas'
 import { ExportManager } from './ExportManager'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/forms/Select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/forms/Select'
 import { Input } from '@/components/forms/Input'
 import { cn } from '@/utils'
 
@@ -37,26 +49,16 @@ export function ControlPanel() {
     <div className="flex h-full flex-col bg-white">
       {/* Header */}
       <div className="flex flex-col gap-2 border-b border-zinc-200 px-8 pt-6 pb-4">
-        <h2 className="text-[34px] font-semibold leading-[42px] text-zinc-950">
-          Customize
-        </h2>
-        <p className="text-base text-zinc-400">
-          Customize your swag curve
-        </p>
+        <h2 className="text-[34px] font-semibold leading-[42px] text-zinc-950">Customize</h2>
+        <p className="text-base text-zinc-400">Customize your swag curve</p>
       </div>
 
       {/* Tabs */}
       <div className="flex border-b border-zinc-200 px-8">
-        <TabButton
-          active={state.activeTab === 'easing'}
-          onClick={() => setActiveTab('easing')}
-        >
+        <TabButton active={state.activeTab === 'easing'} onClick={() => setActiveTab('easing')}>
           Easing Curve
         </TabButton>
-        <TabButton
-          active={state.activeTab === 'duration'}
-          onClick={() => setActiveTab('duration')}
-        >
+        <TabButton active={state.activeTab === 'duration'} onClick={() => setActiveTab('duration')}>
           Duration
         </TabButton>
         <TabButton
@@ -65,10 +67,7 @@ export function ControlPanel() {
         >
           Transition
         </TabButton>
-        <TabButton
-          active={state.activeTab === 'export'}
-          onClick={() => setActiveTab('export')}
-        >
+        <TabButton active={state.activeTab === 'export'} onClick={() => setActiveTab('export')}>
           Export
         </TabButton>
       </div>
@@ -78,9 +77,7 @@ export function ControlPanel() {
         <div className="flex flex-col gap-6">
           {/* Code Display */}
           <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3">
-            <code className="font-mono text-base text-zinc-950">
-              {currentEasingCSS}
-            </code>
+            <code className="font-mono text-base text-zinc-950">{currentEasingCSS}</code>
           </div>
 
           {state.activeTab === 'easing' && <EasingTab />}
@@ -153,12 +150,10 @@ function EasingTab() {
         <>
           {/* Basic Preset Selector */}
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-zinc-700">
-              Easing Preset
-            </label>
+            <label className="text-sm font-medium text-zinc-700">Easing Preset</label>
             <Select
               value={state.selectedEasing === 'custom' ? undefined : state.selectedEasing}
-              onValueChange={(value) => {
+              onChange={(value: string | undefined) => {
                 if (value) {
                   applyEasingPreset(value as keyof typeof easingTokens)
                 }
@@ -168,7 +163,7 @@ function EasingTab() {
                 <SelectValue placeholder="Custom" />
               </SelectTrigger>
               <SelectContent>
-                {easingOptions.map((option) => (
+                {easingOptions.map(option => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
                   </SelectItem>
@@ -188,7 +183,7 @@ function EasingTab() {
         <>
           {/* M3 Category Tabs */}
           <div className="flex flex-wrap gap-2">
-            {M3_PRESET_CATEGORIES.map((cat) => (
+            {M3_PRESET_CATEGORIES.map(cat => (
               <button
                 key={cat.id}
                 onClick={() => setSelectedM3Category(cat.id)}
@@ -232,8 +227,8 @@ function EasingTab() {
           {/* Info Box */}
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
             <p className="text-xs text-zinc-600">
-              <strong>Material Design 3</strong> motion presets combine easing curves with recommended durations. 
-              Clicking a preset applies both the easing and duration.{' '}
+              <strong>Material Design 3</strong> motion presets combine easing curves with
+              recommended durations. Clicking a preset applies both the easing and duration.{' '}
               <a
                 href="https://m3.material.io/styles/motion/overview/specs"
                 target="_blank"
@@ -272,9 +267,7 @@ function DurationTab() {
       {/* Duration Slider */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-zinc-700">
-            Duration (ms)
-          </label>
+          <label className="text-sm font-medium text-zinc-700">Duration (ms)</label>
           <Input
             type="number"
             value={state.duration}
@@ -302,9 +295,7 @@ function DurationTab() {
 
       {/* Duration Presets */}
       <div className="flex flex-col gap-3">
-        <label className="text-sm font-medium text-zinc-700">
-          Duration Presets
-        </label>
+        <label className="text-sm font-medium text-zinc-700">Duration Presets</label>
         <div className="grid grid-cols-2 gap-2">
           {Object.entries(durationTokens).map(([key, value]) => (
             <button
@@ -378,20 +369,21 @@ function TransitionTab() {
   const { currentEasingCSS, currentDurationMS } = useMotion()
   const [selectedPreset, setSelectedPreset] = React.useState<string>('fade')
 
-  const activePreset = TRANSITION_PRESETS.find((p) => p.id === selectedPreset) || TRANSITION_PRESETS[0]
+  const activePreset =
+    TRANSITION_PRESETS.find(p => p.id === selectedPreset) || TRANSITION_PRESETS[0]
 
-  const generateCode = (preset: typeof TRANSITION_PRESETS[number]) => {
+  const generateCode = (preset: (typeof TRANSITION_PRESETS)[number]) => {
     if (preset.properties.length === 1) {
       return `transition: ${preset.properties[0]} ${currentDurationMS}ms ${currentEasingCSS};`
     }
     return preset.properties
-      .map((prop) => `  ${prop} ${currentDurationMS}ms ${currentEasingCSS}`)
+      .map(prop => `  ${prop} ${currentDurationMS}ms ${currentEasingCSS}`)
       .join(',\n')
   }
 
-  const generateFullCode = (preset: typeof TRANSITION_PRESETS[number]) => {
+  const generateFullCode = (preset: (typeof TRANSITION_PRESETS)[number]) => {
     const transitionCode = generateCode(preset)
-    
+
     if (preset.id === 'scale') {
       return `.element {
   ${preset.properties.length === 1 ? transitionCode : `transition:\n${transitionCode};`}
@@ -401,7 +393,7 @@ function TransitionTab() {
   transform: scale(1.05);
 }`
     }
-    
+
     if (preset.id === 'slide') {
       return `.element {
   ${preset.properties.length === 1 ? transitionCode : `transition:\n${transitionCode};`}
@@ -415,7 +407,7 @@ function TransitionTab() {
   transform: translateX(-100%);
 }`
     }
-    
+
     if (preset.id === 'fade') {
       return `.element {
   ${transitionCode}
@@ -429,7 +421,7 @@ function TransitionTab() {
   opacity: 0;
 }`
     }
-    
+
     if (preset.id === 'color') {
       return `.element {
   transition:
@@ -453,7 +445,7 @@ ${transitionCode};
       <div className="flex flex-col gap-3">
         <label className="text-sm font-medium text-zinc-700">Transition Preset</label>
         <div className="grid grid-cols-2 gap-2">
-          {TRANSITION_PRESETS.map((preset) => (
+          {TRANSITION_PRESETS.map(preset => (
             <button
               key={preset.id}
               onClick={() => setSelectedPreset(preset.id)}
@@ -467,7 +459,9 @@ ${transitionCode};
               <span
                 className={cn(
                   'font-medium',
-                  selectedPreset === preset.id ? 'text-[var(--motion-brand-primary)]' : 'text-zinc-950'
+                  selectedPreset === preset.id
+                    ? 'text-[var(--motion-brand-primary)]'
+                    : 'text-zinc-950'
                 )}
               >
                 {preset.name}
@@ -497,7 +491,7 @@ ${transitionCode};
       <div className="flex flex-col gap-3">
         <h4 className="text-sm font-medium text-zinc-700">Quick Reference</h4>
         <div className="space-y-2">
-          {activePreset.properties.map((prop) => (
+          {activePreset.properties.map(prop => (
             <div key={prop} className="rounded-lg border border-zinc-200 bg-white p-3">
               <code className="font-mono text-xs text-zinc-700">
                 transition: {prop} {currentDurationMS}ms {currentEasingCSS};
