@@ -352,7 +352,7 @@ function NotificationsPreview() {
 }
 
 function LoadingStatesPreview() {
-  const { currentEasingCSS, currentDurationMS } = useMotion()
+  const { currentDurationMS } = useMotion()
   const [isLoading, setIsLoading] = React.useState(false)
 
   const startLoading = () => {
@@ -652,7 +652,7 @@ function TabsPreview() {
           {tabs.map((tab, index) => (
             <button
               key={tab}
-              ref={(el) => (tabRefs.current[index] = el)}
+              ref={(el) => { tabRefs.current[index] = el }}
               onClick={() => setActiveTab(index)}
               className={cn(
                 'relative px-4 py-3 text-sm font-medium',

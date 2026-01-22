@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useMotion, type ExportFormat } from '@/context/MotionContext'
-import { Button } from '@/components/Primitives/Button'
+import { Button } from '@/components/primitives/Button'
 import { copyToClipboard } from '@/utils/clipboard'
 import { cn } from '@/utils'
 

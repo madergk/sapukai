@@ -31,7 +31,7 @@ function TabButton({ active, onClick, children }: TabButtonProps) {
 }
 
 export function ControlPanel() {
-  const { state, setActiveTab, applyEasingPreset, setDuration, currentEasingCSS } = useMotion()
+  const { state, setActiveTab, currentEasingCSS } = useMotion()
 
   return (
     <div className="flex h-full flex-col bg-white">
@@ -102,7 +102,7 @@ const M3_PRESET_CATEGORIES = [
 ] as const
 
 function EasingTab() {
-  const { state, applyEasingPreset, setDuration, setEasingCurve } = useMotion()
+  const { state, applyEasingPreset, setDuration } = useMotion()
   const [showM3Presets, setShowM3Presets] = React.useState(false)
   const [selectedM3Category, setSelectedM3Category] = React.useState<string>('m3-components')
 
