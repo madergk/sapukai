@@ -454,5 +454,66 @@ sapukai/
 │  BUILD                                                           │
 │    npm run build            Production build                     │
 │    npm run build-storybook  Build Storybook                      │
+│                                                                  │
+│  RELEASE                                                         │
+│    npm run release          Interactive release                  │
+│    npm run release -- --patch  Patch release (0.0.x)             │
+│    npm run release -- --minor  Minor release (0.x.0)             │
+│    npm run release -- --major  Major release (x.0.0)             │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Release Process
+
+### Interactive Release
+
+```bash
+npm run release
+```
+
+This will:
+
+1. Prompt you to select release type (patch/minor/major)
+2. Run all validations
+3. Run linter
+4. Run tests
+5. Build project
+6. Build Storybook
+7. Bump version in package.json
+8. Update CHANGELOG.md
+9. Create git commit and tag
+10. Push to remote
+
+### Quick Release
+
+```bash
+# Patch release (bug fixes): 0.0.1 → 0.0.2
+npm run release -- --patch
+
+# Minor release (new features): 0.1.0 → 0.2.0
+npm run release -- --minor
+
+# Major release (breaking changes): 1.0.0 → 2.0.0
+npm run release -- --major
+```
+
+### Release Options
+
+| Option         | Description                      |
+| -------------- | -------------------------------- |
+| `--patch`      | Patch version bump               |
+| `--minor`      | Minor version bump               |
+| `--major`      | Major version bump               |
+| `--dry-run`    | Preview without making changes   |
+| `--skip-tests` | Skip test step                   |
+| `--skip-push`  | Create commit/tag but don't push |
+
+### Example: Dry Run
+
+```bash
+npm run release -- --minor --dry-run
+```
+
+This shows what would happen without making any changes.
