@@ -29,10 +29,10 @@ function App() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-white text-zinc-900">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[var(--motion-surface-secondary)] text-[var(--motion-text-primary)]">
       <h1 className="text-2xl font-semibold">Page not found</h1>
       <button
-        className="rounded-lg border border-zinc-200 px-4 py-2 text-sm hover:bg-zinc-50"
+        className="rounded-lg border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] px-4 py-2 text-sm hover:bg-[var(--motion-surface-tertiary)]"
         onClick={() => navigate('/')}
       >
         Go home

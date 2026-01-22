@@ -405,9 +405,11 @@ export function MotionPanel({ open }: { open: boolean }) {
     <div className="flex flex-col gap-6">
       {/* Format Selector */}
       <div className="flex flex-col gap-3">
-        <label className="text-sm font-medium text-zinc-700">Export Format</label>
+        <label className="text-sm font-medium text-[var(--motion-text-secondary)]">
+          Export Format
+        </label>
         <div className="grid grid-cols-1 gap-2">
-          {EXPORT_FORMATS.map((format) => (
+          {EXPORT_FORMATS.map(format => (
             <button
               key={format.value}
               onClick={() => setExportFormat(format.value)}
@@ -415,7 +417,7 @@ export function MotionPanel({ open }: { open: boolean }) {
                 'flex flex-col items-start gap-1 rounded-lg border px-4 py-3 text-left transition-colors',
                 state.exportFormat === format.value
                   ? 'border-[var(--motion-brand-primary)] bg-[var(--motion-brand-primary-soft)]'
-                  : 'border-zinc-200 bg-white hover:border-zinc-300 hover:bg-zinc-50'
+                  : 'border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] hover:border-[var(--motion-border-default)] hover:bg-[var(--motion-surface-tertiary)]'
               )}
             >
               <span
@@ -423,12 +425,12 @@ export function MotionPanel({ open }: { open: boolean }) {
                   'font-medium',
                   state.exportFormat === format.value
                     ? 'text-[var(--motion-brand-primary)]'
-                    : 'text-zinc-950'
+                    : 'text-[var(--motion-text-primary)]'
                 )}
               >
                 {format.label}
               </span>
-              <span className="text-xs text-zinc-500">{format.description}</span>
+              <span className="text-xs text-[var(--motion-text-muted)]">{format.description}</span>
             </button>
           ))}
         </div>
@@ -437,7 +439,9 @@ export function MotionPanel({ open }: { open: boolean }) {
       {/* Code Display */}
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-zinc-700">Code Output</label>
+          <label className="text-sm font-medium text-[var(--motion-text-secondary)]">
+            Code Output
+          </label>
           <Button
             size="sm"
             onClick={handleCopy}
@@ -452,7 +456,7 @@ export function MotionPanel({ open }: { open: boolean }) {
           </Button>
         </div>
 
-        <div className="relative max-h-[400px] overflow-y-auto rounded-xl border border-zinc-200 bg-zinc-950">
+        <div className="relative max-h-[400px] overflow-y-auto rounded-xl border border-[var(--motion-border-default)] bg-zinc-950">
           <pre className="p-4">
             <code className="font-mono text-sm text-zinc-100">{exportCode}</code>
           </pre>
@@ -460,9 +464,9 @@ export function MotionPanel({ open }: { open: boolean }) {
       </div>
 
       {/* Usage Tips */}
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-        <h4 className="mb-2 text-sm font-semibold text-zinc-950">Usage Tips</h4>
-        <ul className="list-inside list-disc space-y-1 text-xs text-zinc-600">
+      <div className="rounded-lg border border-[var(--motion-border-default)] bg-[var(--motion-surface-tertiary)] p-4">
+        <h4 className="mb-2 text-sm font-semibold text-[var(--motion-text-primary)]">Usage Tips</h4>
+        <ul className="list-inside list-disc space-y-1 text-xs text-[var(--motion-text-secondary)]">
           {state.exportFormat === 'css' && (
             <>
               <li>Add custom properties to your :root selector</li>

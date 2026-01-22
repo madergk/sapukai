@@ -8,11 +8,15 @@
 
 /* Base styles */
 :root {
+  color-scheme: light;
+}
+
+:root.dark {
   color-scheme: dark;
 }
 
 body {
-  @apply bg-zinc-950 text-zinc-100 antialiased;
+  @apply bg-[var(--motion-surface-secondary)] text-[var(--motion-text-primary)] antialiased;
   font-family:
     'Geist',
     system-ui,

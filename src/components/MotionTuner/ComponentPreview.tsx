@@ -41,7 +41,7 @@ export function ComponentPreview({ component }: ComponentPreviewProps) {
     case 'slide-transition':
       return <SlideTransitionPreview />
     default:
-      return <div className="text-zinc-500">Preview not available</div>
+      return <div className="text-[var(--motion-text-muted)]">Preview not available</div>
   }
 }
 
@@ -69,14 +69,16 @@ function ModalDialogPreview() {
   }
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-6">
+    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
-        <h4 className="text-base font-normal text-zinc-950">Modal Dialog Animation</h4>
-        <p className="text-base text-zinc-400">
+        <h4 className="text-base font-normal text-[var(--motion-text-primary)]">
+          Modal Dialog Animation
+        </h4>
+        <p className="text-base text-[var(--motion-text-muted)]">
           Click to open/close modal with custom easing
         </p>
-        <div className="rounded-lg bg-zinc-100 p-3">
-          <p className="text-xs text-zinc-600">
+        <div className="rounded-lg bg-[var(--motion-surface-tertiary)] p-3">
+          <p className="text-xs text-[var(--motion-text-secondary)]">
             <strong>Current:</strong> {currentDurationMS}ms {currentEasingCSS}
           </p>
         </div>
@@ -94,7 +96,7 @@ function ModalDialogPreview() {
         <div className="fixed inset-0 z-50">
           {/* Overlay */}
           <div
-            className="absolute inset-0 bg-black/50"
+            className="absolute inset-0 bg-[var(--motion-surface-overlay)]"
             style={{
               opacity: isAnimating ? 1 : 0,
               transition: `opacity ${currentDurationMS}ms ${currentEasingCSS}`,
@@ -103,7 +105,7 @@ function ModalDialogPreview() {
           />
           {/* Content */}
           <div
-            className="absolute left-1/2 top-1/2 w-full max-w-md rounded-xl border border-zinc-200 bg-white p-6 shadow-xl"
+            className="absolute left-1/2 top-1/2 w-full max-w-md rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6 shadow-xl"
             style={{
               transform: isAnimating
                 ? 'translate(-50%, -50%) scale(1)'
@@ -112,8 +114,10 @@ function ModalDialogPreview() {
               transition: `transform ${currentDurationMS}ms ${currentEasingCSS}, opacity ${currentDurationMS}ms ${currentEasingCSS}`,
             }}
           >
-            <h2 className="mb-4 text-xl font-semibold text-zinc-950">Modal Dialog</h2>
-            <p className="mb-6 text-zinc-600">
+            <h2 className="mb-4 text-xl font-semibold text-[var(--motion-text-primary)]">
+              Modal Dialog
+            </h2>
+            <p className="mb-6 text-[var(--motion-text-secondary)]">
               This modal animates with your custom cubic-bezier curve. Notice how the entrance and
               exit animations follow the easing you've defined.
             </p>
@@ -139,17 +143,17 @@ function ButtonStatesPreview() {
   const { currentEasingCSS, currentDurationMS } = useMotion()
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-6">
+    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
-        <h4 className="text-base font-normal text-zinc-950">Button States</h4>
-        <p className="text-base text-zinc-400">
+        <h4 className="text-base font-normal text-[var(--motion-text-primary)]">Button States</h4>
+        <p className="text-base text-[var(--motion-text-muted)]">
           Hover over buttons to see the transition
         </p>
       </div>
 
       <div className="flex flex-wrap gap-3">
         <button
-          className="rounded-full bg-[var(--motion-brand-primary)] px-6 py-2 text-white hover:bg-[var(--motion-brand-primary-hover)] hover:scale-[1.05]"
+          className="rounded-full bg-[var(--motion-brand-primary)] px-6 py-2 text-[var(--motion-text-inverse)] hover:bg-[var(--motion-brand-primary-hover)] hover:scale-[1.05]"
           style={{
             transition: `background-color ${currentDurationMS}ms ${currentEasingCSS}, transform ${currentDurationMS}ms ${currentEasingCSS}`,
           }}
@@ -158,7 +162,7 @@ function ButtonStatesPreview() {
         </button>
 
         <button
-          className="rounded-full border-2 border-zinc-200 bg-white px-6 py-2 text-zinc-950 hover:border-[var(--motion-brand-primary)] hover:bg-[var(--motion-brand-primary-soft)]"
+          className="rounded-full border-2 border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] px-6 py-2 text-[var(--motion-text-primary)] hover:border-[var(--motion-brand-primary)] hover:bg-[var(--motion-brand-primary-soft)]"
           style={{
             transition: `all ${currentDurationMS}ms ${currentEasingCSS}`,
           }}
@@ -167,7 +171,7 @@ function ButtonStatesPreview() {
         </button>
 
         <button
-          className="rounded-full bg-zinc-100 px-6 py-2 text-zinc-950 hover:bg-zinc-200"
+          className="rounded-full bg-[var(--motion-surface-tertiary)] px-6 py-2 text-[var(--motion-text-primary)] hover:bg-[var(--motion-border-default)]"
           style={{
             transition: `background-color ${currentDurationMS}ms ${currentEasingCSS}`,
           }}
@@ -202,10 +206,10 @@ function AccordionPreview() {
   ]
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-6">
+    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
-        <h4 className="text-base font-normal text-zinc-950">Accordion</h4>
-        <p className="text-base text-zinc-400">
+        <h4 className="text-base font-normal text-[var(--motion-text-primary)]">Accordion</h4>
+        <p className="text-base text-[var(--motion-text-muted)]">
           Click to expand/collapse sections
         </p>
       </div>
@@ -247,17 +251,17 @@ function AccordionItem({ title, content, isOpen, onToggle, duration, easing }: A
   }, [isOpen])
 
   return (
-    <div className="rounded-lg border border-zinc-200 overflow-hidden">
+    <div className="rounded-lg border border-[var(--motion-border-default)] overflow-hidden">
       <button
         onClick={onToggle}
-        className="flex w-full items-center justify-between bg-zinc-50 px-4 py-3 text-left hover:bg-zinc-100"
+        className="flex w-full items-center justify-between bg-[var(--motion-surface-tertiary)] px-4 py-3 text-left hover:bg-[var(--motion-border-default)]"
         style={{
           transition: `background-color ${duration}ms ${easing}`,
         }}
       >
-        <span className="font-medium text-zinc-950">{title}</span>
+        <span className="font-medium text-[var(--motion-text-primary)]">{title}</span>
         <svg
-          className="h-5 w-5 text-zinc-500"
+          className="h-5 w-5 text-[var(--motion-text-muted)]"
           style={{
             transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
             transition: `transform ${duration}ms ${easing}`,
@@ -276,7 +280,7 @@ function AccordionItem({ title, content, isOpen, onToggle, duration, easing }: A
           overflow: 'hidden',
         }}
       >
-        <div ref={contentRef} className="px-4 py-3 text-sm text-zinc-600">
+        <div ref={contentRef} className="px-4 py-3 text-sm text-[var(--motion-text-secondary)]">
           {content}
         </div>
       </div>
@@ -291,17 +295,17 @@ function NotificationsPreview() {
 
   const addNotification = () => {
     const id = nextId.current++
-    setNotifications((prev) => [...prev, { id, text: `Notification ${id + 1}` }])
+    setNotifications(prev => [...prev, { id, text: `Notification ${id + 1}` }])
     setTimeout(() => {
-      setNotifications((prev) => prev.filter((n) => n.id !== id))
+      setNotifications(prev => prev.filter(n => n.id !== id))
     }, 3000)
   }
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-6">
+    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
-        <h4 className="text-base font-normal text-zinc-950">Notifications</h4>
-        <p className="text-base text-zinc-400">
+        <h4 className="text-base font-normal text-[var(--motion-text-primary)]">Notifications</h4>
+        <p className="text-base text-[var(--motion-text-muted)]">
           Click to trigger notification animations
         </p>
       </div>
@@ -314,10 +318,10 @@ function NotificationsPreview() {
       </Button>
 
       <div className="flex flex-col gap-2">
-        {notifications.map((notification) => (
+        {notifications.map(notification => (
           <div
             key={notification.id}
-            className="rounded-lg bg-[var(--motion-brand-primary)] px-4 py-3 text-white shadow-lg"
+            className="rounded-lg bg-[var(--motion-brand-primary)] px-4 py-3 text-[var(--motion-text-inverse)] shadow-lg"
             style={{
               animation: `slideInUp ${currentDurationMS}ms ${currentEasingCSS}, fadeOut 300ms ease-out 2700ms forwards`,
             }}
@@ -361,12 +365,10 @@ function LoadingStatesPreview() {
   }
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-6">
+    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
-        <h4 className="text-base font-normal text-zinc-950">Loading States</h4>
-        <p className="text-base text-zinc-400">
-          Click to see loading animation
-        </p>
+        <h4 className="text-base font-normal text-[var(--motion-text-primary)]">Loading States</h4>
+        <p className="text-base text-[var(--motion-text-muted)]">Click to see loading animation</p>
       </div>
 
       <Button
@@ -380,12 +382,12 @@ function LoadingStatesPreview() {
       {isLoading && (
         <div className="flex items-center gap-3">
           <div
-            className="h-8 w-8 rounded-full border-4 border-zinc-200 border-t-[var(--motion-brand-primary)]"
+            className="h-8 w-8 rounded-full border-4 border-[var(--motion-border-default)] border-t-[var(--motion-brand-primary)]"
             style={{
               animation: `spin ${currentDurationMS * 3}ms linear infinite`,
             }}
           />
-          <span className="text-sm text-zinc-600">Processing...</span>
+          <span className="text-sm text-[var(--motion-text-secondary)]">Processing...</span>
         </div>
       )}
 
@@ -423,24 +425,24 @@ function PageTransitionPreview() {
   }
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-6">
+    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
-        <h4 className="text-base font-normal text-zinc-950">Page Transition</h4>
-        <p className="text-base text-zinc-400">
+        <h4 className="text-base font-normal text-[var(--motion-text-primary)]">Page Transition</h4>
+        <p className="text-base text-[var(--motion-text-muted)]">
           Click tabs to see page transitions
         </p>
       </div>
 
       <div className="flex gap-2">
-        {(['home', 'about', 'contact'] as const).map((page) => (
+        {(['home', 'about', 'contact'] as const).map(page => (
           <button
             key={page}
             onClick={() => changePage(page)}
             className={cn(
               'rounded-lg px-4 py-2 text-sm font-medium transition-colors',
               currentPage === page
-                ? 'bg-[var(--motion-brand-primary)] text-white'
-                : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'
+                ? 'bg-[var(--motion-brand-primary)] text-[var(--motion-text-inverse)]'
+                : 'bg-[var(--motion-surface-tertiary)] text-[var(--motion-text-secondary)] hover:bg-[var(--motion-border-default)]'
             )}
           >
             {pages[page].title}
@@ -449,15 +451,17 @@ function PageTransitionPreview() {
       </div>
 
       <div
-        className="min-h-[120px] rounded-lg bg-zinc-50 p-6"
+        className="min-h-[120px] rounded-lg bg-[var(--motion-surface-tertiary)] p-6"
         style={{
           opacity: isTransitioning ? 0 : 1,
           transform: isTransitioning ? 'translateY(10px)' : 'translateY(0)',
           transition: `opacity ${currentDurationMS}ms ${currentEasingCSS}, transform ${currentDurationMS}ms ${currentEasingCSS}`,
         }}
       >
-        <h5 className="mb-2 text-lg font-semibold text-zinc-950">{pages[currentPage].title}</h5>
-        <p className="text-zinc-600">{pages[currentPage].content}</p>
+        <h5 className="mb-2 text-lg font-semibold text-[var(--motion-text-primary)]">
+          {pages[currentPage].title}
+        </h5>
+        <p className="text-[var(--motion-text-secondary)]">{pages[currentPage].content}</p>
       </div>
     </div>
   )
@@ -470,10 +474,12 @@ function DrawerPreview() {
   const [isOpen, setIsOpen] = React.useState(false)
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-6">
+    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
-        <h4 className="text-base font-normal text-zinc-950">Navigation Drawer</h4>
-        <p className="text-base text-zinc-400">
+        <h4 className="text-base font-normal text-[var(--motion-text-primary)]">
+          Navigation Drawer
+        </h4>
+        <p className="text-base text-[var(--motion-text-muted)]">
           Click to open/close navigation drawer
         </p>
       </div>
@@ -486,10 +492,10 @@ function DrawerPreview() {
       </Button>
 
       {/* Drawer Container */}
-      <div className="relative h-[300px] overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100">
+      <div className="relative h-[300px] overflow-hidden rounded-lg border border-[var(--motion-border-default)] bg-[var(--motion-surface-tertiary)]">
         {/* Backdrop */}
         <div
-          className="absolute inset-0 bg-black/30"
+          className="absolute inset-0 bg-[var(--motion-surface-overlay)]"
           style={{
             opacity: isOpen ? 1 : 0,
             pointerEvents: isOpen ? 'auto' : 'none',
@@ -500,20 +506,20 @@ function DrawerPreview() {
 
         {/* Drawer */}
         <div
-          className="absolute left-0 top-0 h-full w-64 bg-white shadow-xl"
+          className="absolute left-0 top-0 h-full w-64 bg-[var(--motion-surface-primary)] shadow-xl"
           style={{
             transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
             transition: `transform ${currentDurationMS}ms ${currentEasingCSS}`,
           }}
         >
-          <div className="flex h-14 items-center border-b border-zinc-200 px-4">
-            <span className="font-semibold text-zinc-950">Menu</span>
+          <div className="flex h-14 items-center border-b border-[var(--motion-border-default)] px-4">
+            <span className="font-semibold text-[var(--motion-text-primary)]">Menu</span>
           </div>
           <nav className="flex flex-col py-2">
-            {['Dashboard', 'Projects', 'Tasks', 'Reports', 'Settings'].map((item) => (
+            {['Dashboard', 'Projects', 'Tasks', 'Reports', 'Settings'].map(item => (
               <button
                 key={item}
-                className="px-4 py-3 text-left text-sm text-zinc-700 hover:bg-zinc-100"
+                className="px-4 py-3 text-left text-sm text-[var(--motion-text-secondary)] hover:bg-[var(--motion-surface-tertiary)]"
                 style={{
                   transition: `background-color ${currentDurationMS / 2}ms ${currentEasingCSS}`,
                 }}
@@ -526,7 +532,7 @@ function DrawerPreview() {
 
         {/* Main Content */}
         <div className="flex h-full items-center justify-center pl-0">
-          <p className="text-sm text-zinc-500">Main Content Area</p>
+          <p className="text-sm text-[var(--motion-text-muted)]">Main Content Area</p>
         </div>
       </div>
     </div>
@@ -546,16 +552,18 @@ function BottomNavPreview() {
   ]
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-6">
+    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
-        <h4 className="text-base font-normal text-zinc-950">Bottom Navigation</h4>
-        <p className="text-base text-zinc-400">
+        <h4 className="text-base font-normal text-[var(--motion-text-primary)]">
+          Bottom Navigation
+        </h4>
+        <p className="text-base text-[var(--motion-text-muted)]">
           Tap icons to see navigation transitions
         </p>
       </div>
 
       {/* Phone Frame */}
-      <div className="mx-auto w-[320px] overflow-hidden rounded-[24px] border-4 border-zinc-800 bg-zinc-100">
+      <div className="mx-auto w-[320px] overflow-hidden rounded-[24px] border-4 border-[var(--motion-text-primary)] bg-[var(--motion-surface-tertiary)]">
         {/* Screen */}
         <div className="relative h-[400px]">
           {/* Content */}
@@ -570,12 +578,14 @@ function BottomNavPreview() {
               key={activeTab}
             >
               <span className="text-4xl">{tabs[activeTab].icon}</span>
-              <p className="mt-2 font-medium text-zinc-950">{tabs[activeTab].label}</p>
+              <p className="mt-2 font-medium text-[var(--motion-text-primary)]">
+                {tabs[activeTab].label}
+              </p>
             </div>
           </div>
 
           {/* Bottom Navigation */}
-          <div className="absolute bottom-0 left-0 right-0 flex h-[60px] items-center justify-around border-t border-zinc-200 bg-white">
+          <div className="absolute bottom-0 left-0 right-0 flex h-[60px] items-center justify-around border-t border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)]">
             {tabs.map((tab, index) => (
               <button
                 key={tab.label}
@@ -594,7 +604,9 @@ function BottomNavPreview() {
                 <span
                   className={cn(
                     'text-[10px]',
-                    activeTab === index ? 'text-[var(--motion-brand-primary)]' : 'text-zinc-500'
+                    activeTab === index
+                      ? 'text-[var(--motion-brand-primary)]'
+                      : 'text-[var(--motion-text-muted)]'
                   )}
                   style={{
                     transition: `color ${currentDurationMS}ms ${currentEasingCSS}`,
@@ -638,25 +650,29 @@ function TabsPreview() {
   }, [activeTab])
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-6">
+    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
-        <h4 className="text-base font-normal text-zinc-950">Animated Tabs</h4>
-        <p className="text-base text-zinc-400">
+        <h4 className="text-base font-normal text-[var(--motion-text-primary)]">Animated Tabs</h4>
+        <p className="text-base text-[var(--motion-text-muted)]">
           Click tabs to see sliding indicator animation
         </p>
       </div>
 
       {/* Tabs Container */}
       <div className="relative">
-        <div className="flex border-b border-zinc-200">
+        <div className="flex border-b border-[var(--motion-border-default)]">
           {tabs.map((tab, index) => (
             <button
               key={tab}
-              ref={(el) => { tabRefs.current[index] = el }}
+              ref={el => {
+                tabRefs.current[index] = el
+              }}
               onClick={() => setActiveTab(index)}
               className={cn(
                 'relative px-4 py-3 text-sm font-medium',
-                activeTab === index ? 'text-[var(--motion-brand-primary)]' : 'text-zinc-500'
+                activeTab === index
+                  ? 'text-[var(--motion-brand-primary)]'
+                  : 'text-[var(--motion-text-muted)]'
               )}
               style={{
                 transition: `color ${currentDurationMS}ms ${currentEasingCSS}`,
@@ -679,14 +695,16 @@ function TabsPreview() {
 
       {/* Tab Content */}
       <div
-        className="min-h-[100px] rounded-lg bg-zinc-50 p-4"
+        className="min-h-[100px] rounded-lg bg-[var(--motion-surface-tertiary)] p-4"
         style={{
           animation: `fadeSlideIn ${currentDurationMS}ms ${currentEasingCSS}`,
         }}
         key={activeTab}
       >
-        <h5 className="font-medium text-zinc-950">{tabs[activeTab]}</h5>
-        <p className="mt-2 text-sm text-zinc-500">Content for {tabs[activeTab]} tab</p>
+        <h5 className="font-medium text-[var(--motion-text-primary)]">{tabs[activeTab]}</h5>
+        <p className="mt-2 text-sm text-[var(--motion-text-muted)]">
+          Content for {tabs[activeTab]} tab
+        </p>
       </div>
 
       <style>{`
@@ -718,10 +736,10 @@ function MenuPreview() {
   ]
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-6">
+    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
-        <h4 className="text-base font-normal text-zinc-950">Dropdown Menu</h4>
-        <p className="text-base text-zinc-400">
+        <h4 className="text-base font-normal text-[var(--motion-text-primary)]">Dropdown Menu</h4>
+        <p className="text-base text-[var(--motion-text-muted)]">
           Click to open menu with staggered animation
         </p>
       </div>
@@ -736,7 +754,7 @@ function MenuPreview() {
 
         {/* Menu Dropdown */}
         <div
-          className="absolute left-0 top-full z-10 mt-2 w-48 overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-lg"
+          className="absolute left-0 top-full z-10 mt-2 w-48 overflow-hidden rounded-lg border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] shadow-lg"
           style={{
             opacity: isOpen ? 1 : 0,
             transform: isOpen ? 'translateY(0) scale(1)' : 'translateY(-8px) scale(0.95)',
@@ -747,13 +765,15 @@ function MenuPreview() {
         >
           {menuItems.map((item, index) =>
             'divider' in item ? (
-              <div key={index} className="my-1 h-px bg-zinc-200" />
+              <div key={index} className="my-1 h-px bg-[var(--motion-border-default)]" />
             ) : (
               <button
                 key={item.label}
                 className={cn(
-                  'flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-zinc-100',
-                  'danger' in item && item.danger ? 'text-red-600' : 'text-zinc-700'
+                  'flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-[var(--motion-surface-tertiary)]',
+                  'danger' in item && item.danger
+                    ? 'text-red-500'
+                    : 'text-[var(--motion-text-secondary)]'
                 )}
                 style={{
                   opacity: isOpen ? 1 : 0,
@@ -771,9 +791,7 @@ function MenuPreview() {
       </div>
 
       {/* Click outside to close */}
-      {isOpen && (
-        <div className="fixed inset-0 z-0" onClick={() => setIsOpen(false)} />
-      )}
+      {isOpen && <div className="fixed inset-0 z-0" onClick={() => setIsOpen(false)} />}
     </div>
   )
 }
@@ -786,29 +804,29 @@ function FadeThroughPreview() {
   const [isTransitioning, setIsTransitioning] = React.useState(false)
 
   const cards = [
-    { title: 'Card One', color: 'bg-blue-100', icon: '🎨' },
-    { title: 'Card Two', color: 'bg-green-100', icon: '🌿' },
-    { title: 'Card Three', color: 'bg-purple-100', icon: '✨' },
+    { title: 'Card One', color: 'bg-blue-100 dark:bg-blue-900', icon: '🎨' },
+    { title: 'Card Two', color: 'bg-green-100 dark:bg-green-900', icon: '🌿' },
+    { title: 'Card Three', color: 'bg-purple-100 dark:bg-purple-900', icon: '✨' },
   ]
 
   const next = () => {
     setIsTransitioning(true)
     setTimeout(() => {
-      setCurrentIndex((prev) => (prev + 1) % cards.length)
+      setCurrentIndex(prev => (prev + 1) % cards.length)
       setIsTransitioning(false)
     }, currentDurationMS / 2)
   }
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-6">
+    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
-        <h4 className="text-base font-normal text-zinc-950">Fade Through</h4>
-        <p className="text-base text-zinc-400">
+        <h4 className="text-base font-normal text-[var(--motion-text-primary)]">Fade Through</h4>
+        <p className="text-base text-[var(--motion-text-muted)]">
           M3 transition: outgoing fades out while incoming fades in
         </p>
       </div>
 
-      <div className="flex h-[200px] items-center justify-center rounded-lg bg-zinc-100">
+      <div className="flex h-[200px] items-center justify-center rounded-lg bg-[var(--motion-surface-tertiary)]">
         <div
           className={cn(
             'flex h-32 w-48 flex-col items-center justify-center rounded-xl shadow-lg',
@@ -858,10 +876,10 @@ function SharedAxisPreview() {
   }
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-6">
+    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
-        <h4 className="text-base font-normal text-zinc-950">Shared Axis (X)</h4>
-        <p className="text-base text-zinc-400">
+        <h4 className="text-base font-normal text-[var(--motion-text-primary)]">Shared Axis (X)</h4>
+        <p className="text-base text-[var(--motion-text-muted)]">
           M3 transition: coordinated slide along horizontal axis
         </p>
       </div>
@@ -874,14 +892,16 @@ function SharedAxisPreview() {
             onClick={() => goTo(index)}
             className={cn(
               'h-2 w-8 rounded-full transition-colors',
-              step === index ? 'bg-[var(--motion-brand-primary)]' : 'bg-zinc-300'
+              step === index
+                ? 'bg-[var(--motion-brand-primary)]'
+                : 'bg-[var(--motion-border-default)]'
             )}
           />
         ))}
       </div>
 
       {/* Content */}
-      <div className="relative h-[140px] overflow-hidden rounded-lg bg-zinc-100">
+      <div className="relative h-[140px] overflow-hidden rounded-lg bg-[var(--motion-surface-tertiary)]">
         <div
           className="absolute inset-0 flex flex-col items-center justify-center p-6"
           style={{
@@ -892,17 +912,15 @@ function SharedAxisPreview() {
             transition: `opacity ${currentDurationMS}ms ${currentEasingCSS}, transform ${currentDurationMS}ms ${currentEasingCSS}`,
           }}
         >
-          <h5 className="text-lg font-semibold text-zinc-950">{steps[step].title}</h5>
-          <p className="mt-1 text-sm text-zinc-500">{steps[step].description}</p>
+          <h5 className="text-lg font-semibold text-[var(--motion-text-primary)]">
+            {steps[step].title}
+          </h5>
+          <p className="mt-1 text-sm text-[var(--motion-text-muted)]">{steps[step].description}</p>
         </div>
       </div>
 
       <div className="flex justify-between">
-        <Button
-          variant="outline"
-          onClick={() => goTo(Math.max(0, step - 1))}
-          disabled={step === 0}
-        >
+        <Button variant="outline" onClick={() => goTo(Math.max(0, step - 1))} disabled={step === 0}>
           Previous
         </Button>
         <Button
@@ -928,16 +946,16 @@ function ScaleTransformPreview() {
   ]
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-6">
+    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
-        <h4 className="text-base font-normal text-zinc-950">Scale Transform</h4>
-        <p className="text-base text-zinc-400">
+        <h4 className="text-base font-normal text-[var(--motion-text-primary)]">Scale Transform</h4>
+        <p className="text-base text-[var(--motion-text-muted)]">
           Click cards to see container transform animation
         </p>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        {items.map((item) => (
+        {items.map(item => (
           <button
             key={item.id}
             onClick={() => setExpanded(expanded === item.id ? null : item.id)}
@@ -959,15 +977,15 @@ function ScaleTransformPreview() {
       {/* Expanded Detail View */}
       {expanded && (
         <div
-          className="rounded-lg bg-zinc-50 p-4"
+          className="rounded-lg bg-[var(--motion-surface-tertiary)] p-4"
           style={{
             animation: `scaleIn ${currentDurationMS}ms ${currentEasingCSS}`,
           }}
         >
-          <h5 className="font-medium text-zinc-950">
-            {items.find((i) => i.id === expanded)?.title} Details
+          <h5 className="font-medium text-[var(--motion-text-primary)]">
+            {items.find(i => i.id === expanded)?.title} Details
           </h5>
-          <p className="mt-2 text-sm text-zinc-500">
+          <p className="mt-2 text-sm text-[var(--motion-text-muted)]">
             Expanded view with more information about the selected project.
           </p>
         </div>
@@ -1001,22 +1019,24 @@ function SlideTransitionPreview() {
 
   const addItem = () => {
     const newItem = { id: nextId.current++, text: `Item ${nextId.current - 1}` }
-    setItems((prev) => [...prev, newItem])
+    setItems(prev => [...prev, newItem])
   }
 
   const removeItem = (id: number) => {
     setRemovingId(id)
     setTimeout(() => {
-      setItems((prev) => prev.filter((item) => item.id !== id))
+      setItems(prev => prev.filter(item => item.id !== id))
       setRemovingId(null)
     }, currentDurationMS)
   }
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-zinc-200 bg-white p-6">
+    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
-        <h4 className="text-base font-normal text-zinc-950">List Slide Transitions</h4>
-        <p className="text-base text-zinc-400">
+        <h4 className="text-base font-normal text-[var(--motion-text-primary)]">
+          List Slide Transitions
+        </h4>
+        <p className="text-base text-[var(--motion-text-muted)]">
           Add/remove items to see slide animations
         </p>
       </div>
@@ -1029,10 +1049,10 @@ function SlideTransitionPreview() {
       </Button>
 
       <div className="flex flex-col gap-2">
-        {items.map((item) => (
+        {items.map(item => (
           <div
             key={item.id}
-            className="flex items-center justify-between rounded-lg bg-zinc-100 px-4 py-3"
+            className="flex items-center justify-between rounded-lg bg-[var(--motion-surface-tertiary)] px-4 py-3"
             style={{
               opacity: removingId === item.id ? 0 : 1,
               transform: removingId === item.id ? 'translateX(20px)' : 'translateX(0)',
@@ -1043,10 +1063,10 @@ function SlideTransitionPreview() {
                   : undefined,
             }}
           >
-            <span className="text-sm text-zinc-700">{item.text}</span>
+            <span className="text-sm text-[var(--motion-text-secondary)]">{item.text}</span>
             <button
               onClick={() => removeItem(item.id)}
-              className="text-zinc-400 hover:text-red-500"
+              className="text-[var(--motion-text-muted)] hover:text-red-500"
               style={{
                 transition: `color ${currentDurationMS / 2}ms ${currentEasingCSS}`,
               }}

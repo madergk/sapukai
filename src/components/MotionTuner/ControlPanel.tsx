@@ -34,7 +34,7 @@ function TabButton({ active, onClick, children }: TabButtonProps) {
         'border-b-2',
         active
           ? 'border-[var(--motion-brand-primary)] text-[var(--motion-brand-primary)]'
-          : 'border-transparent text-zinc-500 hover:text-zinc-700'
+          : 'border-transparent text-[var(--motion-text-secondary)] hover:text-[var(--motion-text-primary)]'
       )}
     >
       {children}
@@ -46,15 +46,17 @@ export function ControlPanel() {
   const { state, setActiveTab, currentEasingCSS } = useMotion()
 
   return (
-    <div className="flex h-full flex-col bg-white">
+    <div className="flex h-full flex-col bg-[var(--motion-surface-primary)]">
       {/* Header */}
-      <div className="flex flex-col gap-2 border-b border-zinc-200 px-8 pt-6 pb-4">
-        <h2 className="text-[34px] font-semibold leading-[42px] text-zinc-950">Customize</h2>
-        <p className="text-base text-zinc-400">Customize your swag curve</p>
+      <div className="flex flex-col gap-2 border-b border-[var(--motion-border-default)] px-8 pt-6 pb-4">
+        <h2 className="text-[34px] font-semibold leading-[42px] text-[var(--motion-text-primary)]">
+          Customize
+        </h2>
+        <p className="text-base text-[var(--motion-text-muted)]">Customize your swag curve</p>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-zinc-200 px-8">
+      <div className="flex border-b border-[var(--motion-border-default)] px-8">
         <TabButton active={state.activeTab === 'easing'} onClick={() => setActiveTab('easing')}>
           Easing Curve
         </TabButton>
@@ -76,8 +78,10 @@ export function ControlPanel() {
       <div className="flex-1 overflow-y-auto px-8 py-6">
         <div className="flex flex-col gap-6">
           {/* Code Display */}
-          <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3">
-            <code className="font-mono text-base text-zinc-950">{currentEasingCSS}</code>
+          <div className="rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-tertiary)] px-4 py-3">
+            <code className="font-mono text-base text-[var(--motion-text-primary)]">
+              {currentEasingCSS}
+            </code>
           </div>
 
           {state.activeTab === 'easing' && <EasingTab />}
@@ -121,14 +125,14 @@ function EasingTab() {
   return (
     <div className="flex flex-col gap-6">
       {/* Toggle between basic and M3 presets */}
-      <div className="flex rounded-lg border border-zinc-200 p-1">
+      <div className="flex rounded-lg border border-[var(--motion-border-default)] bg-[var(--motion-surface-tertiary)] p-1">
         <button
           onClick={() => setShowM3Presets(false)}
           className={cn(
             'flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors',
             !showM3Presets
-              ? 'bg-[var(--motion-brand-primary)] text-white'
-              : 'text-zinc-600 hover:bg-zinc-100'
+              ? 'bg-[var(--motion-brand-primary)] text-[var(--motion-text-inverse)]'
+              : 'text-[var(--motion-text-secondary)] hover:bg-[var(--motion-surface-primary)]'
           )}
         >
           Basic Easing
@@ -138,8 +142,8 @@ function EasingTab() {
           className={cn(
             'flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors',
             showM3Presets
-              ? 'bg-[var(--motion-brand-primary)] text-white'
-              : 'text-zinc-600 hover:bg-zinc-100'
+              ? 'bg-[var(--motion-brand-primary)] text-[var(--motion-text-inverse)]'
+              : 'text-[var(--motion-text-secondary)] hover:bg-[var(--motion-surface-primary)]'
           )}
         >
           M3 Presets
@@ -150,7 +154,9 @@ function EasingTab() {
         <>
           {/* Basic Preset Selector */}
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-zinc-700">Easing Preset</label>
+            <label className="text-sm font-medium text-[var(--motion-text-secondary)]">
+              Easing Preset
+            </label>
             <Select
               value={state.selectedEasing === 'custom' ? undefined : state.selectedEasing}
               onChange={(value: string | undefined) => {
@@ -174,7 +180,7 @@ function EasingTab() {
 
           {/* Canvas */}
           <div className="flex items-center justify-center">
-            <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+            <div className="rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-4 shadow-sm">
               <BezierCanvas width={400} height={400} />
             </div>
           </div>
@@ -190,8 +196,8 @@ function EasingTab() {
                 className={cn(
                   'rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
                   selectedM3Category === cat.id
-                    ? 'bg-[var(--motion-brand-primary)] text-white'
-                    : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+                    ? 'bg-[var(--motion-brand-primary)] text-[var(--motion-text-inverse)]'
+                    : 'bg-[var(--motion-surface-tertiary)] text-[var(--motion-text-secondary)] hover:bg-[var(--motion-border-default)]'
                 )}
               >
                 {cat.label}
@@ -207,16 +213,18 @@ function EasingTab() {
                 <button
                   key={key}
                   onClick={() => applyM3Preset(key as M3MotionPreset)}
-                  className="flex flex-col gap-1 rounded-lg border border-zinc-200 bg-white p-4 text-left transition-colors hover:border-[var(--motion-brand-primary)] hover:bg-[var(--motion-brand-primary-soft)]"
+                  className="flex flex-col gap-1 rounded-lg border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-4 text-left transition-colors hover:border-[var(--motion-brand-primary)] hover:bg-[var(--motion-brand-primary-soft)]"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-medium text-zinc-950">{preset.name}</span>
-                    <span className="rounded bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600">
+                    <span className="font-medium text-[var(--motion-text-primary)]">
+                      {preset.name}
+                    </span>
+                    <span className="rounded bg-[var(--motion-surface-tertiary)] px-2 py-0.5 text-xs text-[var(--motion-text-secondary)]">
                       {resolved.durationValue}ms
                     </span>
                   </div>
-                  <p className="text-xs text-zinc-500">{preset.description}</p>
-                  <code className="mt-2 block rounded bg-zinc-50 p-2 font-mono text-xs text-zinc-700">
+                  <p className="text-xs text-[var(--motion-text-muted)]">{preset.description}</p>
+                  <code className="mt-2 block rounded bg-[var(--motion-surface-tertiary)] p-2 font-mono text-xs text-[var(--motion-text-secondary)]">
                     {resolved.easingValue}
                   </code>
                 </button>
@@ -225,8 +233,8 @@ function EasingTab() {
           </div>
 
           {/* Info Box */}
-          <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-            <p className="text-xs text-zinc-600">
+          <div className="rounded-lg border border-[var(--motion-border-default)] bg-[var(--motion-surface-tertiary)] p-4">
+            <p className="text-xs text-[var(--motion-text-secondary)]">
               <strong>Material Design 3</strong> motion presets combine easing curves with
               recommended durations. Clicking a preset applies both the easing and duration.{' '}
               <a
@@ -267,7 +275,9 @@ function DurationTab() {
       {/* Duration Slider */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-zinc-700">Duration (ms)</label>
+          <label className="text-sm font-medium text-[var(--motion-text-secondary)]">
+            Duration (ms)
+          </label>
           <Input
             type="number"
             value={state.duration}
@@ -287,7 +297,7 @@ function DurationTab() {
           onChange={handleDurationChange}
           className="w-full accent-[var(--motion-brand-primary)]"
         />
-        <div className="flex justify-between text-xs text-zinc-400">
+        <div className="flex justify-between text-xs text-[var(--motion-text-muted)]">
           <span>0ms</span>
           <span>2000ms</span>
         </div>
@@ -295,7 +305,9 @@ function DurationTab() {
 
       {/* Duration Presets */}
       <div className="flex flex-col gap-3">
-        <label className="text-sm font-medium text-zinc-700">Duration Presets</label>
+        <label className="text-sm font-medium text-[var(--motion-text-secondary)]">
+          Duration Presets
+        </label>
         <div className="grid grid-cols-2 gap-2">
           {Object.entries(durationTokens).map(([key, value]) => (
             <button
@@ -304,8 +316,8 @@ function DurationTab() {
               className={cn(
                 'rounded-lg border px-4 py-2 text-sm transition-colors',
                 state.selectedDuration === key && state.duration === value.value
-                  ? 'border-[var(--motion-brand-primary)] bg-[var(--motion-brand-primary)] text-white'
-                  : 'border-zinc-200 bg-white text-zinc-700 hover:border-zinc-300 hover:bg-zinc-50'
+                  ? 'border-[var(--motion-brand-primary)] bg-[var(--motion-brand-primary)] text-[var(--motion-text-inverse)]'
+                  : 'border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] text-[var(--motion-text-secondary)] hover:border-[var(--motion-border-default)] hover:bg-[var(--motion-surface-tertiary)]'
               )}
             >
               <div className="font-medium">{value.name}</div>
@@ -443,7 +455,9 @@ ${transitionCode};
     <div className="flex flex-col gap-6">
       {/* Preset Selector */}
       <div className="flex flex-col gap-3">
-        <label className="text-sm font-medium text-zinc-700">Transition Preset</label>
+        <label className="text-sm font-medium text-[var(--motion-text-secondary)]">
+          Transition Preset
+        </label>
         <div className="grid grid-cols-2 gap-2">
           {TRANSITION_PRESETS.map(preset => (
             <button
@@ -453,7 +467,7 @@ ${transitionCode};
                 'flex flex-col items-start rounded-lg border px-4 py-3 text-left transition-colors',
                 selectedPreset === preset.id
                   ? 'border-[var(--motion-brand-primary)] bg-[var(--motion-brand-primary-soft)]'
-                  : 'border-zinc-200 bg-white hover:border-zinc-300 hover:bg-zinc-50'
+                  : 'border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] hover:border-[var(--motion-border-default)] hover:bg-[var(--motion-surface-tertiary)]'
               )}
             >
               <span
@@ -461,22 +475,24 @@ ${transitionCode};
                   'font-medium',
                   selectedPreset === preset.id
                     ? 'text-[var(--motion-brand-primary)]'
-                    : 'text-zinc-950'
+                    : 'text-[var(--motion-text-primary)]'
                 )}
               >
                 {preset.name}
               </span>
-              <span className="text-xs text-zinc-500">{preset.description}</span>
+              <span className="text-xs text-[var(--motion-text-muted)]">{preset.description}</span>
             </button>
           ))}
         </div>
       </div>
 
       {/* Generated Code */}
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-6">
+      <div className="rounded-lg border border-[var(--motion-border-default)] bg-[var(--motion-surface-tertiary)] p-6">
         <div className="mb-3 flex items-center justify-between">
-          <h3 className="text-lg font-semibold text-zinc-950">{activePreset.name} Transition</h3>
-          <span className="rounded-full bg-zinc-200 px-2 py-0.5 text-xs text-zinc-600">
+          <h3 className="text-lg font-semibold text-[var(--motion-text-primary)]">
+            {activePreset.name} Transition
+          </h3>
+          <span className="rounded-full bg-[var(--motion-border-default)] px-2 py-0.5 text-xs text-[var(--motion-text-secondary)]">
             {activePreset.properties.join(', ')}
           </span>
         </div>
@@ -489,11 +505,14 @@ ${transitionCode};
 
       {/* Quick Reference */}
       <div className="flex flex-col gap-3">
-        <h4 className="text-sm font-medium text-zinc-700">Quick Reference</h4>
+        <h4 className="text-sm font-medium text-[var(--motion-text-secondary)]">Quick Reference</h4>
         <div className="space-y-2">
           {activePreset.properties.map(prop => (
-            <div key={prop} className="rounded-lg border border-zinc-200 bg-white p-3">
-              <code className="font-mono text-xs text-zinc-700">
+            <div
+              key={prop}
+              className="rounded-lg border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-3"
+            >
+              <code className="font-mono text-xs text-[var(--motion-text-secondary)]">
                 transition: {prop} {currentDurationMS}ms {currentEasingCSS};
               </code>
             </div>

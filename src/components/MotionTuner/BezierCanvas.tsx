@@ -47,9 +47,17 @@ export function BezierCanvas({ width = 400, height = 400, className }: BezierCan
       rootStyles.getPropertyValue('--motion-brand-primary-hover').trim() || '#0d9488'
     const brandAccent =
       rootStyles.getPropertyValue('--motion-brand-primary-accent').trim() || '#14b8a6'
+    const gridColor =
+      rootStyles.getPropertyValue('--motion-canvas-grid').trim() || 'rgba(0, 0, 0, 0.08)'
+    const axisLabelColor =
+      rootStyles.getPropertyValue('--motion-canvas-axis-label').trim() || 'rgba(0, 0, 0, 0.38)'
+    const controlLineColor =
+      rootStyles.getPropertyValue('--motion-canvas-control-line').trim() || 'rgba(0, 0, 0, 0.2)'
+    const labelColor =
+      rootStyles.getPropertyValue('--motion-canvas-label').trim() || 'rgba(0, 0, 0, 0.6)'
 
     // Draw grid
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.08)'
+    ctx.strokeStyle = gridColor
     ctx.lineWidth = 1
 
     for (let i = 0; i <= 4; i++) {
@@ -69,7 +77,7 @@ export function BezierCanvas({ width = 400, height = 400, className }: BezierCan
     }
 
     // Draw axes labels
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.38)'
+    ctx.fillStyle = axisLabelColor
     ctx.font = '12px Inter, sans-serif'
     ctx.textAlign = 'center'
 
@@ -112,7 +120,7 @@ export function BezierCanvas({ width = 400, height = 400, className }: BezierCan
     const p2 = bezierToCanvas(state.easingCurve[2], state.easingCurve[3], width, padding)
     const p3 = bezierToCanvas(1, 1, width, padding)
 
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)'
+    ctx.strokeStyle = controlLineColor
     ctx.lineWidth = 1
     ctx.setLineDash([4, 4])
 
@@ -163,7 +171,7 @@ export function BezierCanvas({ width = 400, height = 400, className }: BezierCan
 
     // Draw coordinate labels
     ctx.font = '11px "Martian Mono", monospace'
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)'
+    ctx.fillStyle = labelColor
     ctx.textAlign = 'left'
 
     // P1 label

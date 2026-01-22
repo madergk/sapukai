@@ -6,11 +6,34 @@
  */
 
 @theme {
-  /* Motion - Brand Tokens */
+  /* Motion - Brand Tokens (Light Mode) */
   --motion-brand-primary: #00686f;
   --motion-brand-primary-hover: #0d9488;
   --motion-brand-primary-soft: #f0fdfa;
   --motion-brand-primary-accent: #14b8a6;
+
+  /* Motion - Surface Tokens (Light Mode) */
+  --motion-surface-primary: #ffffff;
+  --motion-surface-secondary: #fafafa;
+  --motion-surface-tertiary: #f4f4f5;
+  --motion-surface-elevated: #ffffff;
+  --motion-surface-overlay: rgba(0, 0, 0, 0.5);
+
+  /* Motion - Border Tokens (Light Mode) */
+  --motion-border-default: #e4e4e7;
+  --motion-border-muted: #f4f4f5;
+
+  /* Motion - Text Tokens (Light Mode) */
+  --motion-text-primary: #09090b;
+  --motion-text-secondary: #71717a;
+  --motion-text-muted: #a1a1aa;
+  --motion-text-inverse: #ffffff;
+
+  /* Motion - Canvas Tokens (Light Mode) */
+  --motion-canvas-grid: rgba(0, 0, 0, 0.08);
+  --motion-canvas-axis-label: rgba(0, 0, 0, 0.38);
+  --motion-canvas-control-line: rgba(0, 0, 0, 0.2);
+  --motion-canvas-label: rgba(0, 0, 0, 0.6);
 
   /* Motion - Easing Tokens */
 
@@ -123,4 +146,35 @@
   to {
     opacity: 0;
   }
+}
+
+/* Dark Mode Overrides */
+.dark {
+  --motion-brand-primary: #14b8a6;
+  --motion-brand-primary-hover: #2dd4bf;
+  --motion-brand-primary-soft: rgba(20, 184, 166, 0.1);
+  --motion-brand-primary-accent: #5eead4;
+
+  /* Motion - Surface Tokens (Dark Mode) */
+  --motion-surface-primary: #09090b;
+  --motion-surface-secondary: #18181b;
+  --motion-surface-tertiary: #27272a;
+  --motion-surface-elevated: #27272a;
+  --motion-surface-overlay: rgba(0, 0, 0, 0.7);
+
+  /* Motion - Border Tokens (Dark Mode) */
+  --motion-border-default: #3f3f46;
+  --motion-border-muted: #27272a;
+
+  /* Motion - Text Tokens (Dark Mode) */
+  --motion-text-primary: #fafafa;
+  --motion-text-secondary: #a1a1aa;
+  --motion-text-muted: #71717a;
+  --motion-text-inverse: #09090b;
+
+  /* Motion - Canvas Tokens (Dark Mode) */
+  --motion-canvas-grid: rgba(255, 255, 255, 0.1);
+  --motion-canvas-axis-label: rgba(255, 255, 255, 0.5);
+  --motion-canvas-control-line: rgba(255, 255, 255, 0.25);
+  --motion-canvas-label: rgba(255, 255, 255, 0.7);
 }

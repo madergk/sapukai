@@ -3,15 +3,14 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { MotionProvider } from '@/context/MotionContext'
-
-if (typeof document !== 'undefined') {
-  document.documentElement.classList.add('dark')
-}
+import { ThemeProvider } from '@/context/ThemeContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <MotionProvider>
-      <App />
-    </MotionProvider>
+    <ThemeProvider defaultTheme="light">
+      <MotionProvider>
+        <App />
+      </MotionProvider>
+    </ThemeProvider>
   </StrictMode>
 )

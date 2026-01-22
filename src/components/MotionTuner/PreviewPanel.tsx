@@ -17,8 +17,8 @@ function TabButton({ active, onClick, children }: TabButtonProps) {
         'px-4 py-2 text-base transition-colors',
         'border-b-2',
         active
-          ? 'border-[var(--motion-brand-primary)] text-zinc-950'
-          : 'border-transparent text-zinc-400 hover:text-zinc-600'
+          ? 'border-[var(--motion-brand-primary)] text-[var(--motion-text-primary)]'
+          : 'border-transparent text-[var(--motion-text-muted)] hover:text-[var(--motion-text-secondary)]'
       )}
     >
       {children}
@@ -39,8 +39,8 @@ function ComponentButton({ active, onClick, children }: ComponentButtonProps) {
       className={cn(
         'rounded-full px-4 py-2 text-base font-normal transition-colors',
         active
-          ? 'bg-[var(--motion-brand-primary)] text-white'
-          : 'border border-zinc-200 bg-white text-zinc-950 hover:bg-zinc-50'
+          ? 'bg-[var(--motion-brand-primary)] text-[var(--motion-text-inverse)]'
+          : 'border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] text-[var(--motion-text-primary)] hover:bg-[var(--motion-surface-tertiary)]'
       )}
     >
       {children}
@@ -99,13 +99,13 @@ export function PreviewPanel() {
   }, [currentOptions, setPreviewComponent, state.previewComponent])
 
   return (
-    <div className="flex h-full flex-col bg-zinc-50">
+    <div className="flex h-full flex-col bg-[var(--motion-surface-secondary)]">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4">
-        <h2 className="text-2xl font-semibold text-zinc-950">Preview</h2>
+      <div className="flex items-center justify-between border-b border-[var(--motion-border-default)] px-6 py-4">
+        <h2 className="text-2xl font-semibold text-[var(--motion-text-primary)]">Preview</h2>
         <div className="flex gap-2">
           <button
-            className="flex h-[34px] w-[34px] items-center justify-center rounded-xl border border-zinc-200 bg-white transition-colors hover:bg-zinc-50"
+            className="flex h-[34px] w-[34px] items-center justify-center rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] text-[var(--motion-text-secondary)] transition-colors hover:bg-[var(--motion-surface-tertiary)]"
             aria-label="Grid view"
           >
             <svg
@@ -122,7 +122,7 @@ export function PreviewPanel() {
             </svg>
           </button>
           <button
-            className="flex h-[34px] w-[34px] items-center justify-center rounded-xl border border-zinc-200 bg-white transition-colors hover:bg-zinc-50"
+            className="flex h-[34px] w-[34px] items-center justify-center rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] text-[var(--motion-text-secondary)] transition-colors hover:bg-[var(--motion-surface-tertiary)]"
             aria-label="List view"
           >
             <svg
@@ -141,12 +141,14 @@ export function PreviewPanel() {
       </div>
 
       {/* Description */}
-      <div className="border-b border-zinc-200 px-6 py-3">
-        <p className="text-base text-zinc-400">Visualize how it is going to look like</p>
+      <div className="border-b border-[var(--motion-border-default)] px-6 py-3">
+        <p className="text-base text-[var(--motion-text-muted)]">
+          Visualize how it is going to look like
+        </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-zinc-200 px-6">
+      <div className="flex border-b border-[var(--motion-border-default)] px-6">
         <TabButton
           active={state.previewMode === 'components'}
           onClick={() => setPreviewMode('components')}
@@ -187,10 +189,10 @@ export function PreviewPanel() {
           <ComponentPreview component={state.previewComponent} />
 
           {/* CSS Implementation */}
-          <div className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-            <p className="text-base text-zinc-400">CSS Implementation</p>
-            <div className="rounded-lg bg-white p-3">
-              <pre className="font-mono text-xs text-zinc-950">
+          <div className="flex flex-col gap-2 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-tertiary)] p-4">
+            <p className="text-base text-[var(--motion-text-muted)]">CSS Implementation</p>
+            <div className="rounded-lg bg-[var(--motion-surface-primary)] p-3">
+              <pre className="font-mono text-xs text-[var(--motion-text-primary)]">
                 <code>
                   {`.element {\n  transition: all ${currentDurationMS}ms ${currentEasingCSS};\n}\n\n/* Or individual properties */\n.element {\n  transition: transform ${currentDurationMS}ms ${currentEasingCSS},\n              opacity ${currentDurationMS}ms ${currentEasingCSS};\n}`}
                 </code>
