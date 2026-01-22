@@ -52,31 +52,30 @@ export function PreviewPanel() {
   const { state, setPreviewMode, setPreviewComponent, currentEasingCSS, currentDurationMS } =
     useMotion()
 
-  const componentOptions: Array<{ value: PreviewComponent; label: string }> = [
-    { value: 'button-states', label: 'Button States' },
-    { value: 'modal-dialog', label: 'Modal Dialog' },
-    { value: 'accordion', label: 'Accordion' },
-    { value: 'notifications', label: 'Notifications' },
-    { value: 'loading-states', label: 'Loading States' },
-    { value: 'page-transition', label: 'Page Transition' },
-  ]
+  const currentOptions = React.useMemo(() => {
+    const componentOptions: Array<{ value: PreviewComponent; label: string }> = [
+      { value: 'button-states', label: 'Button States' },
+      { value: 'modal-dialog', label: 'Modal Dialog' },
+      { value: 'accordion', label: 'Accordion' },
+      { value: 'notifications', label: 'Notifications' },
+      { value: 'loading-states', label: 'Loading States' },
+      { value: 'page-transition', label: 'Page Transition' },
+    ]
 
-  const navigationOptions: Array<{ value: PreviewComponent; label: string }> = [
-    { value: 'drawer', label: 'Drawer' },
-    { value: 'bottom-nav', label: 'Bottom Nav' },
-    { value: 'tabs', label: 'Tabs' },
-    { value: 'menu', label: 'Menu' },
-  ]
+    const navigationOptions: Array<{ value: PreviewComponent; label: string }> = [
+      { value: 'drawer', label: 'Drawer' },
+      { value: 'bottom-nav', label: 'Bottom Nav' },
+      { value: 'tabs', label: 'Tabs' },
+      { value: 'menu', label: 'Menu' },
+    ]
 
-  const transitionOptions: Array<{ value: PreviewComponent; label: string }> = [
-    { value: 'fade-through', label: 'Fade Through' },
-    { value: 'shared-axis', label: 'Shared Axis' },
-    { value: 'scale-transform', label: 'Scale Transform' },
-    { value: 'slide-transition', label: 'Slide Transition' },
-  ]
+    const transitionOptions: Array<{ value: PreviewComponent; label: string }> = [
+      { value: 'fade-through', label: 'Fade Through' },
+      { value: 'shared-axis', label: 'Shared Axis' },
+      { value: 'scale-transform', label: 'Scale Transform' },
+      { value: 'slide-transition', label: 'Slide Transition' },
+    ]
 
-  // Get current options based on mode
-  const getCurrentOptions = () => {
     switch (state.previewMode) {
       case 'components':
         return componentOptions
@@ -87,17 +86,17 @@ export function PreviewPanel() {
       default:
         return componentOptions
     }
-  }
-
-  const currentOptions = getCurrentOptions()
+  }, [state.previewMode])
 
   // Set default component when mode changes
   React.useEffect(() => {
-    const options = getCurrentOptions()
-    if (options.length > 0 && !options.find((o) => o.value === state.previewComponent)) {
-      setPreviewComponent(options[0].value)
+    if (
+      currentOptions.length > 0 &&
+      !currentOptions.find(o => o.value === state.previewComponent)
+    ) {
+      setPreviewComponent(currentOptions[0].value)
     }
-  }, [state.previewMode])
+  }, [currentOptions, setPreviewComponent, state.previewComponent])
 
   return (
     <div className="flex h-full flex-col bg-zinc-50">
@@ -143,9 +142,7 @@ export function PreviewPanel() {
 
       {/* Description */}
       <div className="border-b border-zinc-200 px-6 py-3">
-        <p className="text-base text-zinc-400">
-          Visualize how it is going to look like
-        </p>
+        <p className="text-base text-zinc-400">Visualize how it is going to look like</p>
       </div>
 
       {/* Tabs */}
@@ -175,7 +172,7 @@ export function PreviewPanel() {
         <div className="flex flex-col gap-6">
           {/* Component Selector */}
           <div className="flex flex-wrap gap-2">
-            {currentOptions.map((option) => (
+            {currentOptions.map(option => (
               <ComponentButton
                 key={option.value}
                 active={state.previewComponent === option.value}

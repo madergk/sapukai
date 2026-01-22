@@ -1,122 +1,136 @@
 import * as React from 'react'
-import * as SelectPrimitive from '@radix-ui/react-select'
+import {
+  Listbox as HeadlessListbox,
+  ListboxButton,
+  ListboxLabel as HeadlessListboxLabel,
+  ListboxOption,
+  ListboxOptions,
+  ListboxSelectedOption,
+} from '@headlessui/react'
 import { ChevronDownIcon, CheckIcon } from '@heroicons/react/16/solid'
 import { cn } from '@/utils'
 import { Avatar } from '@/components/primitives/Avatar'
 
-const Listbox = SelectPrimitive.Root
+const Listbox = HeadlessListbox
 
-const ListboxGroup = SelectPrimitive.Group
+const ListboxGroup = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => <div ref={ref} className={cn('py-1', className)} {...props} />
+)
+ListboxGroup.displayName = 'ListboxGroup'
 
-const ListboxValue = SelectPrimitive.Value
+const ListboxValue = React.forwardRef<
+  HTMLSpanElement,
+  React.ComponentPropsWithoutRef<typeof ListboxSelectedOption>
+>(({ className, placeholder, options = null, ...props }, ref) => (
+  <ListboxSelectedOption
+    ref={ref}
+    className={cn('truncate text-left', className)}
+    placeholder={placeholder}
+    options={options}
+    {...props}
+  />
+))
+ListboxValue.displayName = 'ListboxValue'
 
 const ListboxTrigger = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
+  HTMLButtonElement,
+  React.ComponentPropsWithoutRef<typeof ListboxButton> & {
     error?: boolean
   }
 >(({ className, children, error, ...props }, ref) => (
-  <SelectPrimitive.Trigger
+  <ListboxButton
     ref={ref}
     className={cn(
       'flex h-9 w-full items-center justify-between rounded-lg border bg-white px-3 py-2',
-      'text-sm text-zinc-900',
-      'focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1',
+      'text-sm text-zinc-900 placeholder:text-zinc-400',
+      'transition-colors duration-150',
+      'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
+      'focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-950',
       'disabled:cursor-not-allowed disabled:opacity-50',
-      'dark:bg-zinc-950 dark:text-white',
+      'dark:bg-zinc-950 dark:text-zinc-100',
       error
         ? 'border-red-500 dark:border-red-500'
-        : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-700 dark:hover:border-zinc-600',
+        : 'border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600',
       className
     )}
     {...props}
   >
     {children}
-    <SelectPrimitive.Icon asChild>
-      <ChevronDownIcon className="size-4 text-zinc-400" />
-    </SelectPrimitive.Icon>
-  </SelectPrimitive.Trigger>
+    <ChevronDownIcon className="size-4 text-zinc-400" />
+  </ListboxButton>
 ))
 ListboxTrigger.displayName = 'ListboxTrigger'
 
 const ListboxContent = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
->(({ className, children, position = 'popper', ...props }, ref) => (
-  <SelectPrimitive.Portal>
-    <SelectPrimitive.Content
-      ref={ref}
-      className={cn(
-        'relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-lg',
-        'data-[state=open]:animate-in data-[state=closed]:animate-out',
-        'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-        'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
-        'dark:border-zinc-700 dark:bg-zinc-900',
-        position === 'popper' && 'data-[side=bottom]:translate-y-1',
-        className
-      )}
-      position={position}
-      {...props}
-    >
-      <SelectPrimitive.Viewport
-        className={cn(
-          'p-1',
-          position === 'popper' &&
-            'h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]'
-        )}
-      >
-        {children}
-      </SelectPrimitive.Viewport>
-    </SelectPrimitive.Content>
-  </SelectPrimitive.Portal>
+  HTMLDivElement,
+  React.ComponentPropsWithoutRef<typeof ListboxOptions>
+>(({ className, children, ...props }, ref) => (
+  <ListboxOptions
+    ref={ref}
+    className={cn(
+      'z-50 max-h-96 min-w-[8rem] overflow-auto rounded-lg border border-zinc-200 bg-white p-1 shadow-lg',
+      'transition data-[closed]:opacity-0 data-[closed]:scale-95',
+      'dark:border-zinc-700 dark:bg-zinc-900',
+      className
+    )}
+    anchor="bottom"
+    portal
+    {...props}
+  >
+    {children}
+  </ListboxOptions>
 ))
 ListboxContent.displayName = 'ListboxContent'
 
-export interface ListboxItemProps
-  extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item> {
+export interface ListboxItemProps extends React.ComponentPropsWithoutRef<typeof ListboxOption> {
   avatar?: string
   icon?: React.ReactNode
   description?: string
 }
 
-const ListboxItem = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Item>,
-  ListboxItemProps
->(({ className, children, avatar, icon, description, ...props }, ref) => (
-  <SelectPrimitive.Item
-    ref={ref}
-    className={cn(
-      'relative flex w-full cursor-pointer select-none items-center gap-3 rounded-md py-2 pl-2 pr-8 text-sm',
-      'outline-none',
-      'focus:bg-zinc-100 dark:focus:bg-zinc-800',
-      'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-      'text-zinc-900 dark:text-white',
-      className
-    )}
-    {...props}
-  >
-    {avatar && <Avatar size={6} src={avatar} />}
-    {icon && <span className="text-zinc-500">{icon}</span>}
-    <div className="flex flex-col">
-      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-      {description && (
-        <span className="text-xs text-zinc-500 dark:text-zinc-400">{description}</span>
+const ListboxItem = React.forwardRef<HTMLDivElement, ListboxItemProps>(
+  ({ className, children, avatar, icon, description, ...props }, ref) => (
+    <ListboxOption
+      ref={ref}
+      className={({ focus, selected, disabled }) =>
+        cn(
+          'relative flex w-full cursor-pointer select-none items-center gap-3 rounded-md py-2 pl-2 pr-8 text-sm',
+          focus && 'bg-zinc-100 dark:bg-zinc-800',
+          selected && 'text-zinc-900 dark:text-white',
+          !selected && 'text-zinc-700 dark:text-zinc-200',
+          disabled && 'pointer-events-none opacity-50',
+          className
+        )
+      }
+      {...props}
+    >
+      {({ selected }) => (
+        <>
+          {avatar && <Avatar size={6} src={avatar} />}
+          {icon && <span className="text-zinc-500">{icon}</span>}
+          <div className="flex flex-col">
+            <span className="truncate">{children}</span>
+            {description && (
+              <span className="text-xs text-zinc-500 dark:text-zinc-400">{description}</span>
+            )}
+          </div>
+          {selected && (
+            <span className="absolute right-2 flex size-4 items-center justify-center">
+              <CheckIcon className="size-4" />
+            </span>
+          )}
+        </>
       )}
-    </div>
-    <span className="absolute right-2 flex size-4 items-center justify-center">
-      <SelectPrimitive.ItemIndicator>
-        <CheckIcon className="size-4" />
-      </SelectPrimitive.ItemIndicator>
-    </span>
-  </SelectPrimitive.Item>
-))
+    </ListboxOption>
+  )
+)
 ListboxItem.displayName = 'ListboxItem'
 
 const ListboxLabel = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Label>,
-  React.ComponentPropsWithoutRef<typeof SelectPrimitive.Label>
+  HTMLLabelElement,
+  React.ComponentPropsWithoutRef<typeof HeadlessListboxLabel>
 >(({ className, ...props }, ref) => (
-  <SelectPrimitive.Label
+  <HeadlessListboxLabel
     ref={ref}
     className={cn('px-2 py-1.5 text-xs font-medium text-zinc-500 dark:text-zinc-400', className)}
     {...props}

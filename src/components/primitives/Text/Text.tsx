@@ -2,45 +2,41 @@ import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/utils'
 
-const textVariants = cva(
-  'text-zinc-600 dark:text-zinc-400',
-  {
-    variants: {
-      variant: {
-        text: '',
-        code: [
-          'font-mono text-sm',
-          'bg-zinc-100 dark:bg-zinc-800',
-          'px-1.5 py-0.5 rounded',
-        ],
-      },
-      size: {
-        xs: 'text-xs leading-4',
-        sm: 'text-sm leading-5',
-        base: 'text-base leading-6',
-        lg: 'text-lg leading-7',
-      },
-      underline: {
-        true: 'underline underline-offset-2',
-        false: '',
-      },
-      strong: {
-        true: 'font-semibold text-zinc-900 dark:text-white',
-        false: '',
-      },
+const textVariants = cva('text-zinc-600 dark:text-zinc-300', {
+  variants: {
+    variant: {
+      text: '',
+      code: [
+        'font-mono text-sm',
+        'bg-zinc-100 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100',
+        'px-1.5 py-0.5 rounded',
+      ],
     },
-    defaultVariants: {
-      variant: 'text',
-      size: 'base',
-      underline: false,
-      strong: false,
+    size: {
+      xs: 'text-xs leading-4',
+      sm: 'text-sm leading-5',
+      base: 'text-base leading-6',
+      lg: 'text-lg leading-7',
     },
-  }
-)
+    underline: {
+      true: 'underline underline-offset-2',
+      false: '',
+    },
+    strong: {
+      true: 'font-semibold text-zinc-900 dark:text-zinc-50',
+      false: '',
+    },
+  },
+  defaultVariants: {
+    variant: 'text',
+    size: 'base',
+    underline: false,
+    strong: false,
+  },
+})
 
 export interface TextProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof textVariants> {
+  extends React.HTMLAttributes<HTMLSpanElement>, VariantProps<typeof textVariants> {
   as?: 'span' | 'p' | 'code' | 'strong' | 'em'
 }
 

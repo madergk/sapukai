@@ -1,6 +1,7 @@
 import * as React from 'react'
 import type { Preview } from '@storybook/react-vite'
 import '../src/index.css'
+import { cn } from '@/utils'
 
 const preview: Preview = {
   parameters: {
@@ -49,19 +50,24 @@ const preview: Preview = {
     },
   },
   initialGlobals: {
-    theme: 'light',
+    theme: 'dark',
   },
   decorators: [
     (Story, context) => {
       const theme = context.globals.theme || 'light'
-      
+
       // Apply theme class to document
       if (typeof document !== 'undefined') {
         document.documentElement.classList.toggle('dark', theme === 'dark')
       }
 
       return (
-        <div className={`${theme === 'dark' ? 'dark bg-zinc-950' : 'bg-white'} min-h-screen p-6`}>
+        <div
+          className={cn(
+            'min-h-screen p-6',
+            theme === 'dark' ? 'dark bg-zinc-950 text-zinc-100' : 'bg-white text-zinc-900'
+          )}
+        >
           <Story />
         </div>
       )

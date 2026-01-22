@@ -1,64 +1,69 @@
 import * as React from 'react'
-import * as CheckboxPrimitive from '@radix-ui/react-checkbox'
+import { Checkbox as HeadlessCheckbox } from '@headlessui/react'
 import { CheckIcon } from '@heroicons/react/16/solid'
 import { cn } from '@/utils'
 
-export interface CheckboxProps
-  extends React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> {
+export interface CheckboxProps extends Omit<
+  React.ComponentPropsWithoutRef<typeof HeadlessCheckbox>,
+  'children'
+> {
   label?: string
   description?: string
 }
 
-const Checkbox = React.forwardRef<
-  React.ElementRef<typeof CheckboxPrimitive.Root>,
-  CheckboxProps
->(({ className, label, description, id, ...props }, ref) => {
-  const checkboxId = id || React.useId()
+const Checkbox = React.forwardRef<HTMLSpanElement, CheckboxProps>(
+  ({ className, label, description, id, ...props }, ref) => {
+    const fallbackId = React.useId()
+    const checkboxId = id ?? fallbackId
 
-  const checkbox = (
-    <CheckboxPrimitive.Root
-      ref={ref}
-      id={checkboxId}
-      className={cn(
-        'peer size-4 shrink-0 rounded border border-zinc-300',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
-        'disabled:cursor-not-allowed disabled:opacity-50',
-        'data-[state=checked]:bg-zinc-900 data-[state=checked]:border-zinc-900 data-[state=checked]:text-white',
-        'dark:border-zinc-600',
-        'dark:data-[state=checked]:bg-white dark:data-[state=checked]:border-white dark:data-[state=checked]:text-zinc-900',
-        className
-      )}
-      {...props}
-    >
-      <CheckboxPrimitive.Indicator className="flex items-center justify-center">
-        <CheckIcon className="size-3" />
-      </CheckboxPrimitive.Indicator>
-    </CheckboxPrimitive.Root>
-  )
+    const checkbox = (
+      <HeadlessCheckbox
+        ref={ref}
+        id={checkboxId}
+        className={({ checked }) =>
+          cn(
+            'group relative flex size-4 shrink-0 items-center justify-center rounded',
+            'border border-zinc-300 bg-white text-white shadow-sm transition-colors',
+            checked && 'border-indigo-500 bg-indigo-500',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
+            'focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-950',
+            'disabled:cursor-not-allowed disabled:opacity-50',
+            'dark:border-zinc-700 dark:bg-zinc-950',
+            checked && 'dark:border-indigo-400 dark:bg-indigo-400',
+            className
+          )
+        }
+        {...props}
+      >
+        {({ checked }) => (
+          <CheckIcon
+            className={cn('size-3 transition-opacity', checked ? 'opacity-100' : 'opacity-0')}
+          />
+        )}
+      </HeadlessCheckbox>
+    )
 
-  if (!label && !description) {
-    return checkbox
+    if (!label && !description) {
+      return checkbox
+    }
+
+    return (
+      <label className="flex items-start gap-3">
+        {checkbox}
+        <span className="flex flex-col">
+          {label && (
+            <span className="cursor-pointer text-sm font-medium text-zinc-900 dark:text-zinc-100">
+              {label}
+            </span>
+          )}
+          {description && (
+            <span className="text-sm text-zinc-500 dark:text-zinc-400">{description}</span>
+          )}
+        </span>
+      </label>
+    )
   }
-
-  return (
-    <div className="flex items-start gap-3">
-      {checkbox}
-      <div className="flex flex-col">
-        {label && (
-          <label
-            htmlFor={checkboxId}
-            className="text-sm font-medium text-zinc-900 dark:text-white cursor-pointer"
-          >
-            {label}
-          </label>
-        )}
-        {description && (
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">{description}</p>
-        )}
-      </div>
-    </div>
-  )
-})
+)
 Checkbox.displayName = 'Checkbox'
 
 export { Checkbox }

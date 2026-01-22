@@ -7,21 +7,18 @@ const inputVariants = cva(
     'flex w-full rounded-lg border bg-white px-3 py-2',
     'text-sm text-zinc-900 placeholder:text-zinc-400',
     'transition-colors duration-150',
-    'focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1',
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
+    'focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-950',
     'disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-zinc-50',
-    'dark:bg-zinc-950 dark:text-white dark:placeholder:text-zinc-500',
+    'dark:bg-zinc-950 dark:text-zinc-100 dark:placeholder:text-zinc-500',
   ],
   {
     variants: {
       error: {
-        true: [
-          'border-red-500',
-          'focus:ring-red-500',
-          'dark:border-red-500',
-        ],
+        true: ['border-red-500', 'focus-visible:ring-red-500', 'dark:border-red-500'],
         false: [
-          'border-zinc-200',
-          'hover:border-zinc-300',
+          'border-zinc-300',
+          'hover:border-zinc-400',
           'dark:border-zinc-700',
           'dark:hover:border-zinc-600',
         ],
@@ -40,7 +37,8 @@ const inputVariants = cva(
 )
 
 export interface InputProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
+  extends
+    Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'>,
     VariantProps<typeof inputVariants> {
   label?: string
   helperText?: string
@@ -64,7 +62,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
-    const inputId = id || React.useId()
+    const fallbackId = React.useId()
+    const inputId = id ?? fallbackId
     const helperId = `${inputId}-helper`
 
     return (

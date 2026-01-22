@@ -1,6 +1,5 @@
 export {
   Dialog,
-  DialogPortal,
   DialogOverlay,
   DialogTrigger,
   DialogClose,

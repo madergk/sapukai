@@ -5,8 +5,8 @@ import { cn } from '@/utils'
 const avatarVariants = cva(
   [
     'relative inline-flex items-center justify-center',
-    'bg-zinc-200 text-zinc-600',
-    'dark:bg-zinc-700 dark:text-zinc-300',
+    'bg-zinc-200 text-zinc-700',
+    'dark:bg-zinc-800 dark:text-zinc-200',
     'overflow-hidden',
     'shrink-0',
   ],
@@ -17,10 +17,10 @@ const avatarVariants = cva(
         rounded: 'rounded-lg',
       },
       size: {
-        4: 'size-5 text-[8px]',   // 20px
-        6: 'size-6 text-[10px]',  // 24px
-        8: 'size-8 text-xs',      // 32px
-        10: 'size-10 text-sm',    // 40px
+        4: 'size-5 text-[8px]', // 20px
+        6: 'size-6 text-[10px]', // 24px
+        8: 'size-8 text-xs', // 32px
+        10: 'size-10 text-sm', // 40px
       },
     },
     defaultVariants: {
@@ -31,8 +31,7 @@ const avatarVariants = cva(
 )
 
 export interface AvatarProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof avatarVariants> {
+  extends React.HTMLAttributes<HTMLSpanElement>, VariantProps<typeof avatarVariants> {
   src?: string
   alt?: string
   initials?: string
@@ -45,11 +44,7 @@ const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
     const showInitials = !src || hasError
 
     return (
-      <span
-        className={cn(avatarVariants({ type, size }), className)}
-        ref={ref}
-        {...props}
-      >
+      <span className={cn(avatarVariants({ type, size }), className)} ref={ref} {...props}>
         {!showInitials && (
           <img
             src={src}
@@ -58,12 +53,10 @@ const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
             onError={() => setHasError(true)}
           />
         )}
-        {showInitials && initials && (
-          <span className="font-medium uppercase">{initials}</span>
-        )}
+        {showInitials && initials && <span className="font-medium uppercase">{initials}</span>}
         {showInitials && !initials && (
           <svg
-            className="size-[60%] text-zinc-400"
+            className="size-[60%] text-zinc-400 dark:text-zinc-500"
             fill="currentColor"
             viewBox="0 0 24 24"
           >
@@ -77,16 +70,11 @@ const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
 Avatar.displayName = 'Avatar'
 
 // Avatar Group component
-const AvatarGroup = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn('flex -space-x-2', className)}
-    {...props}
-  />
-))
+const AvatarGroup = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div ref={ref} className={cn('flex -space-x-2', className)} {...props} />
+  )
+)
 AvatarGroup.displayName = 'AvatarGroup'
 
 export { Avatar, AvatarGroup, avatarVariants }

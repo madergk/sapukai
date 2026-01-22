@@ -4,13 +4,19 @@
 @import './tokens/motion-theme.css';
 @import './tokens/default-theme.css';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Base styles */
+:root {
+  color-scheme: dark;
+}
+
 body {
+  @apply bg-zinc-950 text-zinc-100 antialiased;
   font-family:
+    'Geist',
     system-ui,
     -apple-system,
     BlinkMacSystemFont,
     sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }

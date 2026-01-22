@@ -4,7 +4,7 @@ import { cn } from '@/utils'
 
 const badgeVariants = cva(
   [
-    'inline-flex items-center rounded-md px-2 py-0.5',
+    'inline-flex items-center rounded-full px-2 py-0.5',
     'text-xs font-medium',
     'transition-colors duration-150',
   ],
@@ -14,8 +14,8 @@ const badgeVariants = cva(
         zinc: [
           'bg-zinc-100 text-zinc-700',
           'hover:bg-zinc-200',
-          'dark:bg-zinc-800 dark:text-zinc-300',
-          'dark:hover:bg-zinc-700',
+          'dark:bg-zinc-900 dark:text-zinc-200',
+          'dark:hover:bg-zinc-800',
         ],
         red: [
           'bg-red-100 text-red-700',
@@ -128,18 +128,13 @@ const badgeVariants = cva(
 )
 
 export interface BadgeProps
-  extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'color'>,
+  extends
+    Omit<React.HTMLAttributes<HTMLSpanElement>, 'color'>,
     VariantProps<typeof badgeVariants> {}
 
 const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
   ({ className, color, ...props }, ref) => {
-    return (
-      <span
-        className={cn(badgeVariants({ color }), className)}
-        ref={ref}
-        {...props}
-      />
-    )
+    return <span className={cn(badgeVariants({ color }), className)} ref={ref} {...props} />
   }
 )
 Badge.displayName = 'Badge'

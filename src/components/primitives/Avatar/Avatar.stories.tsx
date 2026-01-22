@@ -23,7 +23,8 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const sampleImage = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=faces'
+const sampleImage =
+  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=faces'
 
 export const Default: Story = {
   args: {
@@ -43,6 +44,10 @@ export const WithInitials: Story = {
 }
 
 export const Sizes: Story = {
+  args: {
+    size: 10,
+  },
+
   render: () => (
     <div className="flex items-center gap-4">
       <Avatar size={4} src={sampleImage} alt="Size 4" />
@@ -131,11 +136,7 @@ export const Group: Story = {
         src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces"
         className="ring-2 ring-white dark:ring-zinc-950"
       />
-      <Avatar
-        size={8}
-        initials="+3"
-        className="ring-2 ring-white dark:ring-zinc-950"
-      />
+      <Avatar size={8} initials="+3" className="ring-2 ring-white dark:ring-zinc-950" />
     </AvatarGroup>
   ),
 }

@@ -2,35 +2,33 @@ import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/utils'
 
-const headingVariants = cva(
-  'text-zinc-900 dark:text-white tracking-tight',
-  {
-    variants: {
-      type: {
-        heading: 'text-4xl font-semibold leading-10',
-        subheading: 'text-lg font-medium leading-7',
-      },
-      as: {
-        h1: '',
-        h2: '',
-        h3: '',
-        h4: '',
-        h5: '',
-        h6: '',
-        p: '',
-      },
+const headingVariants = cva('text-zinc-900 dark:text-zinc-50 tracking-tight', {
+  variants: {
+    type: {
+      heading: 'text-4xl font-semibold leading-10',
+      subheading: 'text-lg font-medium leading-7',
     },
-    defaultVariants: {
-      type: 'heading',
-      as: 'h1',
+    as: {
+      h1: '',
+      h2: '',
+      h3: '',
+      h4: '',
+      h5: '',
+      h6: '',
+      p: '',
     },
-  }
-)
+  },
+  defaultVariants: {
+    type: 'heading',
+    as: 'h1',
+  },
+})
 
 type HeadingElement = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p'
 
 export interface HeadingProps
-  extends React.HTMLAttributes<HTMLHeadingElement>,
+  extends
+    React.HTMLAttributes<HTMLHeadingElement>,
     Omit<VariantProps<typeof headingVariants>, 'as'> {
   as?: HeadingElement
 }
