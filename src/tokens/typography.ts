@@ -7,7 +7,7 @@
 export const typography = {} as const
 
 export const fontFamily = {
-  sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+  sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
 } as const
 
 export type TypographyKey = keyof typeof typography

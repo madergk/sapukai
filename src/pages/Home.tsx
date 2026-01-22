@@ -11,9 +11,9 @@ export function Home({ onNavigate }: HomeProps) {
     <div className="min-h-screen bg-white px-12 py-10">
       <div className="mx-auto flex max-w-5xl flex-col gap-10">
         <div className="flex flex-col gap-3">
-          <Heading type="heading">Motion Tuner</Heading>
+          <Heading type="heading">Sapukai Systems</Heading>
           <Heading type="subheading" as="h2">
-            Build and export custom cubic-bezier curves
+            Practical tools for the modern web
           </Heading>
           <Text className="max-w-2xl text-zinc-500">
             Create motion tokens, preview real UI interactions, and export easing curves in a
