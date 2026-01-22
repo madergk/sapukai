@@ -1,0 +1,126 @@
+/**
+ * Motion Theme Variables - Material Design 3 Motion System
+ *
+ * These custom properties extend the auto-generated theme.css
+ * with motion-specific tokens for easing curves and durations.
+ */
+
+@theme {
+  /* Motion - Brand Tokens */
+  --motion-brand-primary: #00686f;
+  --motion-brand-primary-hover: #0d9488;
+  --motion-brand-primary-soft: #f0fdfa;
+  --motion-brand-primary-accent: #14b8a6;
+
+  /* Motion - Easing Tokens */
+
+  /* Emphasized - Expressive motion for attention-grabbing interactions */
+  --motion-easing-emphasized: cubic-bezier(0.2, 0.0, 0, 1.0);
+  --motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+  --motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0.0, 0.8, 0.15);
+
+  /* Standard - Most common motion pattern */
+  --motion-easing-standard: cubic-bezier(0.2, 0.0, 0, 1.0);
+  --motion-easing-standard-decelerate: cubic-bezier(0.0, 0.0, 0, 1.0);
+  --motion-easing-standard-accelerate: cubic-bezier(0.3, 0.0, 1, 1);
+
+  /* Legacy - Traditional CSS easing functions */
+  --motion-easing-linear: cubic-bezier(0.0, 0.0, 1.0, 1.0);
+  --motion-easing-ease: cubic-bezier(0.25, 0.1, 0.25, 1.0);
+  --motion-easing-ease-in: cubic-bezier(0.42, 0.0, 1.0, 1.0);
+  --motion-easing-ease-out: cubic-bezier(0.0, 0.0, 0.58, 1.0);
+  --motion-easing-ease-in-out: cubic-bezier(0.42, 0.0, 0.58, 1.0);
+
+  /* Utility - Functional motion patterns */
+  --motion-easing-exponential-in: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+  --motion-easing-exponential-out: cubic-bezier(0.19, 1.0, 0.22, 1.0);
+
+  /* Motion - Duration Tokens */
+
+  /* Short durations - Quick micro-interactions */
+  --motion-duration-short-1: 50ms;
+  --motion-duration-short-2: 100ms;
+  --motion-duration-short-3: 150ms;
+  --motion-duration-short-4: 200ms;
+
+  /* Medium durations - Most common transitions */
+  --motion-duration-medium-1: 250ms;
+  --motion-duration-medium-2: 300ms;
+  --motion-duration-medium-3: 350ms;
+  --motion-duration-medium-4: 400ms;
+
+  /* Long durations - Complex animations */
+  --motion-duration-long-1: 450ms;
+  --motion-duration-long-2: 500ms;
+  --motion-duration-long-3: 550ms;
+  --motion-duration-long-4: 600ms;
+
+  /* Extra long durations - Cinematic effects */
+  --motion-duration-extra-long-1: 700ms;
+  --motion-duration-extra-long-2: 800ms;
+  --motion-duration-extra-long-3: 900ms;
+  --motion-duration-extra-long-4: 1000ms;
+}
+
+/* Tailwind Animation Extensions */
+@keyframes slide-in-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out-down {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes scale-out {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in-emphasized {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out-emphasized {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
