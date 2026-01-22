@@ -39,9 +39,7 @@ const transformNameKebab: Transform = {
   name: 'name/kebab',
   type: 'name',
   transform: (token: TransformedToken): string => {
-    return token.path
-      .map(part => part.toLowerCase().replace(/\s+/g, '-'))
-      .join('-')
+    return token.path.map(part => part.toLowerCase().replace(/\s+/g, '-')).join('-')
   },
 }
 
@@ -57,19 +55,21 @@ const formatTypeScriptColors: Format = {
     dictionary.allTokens.forEach(token => {
       // Style Dictionary v4 stores resolved value in $value
       const tokenValue = token.$value ?? token.value
-      
+
       // Only process leaf tokens with actual values
       if (tokenValue === undefined || tokenValue === null) return
       if (typeof tokenValue === 'object') return
-      
+
       // Path can be array or string, normalize to array
       const pathArray = Array.isArray(token.path) ? token.path : token.path.split('.')
       const category = pathArray[0]
-      
+
       const originalToken = token.original || {}
-      const isColor = originalToken.$type === 'color' || token.$type === 'color' ||
-                      (typeof tokenValue === 'string' && tokenValue.startsWith('#'))
-      
+      const isColor =
+        originalToken.$type === 'color' ||
+        token.$type === 'color' ||
+        (typeof tokenValue === 'string' && tokenValue.startsWith('#'))
+
       if (!isColor) return
 
       if (category === 'primitives') {
@@ -77,7 +77,7 @@ const formatTypeScriptColors: Format = {
         if (pathArray[1] === 'colors') {
           let current = primitives
           const tokenPath = pathArray.slice(2) // Remove 'primitives.colors' prefix
-          
+
           for (let i = 0; i < tokenPath.length - 1; i++) {
             const key = tokenPath[i]
             if (!current[key]) current[key] = {}
@@ -91,7 +91,7 @@ const formatTypeScriptColors: Format = {
         if (mode === 'light' || mode === 'dark') {
           let current = semantic[mode]
           const tokenPath = pathArray.slice(2) // Remove 'semantic.light' or 'semantic.dark'
-          
+
           for (let i = 0; i < tokenPath.length - 1; i++) {
             const key = tokenPath[i]
             if (!current[key]) current[key] = {}
@@ -130,10 +130,19 @@ const formatTypeScriptTypography: Format = {
     const typography: Record<string, any> = {}
 
     dictionary.allTokens.forEach(token => {
-      const isTypography = token.path.some(p => 
-        ['font', 'typography', 'text', 'lineHeight', 'letterSpacing', 'fontSize', 'fontWeight', 'fontFamily'].includes(p.toLowerCase())
+      const isTypography = token.path.some(p =>
+        [
+          'font',
+          'typography',
+          'text',
+          'lineHeight',
+          'letterSpacing',
+          'fontSize',
+          'fontWeight',
+          'fontFamily',
+        ].includes(p.toLowerCase())
       )
-      
+
       if (!isTypography) return
 
       let current = typography
@@ -174,20 +183,20 @@ const formatTypeScriptSpacing: Format = {
 
     dictionary.allTokens.forEach(token => {
       const tokenValue = token.$value ?? token.value
-      
+
       // Only process leaf tokens
       if (tokenValue === undefined || tokenValue === null) return
       if (typeof tokenValue === 'object') return
-      
+
       // Path can be array or string
       const pathArray = Array.isArray(token.path) ? token.path : token.path.split('.')
       const category = pathArray[0]
-      
+
       if (category !== 'primitives') return
-      
+
       const subcategory = pathArray[1]
       const key = pathArray[pathArray.length - 1]
-      
+
       if (subcategory === 'spacing') {
         spacing[key] = tokenValue
       } else if (subcategory === 'borderRadius') {
@@ -225,10 +234,10 @@ const formatTypeScriptShadows: Format = {
     const shadows: Record<string, any> = {}
 
     dictionary.allTokens.forEach(token => {
-      const isShadow = token.path.some(p => 
+      const isShadow = token.path.some(p =>
         ['shadow', 'elevation', 'boxShadow'].includes(p.toLowerCase())
       )
-      
+
       if (!isShadow) return
 
       const key = token.path[token.path.length - 1]
@@ -273,16 +282,22 @@ const formatCssTheme: Format = {
       // Path can be array or string
       const pathArray = Array.isArray(token.path) ? token.path : token.path.split('.')
       const category = pathArray[0]
-      
+
       if (category === 'primitives') {
         // Create CSS var name from path: primitives.colors.zinc.500 -> --colors-zinc-500
-        const cssName = pathArray.slice(1).map((p: string) => p.toLowerCase().replace(/\s+/g, '-')).join('-')
+        const cssName = pathArray
+          .slice(1)
+          .map((p: string) => p.toLowerCase().replace(/\s+/g, '-'))
+          .join('-')
         primitiveVars += `  --${cssName}: ${value};\n`
       } else if (category === 'semantic') {
         const mode = pathArray[1]
         // Create CSS var name: semantic.light.content.primary -> --content-primary
-        const cssName = pathArray.slice(2).map((p: string) => p.toLowerCase().replace(/\s+/g, '-')).join('-')
-        
+        const cssName = pathArray
+          .slice(2)
+          .map((p: string) => p.toLowerCase().replace(/\s+/g, '-'))
+          .join('-')
+
         if (mode === 'light') {
           lightVars += `  --${cssName}: ${value};\n`
         } else if (mode === 'dark') {
@@ -304,14 +319,14 @@ const formatCssTheme: Format = {
 ${primitiveVars}
 }
 
-/* Light Mode (default) */
+/* Dark Mode (default) */
 :root {
-${lightVars || '  /* No light mode tokens defined */'}
+${darkVars || '  /* No dark mode tokens defined */'}
 }
 
-/* Dark Mode */
-.dark {
-${darkVars || '  /* No dark mode tokens defined */'}
+/* Light Mode */
+.light {
+${lightVars || '  /* No light mode tokens defined */'}
 }
 `
   },
@@ -349,11 +364,170 @@ StyleDictionary.registerFormat(formatCssTheme)
 StyleDictionary.registerFormat(formatTypeScriptIndex)
 
 /**
+ * Custom format: JSON flat export (for third-party tools)
+ */
+const formatJsonFlat: Format = {
+  name: 'json/flat',
+  format: ({ dictionary }) => {
+    const tokens: Record<string, any> = {}
+
+    dictionary.allTokens.forEach(token => {
+      const value = token.$value ?? token.value
+      if (value === undefined || typeof value === 'object') return
+
+      const path = token.path.join('.')
+      tokens[path] = {
+        value,
+        type: token.$type || token.original?.$type || 'unknown',
+      }
+    })
+
+    return JSON.stringify(tokens, null, 2)
+  },
+}
+
+/**
+ * Custom format: iOS Swift colors
+ */
+const formatSwiftColors: Format = {
+  name: 'swift/colors',
+  format: ({ dictionary }) => {
+    let output = `//
+// DesignTokens.swift
+// Auto-generated from Figma - DO NOT EDIT DIRECTLY
+// Generated: ${new Date().toISOString()}
+//
+
+import SwiftUI
+
+public enum DesignTokens {
+    public enum Colors {
+`
+
+    dictionary.allTokens.forEach(token => {
+      const value = token.$value ?? token.value
+      const isColor = token.$type === 'color' || token.original?.$type === 'color'
+
+      if (!isColor || typeof value !== 'string' || !value.startsWith('#')) return
+
+      const name = token.path
+        .slice(-2)
+        .join('')
+        .replace(/[^a-zA-Z0-9]/g, '')
+      const hex = value.replace('#', '')
+
+      let r = 0,
+        g = 0,
+        b = 0,
+        a = 1
+
+      if (hex.length === 6) {
+        r = parseInt(hex.slice(0, 2), 16) / 255
+        g = parseInt(hex.slice(2, 4), 16) / 255
+        b = parseInt(hex.slice(4, 6), 16) / 255
+      } else if (hex.length === 8) {
+        r = parseInt(hex.slice(0, 2), 16) / 255
+        g = parseInt(hex.slice(2, 4), 16) / 255
+        b = parseInt(hex.slice(4, 6), 16) / 255
+        a = parseInt(hex.slice(6, 8), 16) / 255
+      }
+
+      output += `        public static let ${name} = Color(red: ${r.toFixed(3)}, green: ${g.toFixed(3)}, blue: ${b.toFixed(3)}, opacity: ${a.toFixed(3)})\n`
+    })
+
+    output += `    }
+}
+`
+    return output
+  },
+}
+
+/**
+ * Custom format: Android colors XML
+ */
+const formatAndroidColors: Format = {
+  name: 'android/colors',
+  format: ({ dictionary }) => {
+    let output = `<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Design Tokens - Auto-generated from Figma
+  DO NOT EDIT DIRECTLY
+  Generated: ${new Date().toISOString()}
+-->
+<resources>
+`
+
+    dictionary.allTokens.forEach(token => {
+      const value = token.$value ?? token.value
+      const isColor = token.$type === 'color' || token.original?.$type === 'color'
+
+      if (!isColor || typeof value !== 'string' || !value.startsWith('#')) return
+
+      const name = token.path
+        .join('_')
+        .toLowerCase()
+        .replace(/[^a-z0-9_]/g, '_')
+
+      // Convert to Android format (#AARRGGBB)
+      let androidColor = value.toUpperCase()
+      if (androidColor.length === 7) {
+        androidColor = '#FF' + androidColor.slice(1)
+      } else if (androidColor.length === 9) {
+        // Reorder from #RRGGBBAA to #AARRGGBB
+        androidColor = '#' + androidColor.slice(7, 9) + androidColor.slice(1, 7)
+      }
+
+      output += `    <color name="${name}">${androidColor}</color>\n`
+    })
+
+    output += `</resources>
+`
+    return output
+  },
+}
+
+/**
+ * Custom format: SCSS variables
+ */
+const formatScssVariables: Format = {
+  name: 'scss/variables',
+  format: ({ dictionary }) => {
+    let output = `//
+// Design Token SCSS Variables
+// Auto-generated from Figma - DO NOT EDIT DIRECTLY
+// Generated: ${new Date().toISOString()}
+//
+
+`
+
+    dictionary.allTokens.forEach(token => {
+      const value = token.$value ?? token.value
+      if (value === undefined || typeof value === 'object') return
+
+      const name = token.path
+        .join('-')
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, '-')
+      output += `$${name}: ${value};\n`
+    })
+
+    return output
+  },
+}
+
+// Register additional formats
+StyleDictionary.registerFormat(formatJsonFlat)
+StyleDictionary.registerFormat(formatSwiftColors)
+StyleDictionary.registerFormat(formatAndroidColors)
+StyleDictionary.registerFormat(formatScssVariables)
+
+/**
  * Style Dictionary configuration
  */
 const config: Config = {
   source: [TOKENS_INPUT],
   platforms: {
+    // TypeScript output (primary)
     typescript: {
       transformGroup: 'js',
       buildPath: `${OUTPUT_DIR}/`,
@@ -380,6 +554,7 @@ const config: Config = {
         },
       ],
     },
+    // CSS output (Tailwind v4 compatible)
     css: {
       transformGroup: 'css',
       buildPath: `${OUTPUT_DIR}/`,
@@ -387,6 +562,50 @@ const config: Config = {
         {
           destination: 'theme.css',
           format: 'css/tailwind-theme',
+        },
+      ],
+    },
+    // SCSS output
+    scss: {
+      transformGroup: 'scss',
+      buildPath: 'dist/scss/',
+      files: [
+        {
+          destination: '_variables.scss',
+          format: 'scss/variables',
+        },
+      ],
+    },
+    // JSON flat export (for other tools)
+    json: {
+      transformGroup: 'js',
+      buildPath: 'dist/',
+      files: [
+        {
+          destination: 'tokens.json',
+          format: 'json/flat',
+        },
+      ],
+    },
+    // iOS Swift output
+    ios: {
+      transformGroup: 'ios-swift',
+      buildPath: 'dist/ios/',
+      files: [
+        {
+          destination: 'DesignTokens.swift',
+          format: 'swift/colors',
+        },
+      ],
+    },
+    // Android XML output
+    android: {
+      transformGroup: 'android',
+      buildPath: 'dist/android/',
+      files: [
+        {
+          destination: 'colors.xml',
+          format: 'android/colors',
         },
       ],
     },

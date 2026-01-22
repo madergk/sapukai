@@ -1,7 +1,7 @@
 /**
  * Color tokens - Auto-generated from Figma
  * DO NOT EDIT DIRECTLY - Run `npm run sync-tokens` to update
- * Generated: 2026-01-21T14:42:33.277Z
+ * Generated: 2026-01-22T19:15:36.134Z
  */
 
 export const primitiveColors = {
@@ -16,7 +16,7 @@ export const primitiveColors = {
     "700": "#334155",
     "800": "#1e293b",
     "900": "#0f172a",
-    "950": "#020617"
+    "950": "#0031ff"
   },
   "gray": {
     "50": "#f9fafb",
@@ -109,19 +109,6 @@ export const primitiveColors = {
     "900": "#78350f",
     "950": "#451a03"
   },
-  "yellow": {
-    "50": "#fefce8",
-    "100": "#fef9c3",
-    "200": "#fef08a",
-    "300": "#fde047",
-    "400": "#facc15",
-    "500": "#eab308",
-    "600": "#ca8a04",
-    "700": "#a16207",
-    "800": "#854d0e",
-    "900": "#713f12",
-    "950": "#422006"
-  },
   "lime": {
     "50": "#f7fee7",
     "100": "#ecfccb",
@@ -134,6 +121,19 @@ export const primitiveColors = {
     "800": "#3f6212",
     "900": "#365314",
     "950": "#1a2e05"
+  },
+  "yellow": {
+    "50": "#fefce8",
+    "100": "#fef9c3",
+    "200": "#fef08a",
+    "300": "#fde047",
+    "400": "#facc15",
+    "500": "#eab308",
+    "600": "#ca8a04",
+    "700": "#a16207",
+    "800": "#854d0e",
+    "900": "#713f12",
+    "950": "#422006"
   },
   "green": {
     "50": "#f0fdf4",
@@ -298,23 +298,23 @@ export const primitiveColors = {
 export const semanticColors = {
   light: {
   "core": {
-    "white": "#ffffff",
-    "black": "#000000"
+    "white": "#451a03",
+    "black": "#f59e0b"
   },
   "content": {
     "primary": "#d97706",
-    "secondary": "#71717a",
+    "secondary": "#dc2626",
     "tertiary": "#a1a1aa",
-    "inversePrimary": "#ffffff",
-    "inverseSecondary": "#a1a1aa",
-    "inverseTertiary": "#71717a",
+    "inverseprimary": "#ffffff",
+    "inversesecondary": "#a1a1aa",
+    "inversetertiary": "#71717a",
     "red": "#b91c1c",
     "orange": "#c2410c",
     "yellow": "#a16207",
     "amber": "#b45309",
     "lime": "#4d7c0f",
-    "green": "#15803d",
     "emerald": "#047857",
+    "green": "#15803d",
     "teal": "#0f766e",
     "cyan": "#0e7490",
     "sky": "#0369a1",
@@ -331,11 +331,11 @@ export const semanticColors = {
     "primary": "#e4e4e7",
     "secondary": "#f4f4f5",
     "tertiary": "#fafafa",
-    "inversePrimary": "#3f3f46",
-    "inverseSecondary": "#27272a",
-    "inverseTertiary": "#09090b",
-    "hoverOverlay": "#00000033",
-    "inverseHoverOverlay": "#ffffff1a",
+    "inverseprimary": "#3f3f46",
+    "inversesecondary": "#27272a",
+    "inversetertiary": "#09090b",
+    "hoveroverlay": "#00000033",
+    "inversehoveroverlay": "#ffffff1a",
     "error": "#ef4444",
     "warning": "#f59e0b",
     "success": "#22c55e",
@@ -345,19 +345,17 @@ export const semanticColors = {
     "primary": "#ffffff",
     "secondary": "#fafafa",
     "tertiary": "#f4f4f5",
-    "inversePrimary": "#09090b",
-    "inverseSecondary": "#27272a",
-    "inverseTertiary": "#52525b",
-    "hoverOverlay": "#00000008",
-    "inverseHoverOverlay": "#ffffff0d",
-    "hover": "#3b82f6",
+    "inverseprimary": "#09090b",
+    "inversesecondary": "#27272a",
+    "inversetertiary": "#52525b",
+    "hoveroverlay": "#00000008",
+    "inversehoveroverlay": "#ffffff0d",
     "zinc": "#f4f4f5",
     "red": "#fee2e2",
     "orange": "#ffedd5",
     "yellow": "#fef9c3",
     "amber": "#fef3c7",
     "lime": "#ecfccb",
-    "green": "#dcfce7",
     "emerald": "#d1fae5",
     "teal": "#ccfbf1",
     "cyan": "#cffafe",
@@ -368,7 +366,9 @@ export const semanticColors = {
     "purple": "#f3e8ff",
     "fuchsia": "#fae8ff",
     "pink": "#fce7f3",
-    "rose": "#ffe4e6"
+    "rose": "#ffe4e6",
+    "green": "#dcfce7",
+    "hover": "#3b82f6"
   }
 },
   dark: {
@@ -380,16 +380,16 @@ export const semanticColors = {
     "primary": "#ffffff",
     "secondary": "#a1a1aa",
     "tertiary": "#71717a",
-    "inversePrimary": "#ffffff",
-    "inverseSecondary": "#d4d4d8",
-    "inverseTertiary": "#a1a1aa",
+    "inverseprimary": "#ffffff",
+    "inversesecondary": "#d4d4d8",
+    "inversetertiary": "#a1a1aa",
     "red": "#f87171",
     "orange": "#fb923c",
     "yellow": "#facc15",
     "amber": "#fbbf24",
     "lime": "#a3e635",
-    "green": "#4ade80",
     "emerald": "#34d399",
+    "green": "#4ade80",
     "teal": "#2dd4bf",
     "cyan": "#22d3ee",
     "sky": "#38bdf8",
@@ -406,11 +406,11 @@ export const semanticColors = {
     "primary": "#3f3f46",
     "secondary": "#27272a",
     "tertiary": "#09090b",
-    "inversePrimary": "#3f3f46",
-    "inverseSecondary": "#27272a",
-    "inverseTertiary": "#3f3f46",
-    "hoverOverlay": "#ffffff1a",
-    "inverseHoverOverlay": "#00000033",
+    "inverseprimary": "#3f3f46",
+    "inversesecondary": "#27272a",
+    "inversetertiary": "#3f3f46",
+    "hoveroverlay": "#ffffff1a",
+    "inversehoveroverlay": "#00000033",
     "error": "#ef4444",
     "warning": "#f59e0b",
     "success": "#22c55e",
@@ -420,19 +420,17 @@ export const semanticColors = {
     "primary": "#18181b",
     "secondary": "#27272a",
     "tertiary": "#3f3f46",
-    "inversePrimary": "#52525b",
-    "inverseSecondary": "#a1a1aa",
-    "inverseTertiary": "#e4e4e7",
-    "hoverOverlay": "#ffffff0d",
-    "inverseHoverOverlay": "#00000008",
-    "hover": "#3b82f6",
+    "inverseprimary": "#52525b",
+    "inversesecondary": "#a1a1aa",
+    "inversetertiary": "#e4e4e7",
+    "hoveroverlay": "#ffffff0d",
+    "inversehoveroverlay": "#00000008",
     "zinc": "#27272a",
     "red": "#450a0a",
     "orange": "#431407",
     "yellow": "#422006",
     "amber": "#451a03",
     "lime": "#1a2e05",
-    "green": "#052e16",
     "emerald": "#022c22",
     "teal": "#042f2e",
     "cyan": "#083344",
@@ -443,7 +441,9 @@ export const semanticColors = {
     "purple": "#3b0764",
     "fuchsia": "#4a044e",
     "pink": "#500724",
-    "rose": "#4c0519"
+    "rose": "#4c0519",
+    "green": "#052e16",
+    "hover": "#3b82f6"
   }
 },
 } as const

@@ -6,17 +6,44 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
     "preview": "vite preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:scripts": "vitest run scripts/__tests__",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "sync-tokens": "tsx scripts/sync-tokens.ts",
     "sync-figma": "tsx scripts/sync-figma-tokens.ts",
     "convert-tokens": "tsx scripts/convert-tokens-studio.ts",
     "build-tokens": "tsx style-dictionary.config.ts",
+    "validate": "npm run validate-tokens && npm run validate-components && npm run typecheck",
+    "validate:strict": "npm run validate-tokens && npm run validate-components && npm run lint && npm run typecheck",
     "validate-components": "tsx scripts/validate-components.ts",
+    "validate-tokens": "tsx scripts/validate-tokens.ts",
     "update-docs": "tsx scripts/update-docs.ts",
-    "bump-version": "tsx scripts/bump-version.ts"
+    "bump-version": "tsx scripts/bump-version.ts",
+    "rollback-tokens": "tsx scripts/rollback-tokens.ts",
+    "generate-report": "tsx scripts/generate-report.ts",
+    "notify": "tsx scripts/notify.ts",
+    "ci": "npm run validate && npm run test && npm run build",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "tokens/*.json": [
+      "npm run validate-tokens --"
+    ],
+    "*.{ts,tsx}": [
+      "eslint --fix"
+    ],
+    "*.{js,jsx,ts,tsx,json,css,md}": [
+      "prettier --write --ignore-unknown"
+    ]
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -36,6 +63,7 @@
   "devDependencies": {
     "@chromatic-com/storybook": "^5.0.0",
     "@eslint/js": "^9.39.1",
+    "@inquirer/prompts": "^8.2.0",
     "@storybook/addon-a11y": "^10.1.11",
     "@storybook/addon-docs": "^10.1.11",
     "@storybook/addon-onboarding": "^10.1.11",
@@ -50,15 +78,19 @@
     "@vitest/coverage-v8": "^4.0.17",
     "autoprefixer": "^10.4.23",
     "chalk": "^5.6.2",
+    "color2k": "^2.0.3",
     "dotenv": "^17.2.3",
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "eslint-plugin-storybook": "^10.1.11",
     "globals": "^16.5.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "ora": "^9.1.0",
     "playwright": "^1.57.0",
     "postcss": "^8.5.6",
+    "prettier": "^3.8.1",
     "storybook": "^10.1.11",
     "style-dictionary": "^4.4.0",
     "tailwindcss": "^4.1.18",
@@ -66,6 +98,7 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4",
-    "vitest": "^4.0.17"
+    "vitest": "^4.0.17",
+    "wcag-contrast": "^3.0.0"
   }
 }

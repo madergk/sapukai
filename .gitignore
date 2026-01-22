@@ -31,5 +31,8 @@ storybook-static
 .env.local
 .env.*.local
 
-# Token sync backup
+# Token sync backup and history
 tokens/.figma-tokens.prev.json
+tokens/.history/
+tokens/.reports/
+tokens/.metrics.json
