@@ -61,8 +61,46 @@ export function PreviewPanel() {
     { value: 'page-transition', label: 'Page Transition' },
   ]
 
+  const navigationOptions: Array<{ value: PreviewComponent; label: string }> = [
+    { value: 'drawer', label: 'Drawer' },
+    { value: 'bottom-nav', label: 'Bottom Nav' },
+    { value: 'tabs', label: 'Tabs' },
+    { value: 'menu', label: 'Menu' },
+  ]
+
+  const transitionOptions: Array<{ value: PreviewComponent; label: string }> = [
+    { value: 'fade-through', label: 'Fade Through' },
+    { value: 'shared-axis', label: 'Shared Axis' },
+    { value: 'scale-transform', label: 'Scale Transform' },
+    { value: 'slide-transition', label: 'Slide Transition' },
+  ]
+
+  // Get current options based on mode
+  const getCurrentOptions = () => {
+    switch (state.previewMode) {
+      case 'components':
+        return componentOptions
+      case 'navigation':
+        return navigationOptions
+      case 'transitions':
+        return transitionOptions
+      default:
+        return componentOptions
+    }
+  }
+
+  const currentOptions = getCurrentOptions()
+
+  // Set default component when mode changes
+  React.useEffect(() => {
+    const options = getCurrentOptions()
+    if (options.length > 0 && !options.find((o) => o.value === state.previewComponent)) {
+      setPreviewComponent(options[0].value)
+    }
+  }, [state.previewMode])
+
   return (
-    <div className="flex h-full flex-col border-l border-zinc-200 bg-zinc-100">
+    <div className="flex h-full flex-col bg-zinc-50">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4">
         <h2 className="text-2xl font-semibold text-zinc-950">Preview</h2>
@@ -119,6 +157,12 @@ export function PreviewPanel() {
           Components
         </TabButton>
         <TabButton
+          active={state.previewMode === 'navigation'}
+          onClick={() => setPreviewMode('navigation')}
+        >
+          Navigation
+        </TabButton>
+        <TabButton
           active={state.previewMode === 'transitions'}
           onClick={() => setPreviewMode('transitions')}
         >
@@ -130,30 +174,20 @@ export function PreviewPanel() {
       <div className="flex-1 overflow-y-auto px-6 py-6">
         <div className="flex flex-col gap-6">
           {/* Component Selector */}
-          {state.previewMode === 'components' && (
-            <div className="flex flex-wrap gap-2">
-              {componentOptions.map((option) => (
-                <ComponentButton
-                  key={option.value}
-                  active={state.previewComponent === option.value}
-                  onClick={() => setPreviewComponent(option.value)}
-                >
-                  {option.label}
-                </ComponentButton>
-              ))}
-            </div>
-          )}
+          <div className="flex flex-wrap gap-2">
+            {currentOptions.map((option) => (
+              <ComponentButton
+                key={option.value}
+                active={state.previewComponent === option.value}
+                onClick={() => setPreviewComponent(option.value)}
+              >
+                {option.label}
+              </ComponentButton>
+            ))}
+          </div>
 
           {/* Preview Area */}
-          {state.previewMode === 'components' ? (
-            <ComponentPreview component={state.previewComponent} />
-          ) : (
-            <div className="rounded-xl border border-zinc-200 bg-white p-6">
-              <p className="text-sm text-zinc-500">
-                Transition previews coming soon...
-              </p>
-            </div>
-          )}
+          <ComponentPreview component={state.previewComponent} />
 
           {/* CSS Implementation */}
           <div className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-zinc-50 p-4">
@@ -161,7 +195,7 @@ export function PreviewPanel() {
             <div className="rounded-lg bg-white p-3">
               <pre className="font-mono text-xs text-zinc-950">
                 <code>
-                  {`.modal-overlay {\n  transition: opacity ${currentDurationMS}ms ${currentEasingCSS};\n}\n\n.modal-content {\n  transition: transform ${currentDurationMS}ms ${currentEasingCSS},\n              opacity ${currentDurationMS}ms ${currentEasingCSS};\n}`}
+                  {`.element {\n  transition: all ${currentDurationMS}ms ${currentEasingCSS};\n}\n\n/* Or individual properties */\n.element {\n  transition: transform ${currentDurationMS}ms ${currentEasingCSS},\n              opacity ${currentDurationMS}ms ${currentEasingCSS};\n}`}
                 </code>
               </pre>
             </div>

@@ -3,42 +3,53 @@ import { Sidebar, SidebarHeader, SidebarContent, SidebarNav, SidebarNavItem } fr
 import {
   HomeIcon,
   Square2StackIcon,
-  TicketIcon,
-  MegaphoneIcon,
   Cog6ToothIcon,
   QuestionMarkCircleIcon,
   SparklesIcon,
-  ChevronUpIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from '@heroicons/react/20/solid'
 
 interface MotionTunerLayoutProps {
-  children: React.ReactNode
-  previewPanel?: React.ReactNode
+  previewPanel: React.ReactNode
+  controlPanel?: React.ReactNode
   currentPath: string
   onNavigate: (path: string) => void
 }
 
 export function MotionTunerLayout({
-  children,
   previewPanel,
+  controlPanel,
   currentPath,
   onNavigate,
 }: MotionTunerLayoutProps) {
-  const [userMenuOpen, setUserMenuOpen] = React.useState(false)
+  const [collapsed, setCollapsed] = React.useState(false)
 
   return (
     <div className="flex h-screen w-full bg-zinc-50">
       {/* Left Sidebar */}
-      <Sidebar className="w-64 shrink-0">
-        <SidebarHeader>
+      <Sidebar className={`shrink-0 transition-all duration-300 ${collapsed ? 'w-16' : 'w-64'}`}>
+        <SidebarHeader className="relative">
           <div className="flex h-9 items-center gap-3">
-            <div className="flex h-[27px] w-[27px] items-center justify-center rounded-[9px] bg-[var(--motion-brand-primary)]">
+            <div className="flex h-[27px] w-[27px] shrink-0 items-center justify-center rounded-[9px] bg-[var(--motion-brand-primary)]">
               <svg width="15" height="15" viewBox="0 0 15 15" fill="white">
                 <path d="M7.5 0L0 7.5L7.5 15L15 7.5L7.5 0Z" />
               </svg>
             </div>
-            <span className="text-base font-normal text-zinc-950">motionTuner</span>
+            {!collapsed && <span className="text-base font-normal text-zinc-950">motionTuner</span>}
           </div>
+          {/* Collapse toggle */}
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="absolute -right-3 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-full border border-zinc-200 bg-white shadow-sm hover:bg-zinc-50"
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {collapsed ? (
+              <ChevronRightIcon className="h-4 w-4 text-zinc-500" />
+            ) : (
+              <ChevronLeftIcon className="h-4 w-4 text-zinc-500" />
+            )}
+          </button>
         </SidebarHeader>
 
         <SidebarContent className="flex flex-col justify-between">
@@ -53,8 +64,9 @@ export function MotionTunerLayout({
                   event.preventDefault()
                   onNavigate('/')
                 }}
+                title={collapsed ? 'Home' : undefined}
               >
-                Home
+                {!collapsed && 'Home'}
               </SidebarNavItem>
               <SidebarNavItem
                 href="/motion-tuner"
@@ -64,28 +76,9 @@ export function MotionTunerLayout({
                   event.preventDefault()
                   onNavigate('/motion-tuner')
                 }}
+                title={collapsed ? 'Create' : undefined}
               >
-                Create
-              </SidebarNavItem>
-              <SidebarNavItem
-                href="/showcase"
-                icon={<TicketIcon className="h-5 w-5" />}
-                onClick={(event) => {
-                  event.preventDefault()
-                  onNavigate('/showcase')
-                }}
-              >
-                Showcase
-              </SidebarNavItem>
-              <SidebarNavItem
-                href="/broadcasts"
-                icon={<MegaphoneIcon className="h-5 w-5" />}
-                onClick={(event) => {
-                  event.preventDefault()
-                  onNavigate('/broadcasts')
-                }}
-              >
-                Broadcasts
+                {!collapsed && 'Create'}
               </SidebarNavItem>
               <SidebarNavItem
                 href="/settings"
@@ -94,8 +87,9 @@ export function MotionTunerLayout({
                   event.preventDefault()
                   onNavigate('/settings')
                 }}
+                title={collapsed ? 'Settings' : undefined}
               >
-                Settings
+                {!collapsed && 'Settings'}
               </SidebarNavItem>
             </SidebarNav>
           </div>
@@ -110,8 +104,9 @@ export function MotionTunerLayout({
                   event.preventDefault()
                   onNavigate('/support')
                 }}
+                title={collapsed ? 'Support' : undefined}
               >
-                Support
+                {!collapsed && 'Support'}
               </SidebarNavItem>
               <SidebarNavItem
                 href="/changelog"
@@ -120,43 +115,24 @@ export function MotionTunerLayout({
                   event.preventDefault()
                   onNavigate('/changelog')
                 }}
+                title={collapsed ? 'Changelog' : undefined}
               >
-                Changelog
+                {!collapsed && 'Changelog'}
               </SidebarNavItem>
             </SidebarNav>
 
-            {/* User Menu */}
-            <div className="border-t border-zinc-200 pt-4">
-              <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex w-full items-center justify-between rounded-lg px-2 py-2 transition-colors hover:bg-zinc-100"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 overflow-hidden rounded-md bg-gradient-to-br from-[var(--motion-brand-primary)] to-[var(--motion-brand-primary-accent)]" />
-                  <div className="flex flex-col items-start text-sm">
-                    <span className="font-medium text-zinc-950">Erica</span>
-                    <span className="text-xs text-zinc-500">erica@example.com</span>
-                  </div>
-                </div>
-                <ChevronUpIcon
-                  className={`h-5 w-5 text-zinc-500 transition-transform ${
-                    userMenuOpen ? 'rotate-180' : ''
-                  }`}
-                />
-              </button>
-            </div>
           </div>
         </SidebarContent>
       </Sidebar>
 
       {/* Main Content Area */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Central Content */}
-        <div className="flex-1 overflow-y-auto">{children}</div>
+      <div className="flex min-w-0 flex-1">
+        {/* Center Preview Panel (expanded) */}
+        <div className="min-w-0 flex-1 overflow-y-auto">{previewPanel}</div>
 
-        {/* Right Preview Panel (if provided) */}
-        {previewPanel && (
-          <div className="w-[420px] shrink-0 overflow-y-auto">{previewPanel}</div>
+        {/* Right Control Panel (if provided) */}
+        {controlPanel && (
+          <div className="w-[480px] flex-shrink-0 overflow-y-auto border-l border-zinc-200 bg-white">{controlPanel}</div>
         )}
       </div>
     </div>

@@ -139,6 +139,241 @@ export function formatCubicBezier(points: [number, number, number, number]): str
   return `cubic-bezier(${points[0]}, ${points[1]}, ${points[2]}, ${points[3]})`
 }
 
+/**
+ * M3 Motion Presets - Component-specific patterns
+ * Based on https://m3.material.io/styles/motion/overview/specs
+ */
+export const m3MotionPresets = {
+  // Container transforms - shared element transitions
+  containerTransformEnter: {
+    name: 'Container Transform (Enter)',
+    easing: 'emphasizedDecelerate',
+    duration: 'medium4',
+    description: 'Shared element expanding into view',
+    category: 'm3-container',
+  },
+  containerTransformExit: {
+    name: 'Container Transform (Exit)',
+    easing: 'emphasizedAccelerate',
+    duration: 'medium2',
+    description: 'Shared element collapsing out',
+    category: 'm3-container',
+  },
+
+  // Shared axis - coordinated movement along axis
+  sharedAxisEnterX: {
+    name: 'Shared Axis X (Enter)',
+    easing: 'emphasizedDecelerate',
+    duration: 'medium4',
+    description: 'Slide in along horizontal axis',
+    category: 'm3-shared-axis',
+  },
+  sharedAxisExitX: {
+    name: 'Shared Axis X (Exit)',
+    easing: 'emphasizedAccelerate',
+    duration: 'medium2',
+    description: 'Slide out along horizontal axis',
+    category: 'm3-shared-axis',
+  },
+  sharedAxisEnterY: {
+    name: 'Shared Axis Y (Enter)',
+    easing: 'emphasizedDecelerate',
+    duration: 'medium4',
+    description: 'Slide in along vertical axis',
+    category: 'm3-shared-axis',
+  },
+  sharedAxisExitY: {
+    name: 'Shared Axis Y (Exit)',
+    easing: 'emphasizedAccelerate',
+    duration: 'medium2',
+    description: 'Slide out along vertical axis',
+    category: 'm3-shared-axis',
+  },
+
+  // Fade through - cross-fade between elements
+  fadeThroughEnter: {
+    name: 'Fade Through (Enter)',
+    easing: 'standardDecelerate',
+    duration: 'medium2',
+    description: 'Incoming element fades in with scale',
+    category: 'm3-fade',
+  },
+  fadeThroughExit: {
+    name: 'Fade Through (Exit)',
+    easing: 'standardAccelerate',
+    duration: 'short4',
+    description: 'Outgoing element fades out',
+    category: 'm3-fade',
+  },
+
+  // Fade - simple opacity transitions
+  fadeEnter: {
+    name: 'Fade (Enter)',
+    easing: 'linear',
+    duration: 'short4',
+    description: 'Simple fade in',
+    category: 'm3-fade',
+  },
+  fadeExit: {
+    name: 'Fade (Exit)',
+    easing: 'linear',
+    duration: 'short3',
+    description: 'Simple fade out',
+    category: 'm3-fade',
+  },
+
+  // FAB - Floating Action Button
+  fabExpand: {
+    name: 'FAB Expand',
+    easing: 'emphasized',
+    duration: 'medium4',
+    description: 'FAB expanding to larger surface',
+    category: 'm3-components',
+  },
+  fabCollapse: {
+    name: 'FAB Collapse',
+    easing: 'emphasized',
+    duration: 'medium2',
+    description: 'FAB collapsing from expanded state',
+    category: 'm3-components',
+  },
+
+  // Dialog
+  dialogEnter: {
+    name: 'Dialog (Enter)',
+    easing: 'emphasizedDecelerate',
+    duration: 'medium4',
+    description: 'Dialog appearing with scale',
+    category: 'm3-components',
+  },
+  dialogExit: {
+    name: 'Dialog (Exit)',
+    easing: 'emphasizedAccelerate',
+    duration: 'medium2',
+    description: 'Dialog dismissing',
+    category: 'm3-components',
+  },
+
+  // Bottom sheet
+  bottomSheetEnter: {
+    name: 'Bottom Sheet (Enter)',
+    easing: 'emphasizedDecelerate',
+    duration: 'long2',
+    description: 'Bottom sheet sliding up',
+    category: 'm3-components',
+  },
+  bottomSheetExit: {
+    name: 'Bottom Sheet (Exit)',
+    easing: 'emphasizedAccelerate',
+    duration: 'medium4',
+    description: 'Bottom sheet sliding down',
+    category: 'm3-components',
+  },
+
+  // Navigation drawer
+  drawerEnter: {
+    name: 'Drawer (Enter)',
+    easing: 'emphasizedDecelerate',
+    duration: 'medium4',
+    description: 'Navigation drawer opening',
+    category: 'm3-components',
+  },
+  drawerExit: {
+    name: 'Drawer (Exit)',
+    easing: 'emphasizedAccelerate',
+    duration: 'medium2',
+    description: 'Navigation drawer closing',
+    category: 'm3-components',
+  },
+
+  // Snackbar / Toast
+  snackbarEnter: {
+    name: 'Snackbar (Enter)',
+    easing: 'standardDecelerate',
+    duration: 'medium2',
+    description: 'Snackbar appearing',
+    category: 'm3-components',
+  },
+  snackbarExit: {
+    name: 'Snackbar (Exit)',
+    easing: 'standardAccelerate',
+    duration: 'short4',
+    description: 'Snackbar dismissing',
+    category: 'm3-components',
+  },
+
+  // Tooltip
+  tooltipEnter: {
+    name: 'Tooltip (Enter)',
+    easing: 'standardDecelerate',
+    duration: 'short4',
+    description: 'Tooltip appearing',
+    category: 'm3-components',
+  },
+  tooltipExit: {
+    name: 'Tooltip (Exit)',
+    easing: 'standardAccelerate',
+    duration: 'short3',
+    description: 'Tooltip hiding',
+    category: 'm3-components',
+  },
+
+  // Menu
+  menuEnter: {
+    name: 'Menu (Enter)',
+    easing: 'emphasizedDecelerate',
+    duration: 'short4',
+    description: 'Menu expanding',
+    category: 'm3-components',
+  },
+  menuExit: {
+    name: 'Menu (Exit)',
+    easing: 'emphasizedAccelerate',
+    duration: 'short3',
+    description: 'Menu collapsing',
+    category: 'm3-components',
+  },
+
+  // State layer (hover/focus/press)
+  stateLayerEnter: {
+    name: 'State Layer (Enter)',
+    easing: 'linear',
+    duration: 'short3',
+    description: 'Hover/focus state appearing',
+    category: 'm3-interaction',
+  },
+  stateLayerExit: {
+    name: 'State Layer (Exit)',
+    easing: 'linear',
+    duration: 'short4',
+    description: 'Hover/focus state fading',
+    category: 'm3-interaction',
+  },
+
+  // Ripple
+  rippleEnter: {
+    name: 'Ripple (Enter)',
+    easing: 'standard',
+    duration: 'long1',
+    description: 'Press ripple expanding',
+    category: 'm3-interaction',
+  },
+} as const
+
+// Helper to get resolved preset values
+export function resolveM3Preset(presetKey: keyof typeof m3MotionPresets) {
+  const preset = m3MotionPresets[presetKey]
+  const easing = easingTokens[preset.easing as EasingToken]
+  const duration = durationTokens[preset.duration as DurationToken]
+  return {
+    ...preset,
+    easingValue: easing.value,
+    durationValue: duration.value,
+    css: `${duration.value}ms ${easing.value}`,
+  }
+}
+
 // Type exports
 export type EasingToken = keyof typeof easingTokens
 export type DurationToken = keyof typeof durationTokens
+export type M3MotionPreset = keyof typeof m3MotionPresets

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useMotion } from '@/context/MotionContext'
-import { easingTokens, durationTokens } from '@/tokens/motion'
+import { easingTokens, durationTokens, m3MotionPresets, resolveM3Preset, type M3MotionPreset } from '@/tokens/motion'
 import { BezierCanvas } from './BezierCanvas'
 import { ExportManager } from './ExportManager'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/forms/Select'
@@ -93,48 +93,159 @@ export function ControlPanel() {
   )
 }
 
+const M3_PRESET_CATEGORIES = [
+  { id: 'm3-container', label: 'Container Transform' },
+  { id: 'm3-shared-axis', label: 'Shared Axis' },
+  { id: 'm3-fade', label: 'Fade' },
+  { id: 'm3-components', label: 'Components' },
+  { id: 'm3-interaction', label: 'Interaction' },
+] as const
+
 function EasingTab() {
-  const { state, applyEasingPreset } = useMotion()
+  const { state, applyEasingPreset, setDuration, setEasingCurve } = useMotion()
+  const [showM3Presets, setShowM3Presets] = React.useState(false)
+  const [selectedM3Category, setSelectedM3Category] = React.useState<string>('m3-components')
 
   const easingOptions = Object.entries(easingTokens).map(([key, value]) => ({
     value: key,
     label: value.name,
   }))
 
+  const applyM3Preset = (presetKey: M3MotionPreset) => {
+    const resolved = resolveM3Preset(presetKey)
+    applyEasingPreset(m3MotionPresets[presetKey].easing)
+    setDuration(resolved.durationValue)
+  }
+
+  const filteredM3Presets = Object.entries(m3MotionPresets).filter(
+    ([, preset]) => preset.category === selectedM3Category
+  )
+
   return (
     <div className="flex flex-col gap-6">
-      {/* Preset Selector */}
-      <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-zinc-700">
-          Easing Preset
-        </label>
-        <Select
-          value={state.selectedEasing === 'custom' ? undefined : state.selectedEasing}
-          onValueChange={(value) => {
-            if (value) {
-              applyEasingPreset(value as keyof typeof easingTokens)
-            }
-          }}
+      {/* Toggle between basic and M3 presets */}
+      <div className="flex rounded-lg border border-zinc-200 p-1">
+        <button
+          onClick={() => setShowM3Presets(false)}
+          className={cn(
+            'flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors',
+            !showM3Presets
+              ? 'bg-[var(--motion-brand-primary)] text-white'
+              : 'text-zinc-600 hover:bg-zinc-100'
+          )}
         >
-          <SelectTrigger>
-            <SelectValue placeholder="Custom" />
-          </SelectTrigger>
-          <SelectContent>
-            {easingOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          Basic Easing
+        </button>
+        <button
+          onClick={() => setShowM3Presets(true)}
+          className={cn(
+            'flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors',
+            showM3Presets
+              ? 'bg-[var(--motion-brand-primary)] text-white'
+              : 'text-zinc-600 hover:bg-zinc-100'
+          )}
+        >
+          M3 Presets
+        </button>
       </div>
 
-      {/* Canvas */}
-      <div className="flex items-center justify-center">
-        <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
-          <BezierCanvas width={400} height={400} />
-        </div>
-      </div>
+      {!showM3Presets ? (
+        <>
+          {/* Basic Preset Selector */}
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-zinc-700">
+              Easing Preset
+            </label>
+            <Select
+              value={state.selectedEasing === 'custom' ? undefined : state.selectedEasing}
+              onValueChange={(value) => {
+                if (value) {
+                  applyEasingPreset(value as keyof typeof easingTokens)
+                }
+              }}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Custom" />
+              </SelectTrigger>
+              <SelectContent>
+                {easingOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Canvas */}
+          <div className="flex items-center justify-center">
+            <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+              <BezierCanvas width={400} height={400} />
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          {/* M3 Category Tabs */}
+          <div className="flex flex-wrap gap-2">
+            {M3_PRESET_CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedM3Category(cat.id)}
+                className={cn(
+                  'rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
+                  selectedM3Category === cat.id
+                    ? 'bg-[var(--motion-brand-primary)] text-white'
+                    : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+                )}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {/* M3 Preset Cards */}
+          <div className="flex flex-col gap-2">
+            {filteredM3Presets.map(([key, preset]) => {
+              const resolved = resolveM3Preset(key as M3MotionPreset)
+              return (
+                <button
+                  key={key}
+                  onClick={() => applyM3Preset(key as M3MotionPreset)}
+                  className="flex flex-col gap-1 rounded-lg border border-zinc-200 bg-white p-4 text-left transition-colors hover:border-[var(--motion-brand-primary)] hover:bg-[var(--motion-brand-primary-soft)]"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-zinc-950">{preset.name}</span>
+                    <span className="rounded bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600">
+                      {resolved.durationValue}ms
+                    </span>
+                  </div>
+                  <p className="text-xs text-zinc-500">{preset.description}</p>
+                  <code className="mt-2 block rounded bg-zinc-50 p-2 font-mono text-xs text-zinc-700">
+                    {resolved.easingValue}
+                  </code>
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Info Box */}
+          <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
+            <p className="text-xs text-zinc-600">
+              <strong>Material Design 3</strong> motion presets combine easing curves with recommended durations. 
+              Clicking a preset applies both the easing and duration.{' '}
+              <a
+                href="https://m3.material.io/styles/motion/overview/specs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--motion-brand-primary)] underline"
+              >
+                Learn more →
+              </a>
+            </p>
+          </div>
+        </>
+      )}
     </div>
   )
 }
@@ -216,26 +327,177 @@ function DurationTab() {
   )
 }
 
+const TRANSITION_PRESETS = [
+  {
+    id: 'fade',
+    name: 'Fade',
+    description: 'Opacity transition for fade in/out effects',
+    properties: ['opacity'],
+  },
+  {
+    id: 'scale',
+    name: 'Scale',
+    description: 'Transform scale for grow/shrink effects',
+    properties: ['transform'],
+    transform: 'scale',
+  },
+  {
+    id: 'slide',
+    name: 'Slide',
+    description: 'Transform translate for sliding effects',
+    properties: ['transform'],
+    transform: 'translate',
+  },
+  {
+    id: 'color',
+    name: 'Color',
+    description: 'Background and text color changes',
+    properties: ['background-color', 'color'],
+  },
+  {
+    id: 'border',
+    name: 'Border',
+    description: 'Border color and width transitions',
+    properties: ['border-color', 'border-width'],
+  },
+  {
+    id: 'size',
+    name: 'Size',
+    description: 'Width and height transitions',
+    properties: ['width', 'height'],
+  },
+  {
+    id: 'all',
+    name: 'All Properties',
+    description: 'Transition all animatable properties',
+    properties: ['all'],
+  },
+] as const
+
 function TransitionTab() {
-  const { state, currentEasingCSS, currentDurationMS } = useMotion()
+  const { currentEasingCSS, currentDurationMS } = useMotion()
+  const [selectedPreset, setSelectedPreset] = React.useState<string>('fade')
+
+  const activePreset = TRANSITION_PRESETS.find((p) => p.id === selectedPreset) || TRANSITION_PRESETS[0]
+
+  const generateCode = (preset: typeof TRANSITION_PRESETS[number]) => {
+    if (preset.properties.length === 1) {
+      return `transition: ${preset.properties[0]} ${currentDurationMS}ms ${currentEasingCSS};`
+    }
+    return preset.properties
+      .map((prop) => `  ${prop} ${currentDurationMS}ms ${currentEasingCSS}`)
+      .join(',\n')
+  }
+
+  const generateFullCode = (preset: typeof TRANSITION_PRESETS[number]) => {
+    const transitionCode = generateCode(preset)
+    
+    if (preset.id === 'scale') {
+      return `.element {
+  ${preset.properties.length === 1 ? transitionCode : `transition:\n${transitionCode};`}
+}
+
+.element:hover {
+  transform: scale(1.05);
+}`
+    }
+    
+    if (preset.id === 'slide') {
+      return `.element {
+  ${preset.properties.length === 1 ? transitionCode : `transition:\n${transitionCode};`}
+}
+
+.element.active {
+  transform: translateX(0);
+}
+
+.element.hidden {
+  transform: translateX(-100%);
+}`
+    }
+    
+    if (preset.id === 'fade') {
+      return `.element {
+  ${transitionCode}
+}
+
+.element.visible {
+  opacity: 1;
+}
+
+.element.hidden {
+  opacity: 0;
+}`
+    }
+    
+    if (preset.id === 'color') {
+      return `.element {
+  transition:
+${transitionCode};
+}
+
+.element:hover {
+  background-color: var(--hover-bg);
+  color: var(--hover-text);
+}`
+    }
+
+    return `.element {
+  ${preset.properties.length === 1 ? transitionCode : `transition:\n${transitionCode};`}
+}`
+  }
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-6">
-        <h3 className="mb-4 text-lg font-semibold text-zinc-950">
-          Complete Transition
-        </h3>
-        <div className="rounded-lg bg-white p-4">
-          <code className="block font-mono text-sm text-zinc-950">
-            transition: all {currentDurationMS}ms {currentEasingCSS};
-          </code>
+      {/* Preset Selector */}
+      <div className="flex flex-col gap-3">
+        <label className="text-sm font-medium text-zinc-700">Transition Preset</label>
+        <div className="grid grid-cols-2 gap-2">
+          {TRANSITION_PRESETS.map((preset) => (
+            <button
+              key={preset.id}
+              onClick={() => setSelectedPreset(preset.id)}
+              className={cn(
+                'flex flex-col items-start rounded-lg border px-4 py-3 text-left transition-colors',
+                selectedPreset === preset.id
+                  ? 'border-[var(--motion-brand-primary)] bg-[var(--motion-brand-primary-soft)]'
+                  : 'border-zinc-200 bg-white hover:border-zinc-300 hover:bg-zinc-50'
+              )}
+            >
+              <span
+                className={cn(
+                  'font-medium',
+                  selectedPreset === preset.id ? 'text-[var(--motion-brand-primary)]' : 'text-zinc-950'
+                )}
+              >
+                {preset.name}
+              </span>
+              <span className="text-xs text-zinc-500">{preset.description}</span>
+            </button>
+          ))}
         </div>
       </div>
 
+      {/* Generated Code */}
+      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-6">
+        <div className="mb-3 flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-zinc-950">{activePreset.name} Transition</h3>
+          <span className="rounded-full bg-zinc-200 px-2 py-0.5 text-xs text-zinc-600">
+            {activePreset.properties.join(', ')}
+          </span>
+        </div>
+        <div className="rounded-lg bg-zinc-900 p-4">
+          <pre className="font-mono text-sm text-zinc-100 whitespace-pre-wrap">
+            <code>{generateFullCode(activePreset)}</code>
+          </pre>
+        </div>
+      </div>
+
+      {/* Quick Reference */}
       <div className="flex flex-col gap-3">
-        <h4 className="text-sm font-medium text-zinc-700">Common Properties</h4>
+        <h4 className="text-sm font-medium text-zinc-700">Quick Reference</h4>
         <div className="space-y-2">
-          {['opacity', 'transform', 'background-color', 'color', 'border-color'].map((prop) => (
+          {activePreset.properties.map((prop) => (
             <div key={prop} className="rounded-lg border border-zinc-200 bg-white p-3">
               <code className="font-mono text-xs text-zinc-700">
                 transition: {prop} {currentDurationMS}ms {currentEasingCSS};

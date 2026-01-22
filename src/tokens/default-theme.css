@@ -1,0 +1,115 @@
+/* Default theme overrides (neutral look and feel) */
+:root {
+  --motion-brand-primary: #0b0b0b;
+  --motion-brand-primary-hover: #111827;
+  --motion-brand-primary-soft: #f4f4f5;
+  --motion-brand-primary-accent: #111827;
+}
+
+body {
+  font-family: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #0b0b0b;
+  background-color: #f8f8f8;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+code,
+pre,
+kbd,
+samp {
+  font-family: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 2.5rem;
+  line-height: 1.15;
+}
+
+h2 {
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: 1.5rem;
+  line-height: 1.25;
+}
+
+h4 {
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+h5 {
+  font-size: 1.125rem;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+h6 {
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+small,
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.text-base {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.4;
+}
+
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 1.2;
+}
+
+.text-4xl {
+  font-size: 2.25rem;
+  line-height: 1.1;
+}
+
+aside a {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+}

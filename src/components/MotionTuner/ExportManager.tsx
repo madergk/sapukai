@@ -18,6 +18,46 @@ const EXPORT_FORMATS: Array<{ value: ExportFormat; label: string; description: s
     label: 'M3 Tokens',
     description: 'Material Design 3 motion token format',
   },
+  {
+    value: 'bootstrap',
+    label: 'Bootstrap',
+    description: 'CSS variables + utility class examples',
+  },
+  {
+    value: 'angular',
+    label: 'Angular',
+    description: 'Component + template animation snippet',
+  },
+  {
+    value: 'mui',
+    label: 'MUI',
+    description: 'Theme + component transition snippet',
+  },
+  {
+    value: 'shadcn',
+    label: 'shadcn/ui',
+    description: 'Tailwind utilities in shadcn components',
+  },
+  {
+    value: 'tailwind',
+    label: 'Tailwind',
+    description: 'Utility classes with custom easing/duration',
+  },
+  {
+    value: 'vue',
+    label: 'Vue',
+    description: 'Transition component + CSS classes',
+  },
+  {
+    value: 'framer',
+    label: 'Framer Motion',
+    description: 'Motion component with cubic-bezier easing',
+  },
+  {
+    value: 'react-spring',
+    label: 'React Spring',
+    description: 'useSpring with easing + duration',
+  },
 ]
 
 export function ExportManager() {
@@ -140,6 +180,210 @@ gsap.to(".element", {
   }
 }`
 
+      case 'bootstrap':
+        return `/* Bootstrap-friendly CSS variables */
+:root {
+  --motion-ease: ${currentEasingCSS};
+  --motion-duration: ${currentDurationMS}ms;
+}
+
+/* Utility class */
+.motion-transition {
+  transition: all var(--motion-duration) var(--motion-ease);
+}
+
+/* Usage with Bootstrap components */
+<button class="btn btn-primary motion-transition">Save</button>
+
+/* Optional: override Bootstrap vars on a scope */
+.modal {
+  --motion-ease: ${currentEasingCSS};
+  --motion-duration: ${currentDurationMS}ms;
+}
+`
+
+      case 'angular':
+        return `// Angular component
+import { Component } from '@angular/core';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+
+@Component({
+  selector: 'app-panel',
+  template: \`
+    <button (click)="open = !open">Toggle</button>
+    <div [@panelMotion]="open ? 'open' : 'closed'" class="panel">
+      Content
+    </div>
+  \`,
+  animations: [
+    trigger('panelMotion', [
+      state('closed', style({ opacity: 0, transform: 'translateY(8px)' })),
+      state('open', style({ opacity: 1, transform: 'translateY(0)' })),
+      transition('closed <=> open', animate('${currentDurationMS}ms ${currentEasingCSS}')),
+    ]),
+  ],
+})
+export class PanelComponent {
+  open = false;
+}
+`
+
+      case 'mui':
+        return `// MUI theme + component example
+import { createTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+
+const theme = createTheme({
+  transitions: {
+    duration: {
+      standard: ${currentDurationMS},
+    },
+    easing: {
+      easeInOut: '${currentEasingCSS}',
+    },
+  },
+});
+
+export function MotionBox() {
+  return (
+    <Box
+      sx={{
+        transition: (t) =>
+          t.transitions.create(['opacity', 'transform'], {
+            duration: t.transitions.duration.standard,
+            easing: t.transitions.easing.easeInOut,
+          }),
+        '&:hover': { opacity: 0.8, transform: 'translateY(-4px)' },
+      }}
+    >
+      Hover me
+    </Box>
+  );
+}
+`
+
+      case 'shadcn':
+        return `// shadcn/ui (Tailwind utilities)
+// Example: Card with motion-friendly hover
+<div
+  className="rounded-lg border bg-white p-4
+             transition-[transform,opacity]
+             duration-[${currentDurationMS}ms]
+             ease-[${currentEasingCSS}]
+             hover:-translate-y-1 hover:opacity-90"
+>
+  Motion Card
+</div>
+`
+
+      case 'tailwind':
+        return `<!-- Tailwind (arbitrary values) -->
+<div class="
+  transition-[transform,opacity]
+  duration-[${currentDurationMS}ms]
+  ease-[${currentEasingCSS}]
+  hover:-translate-y-1 hover:opacity-90
+">
+  Motion Preview
+</div>
+
+<!-- Tailwind config (optional) -->
+// tailwind.config.ts
+export default {
+  theme: {
+    extend: {
+      transitionTimingFunction: {
+        'motion': '${currentEasingCSS}',
+      },
+      transitionDuration: {
+        'motion': '${currentDurationMS}',
+      },
+    },
+  },
+}
+`
+
+      case 'vue':
+        return `<template>
+  <button @click="open = !open">Toggle</button>
+  <Transition name="panel">
+    <div v-if="open" class="panel">Content</div>
+  </Transition>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const open = ref(false)
+</script>
+
+<style scoped>
+.panel-enter-active,
+.panel-leave-active {
+  transition: opacity ${currentDurationMS}ms ${currentEasingCSS},
+              transform ${currentDurationMS}ms ${currentEasingCSS};
+}
+.panel-enter-from,
+.panel-leave-to {
+  opacity: 0;
+  transform: translateY(8px);
+}
+</style>
+`
+
+      case 'framer':
+        return `// Framer Motion
+import { motion } from 'framer-motion';
+
+const transition = {
+  duration: ${currentDurationMS / 1000},
+  ease: [${x1}, ${y1}, ${x2}, ${y2}],
+};
+
+export function MotionCard() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={transition}
+      whileHover={{ scale: 1.02 }}
+    >
+      Motion Card
+    </motion.div>
+  );
+}
+`
+
+      case 'react-spring':
+        return `// React Spring
+import { useSpring, animated } from '@react-spring/web';
+
+export function MotionPanel({ open }: { open: boolean }) {
+  const styles = useSpring({
+    opacity: open ? 1 : 0,
+    y: open ? 0 : 8,
+    config: {
+      duration: ${currentDurationMS},
+      easing: (t) =>
+        (window as any).bezierEasing
+          ? (window as any).bezierEasing(t)
+          : t,
+    },
+  });
+
+  return (
+    <animated.div style={{ opacity: styles.opacity, transform: styles.y.to((v) => \`translateY(\${v}px)\`) }}>
+      Content
+    </animated.div>
+  );
+}
+
+// Optional: define cubic-bezier easing
+// import bezier from 'bezier-easing';
+// (window as any).bezierEasing = bezier(${x1}, ${y1}, ${x2}, ${y2});
+`
+
       default:
         return ''
     }
@@ -252,6 +496,62 @@ gsap.to(".element", {
               <li>Follows Material Design 3 naming conventions</li>
               <li>Use md.sys.motion prefix for system motion tokens</li>
               <li>Compatible with Material Theme Builder</li>
+            </>
+          )}
+          {state.exportFormat === 'bootstrap' && (
+            <>
+              <li>Add the CSS variables to :root or a scoped container</li>
+              <li>Apply the motion utility class to Bootstrap components</li>
+              <li>Works with any Bootstrap element that uses transition</li>
+            </>
+          )}
+          {state.exportFormat === 'angular' && (
+            <>
+              <li>Uses Angular Animations API (requires BrowserAnimationsModule)</li>
+              <li>Update styles/transform values to match your component</li>
+              <li>Duration and easing are injected from Motion Tuner</li>
+            </>
+          )}
+          {state.exportFormat === 'mui' && (
+            <>
+              <li>Set theme transitions to keep motion consistent</li>
+              <li>Use transitions.create for multiple properties</li>
+              <li>Works with sx prop or styled components</li>
+            </>
+          )}
+          {state.exportFormat === 'shadcn' && (
+            <>
+              <li>Tailwind arbitrary values map directly to easing/duration</li>
+              <li>Use transition-[...] for specific properties</li>
+              <li>Combine with shadcn variants for consistent motion</li>
+            </>
+          )}
+          {state.exportFormat === 'tailwind' && (
+            <>
+              <li>Arbitrary values work without config changes</li>
+              <li>Optionally add theme extensions for reusability</li>
+              <li>Pair with hover/active utilities for motion</li>
+            </>
+          )}
+          {state.exportFormat === 'vue' && (
+            <>
+              <li>Use the built-in Transition component</li>
+              <li>Match class names to the transition name</li>
+              <li>Adjust translate/opacity for your component</li>
+            </>
+          )}
+          {state.exportFormat === 'framer' && (
+            <>
+              <li>Framer easing uses [x1, y1, x2, y2] arrays</li>
+              <li>Duration is in seconds</li>
+              <li>Use initial/animate/exit for route transitions</li>
+            </>
+          )}
+          {state.exportFormat === 'react-spring' && (
+            <>
+              <li>React Spring supports a custom easing function</li>
+              <li>Duration is in milliseconds</li>
+              <li>Use bezier-easing to generate the easing fn</li>
             </>
           )}
         </ul>

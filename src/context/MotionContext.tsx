@@ -8,16 +8,40 @@ import type { BezierPoint } from '@/utils/bezier'
  */
 
 export type PreviewComponent =
+  // Components
   | 'button-states'
   | 'modal-dialog'
   | 'accordion'
   | 'notifications'
   | 'loading-states'
   | 'page-transition'
+  // Navigation
+  | 'drawer'
+  | 'bottom-nav'
+  | 'tabs'
+  | 'menu'
+  // Transitions
+  | 'fade-through'
+  | 'shared-axis'
+  | 'scale-transform'
+  | 'slide-transition'
 
-export type PreviewMode = 'components' | 'transitions'
+export type PreviewMode = 'components' | 'transitions' | 'navigation'
 
-export type ExportFormat = 'css' | 'json' | 'gsap' | 'design-tokens' | 'm3-tokens'
+export type ExportFormat =
+  | 'css'
+  | 'json'
+  | 'gsap'
+  | 'design-tokens'
+  | 'm3-tokens'
+  | 'bootstrap'
+  | 'angular'
+  | 'mui'
+  | 'shadcn'
+  | 'tailwind'
+  | 'vue'
+  | 'framer'
+  | 'react-spring'
 
 export interface MotionState {
   // Easing configuration
