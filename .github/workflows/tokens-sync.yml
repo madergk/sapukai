@@ -1,0 +1,90 @@
+name: Sync Design Tokens
+
+on:
+  schedule:
+    - cron: '0 9 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force sync even if no changes'
+        type: boolean
+        default: false
+      skip_pr:
+        description: 'Skip PR creation (commit directly)'
+        type: boolean
+        default: false
+
+env:
+  FIGMA_ACCESS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN }}
+  FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
+
+jobs:
+  sync-tokens:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Check Figma credentials
+        run: |
+          if [ -z "$FIGMA_ACCESS_TOKEN" ]; then
+            echo "::warning::FIGMA_ACCESS_TOKEN not set"
+            echo "SKIP_FIGMA=true" >> $GITHUB_ENV
+          fi
+
+      - name: Sync tokens from Figma
+        if: env.SKIP_FIGMA != 'true'
+        run: npm run sync-tokens -- --skip-docs
+        continue-on-error: true
+
+      - name: Build tokens (fallback)
+        if: env.SKIP_FIGMA == 'true'
+        run: npm run build-tokens
+
+      - run: npm run validate-tokens || true
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet src/tokens/ tokens/; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate report
+        if: steps.changes.outputs.has_changes == 'true'
+        run: npm run generate-report || true
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.has_changes == 'true' && inputs.skip_pr != true
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore(tokens): sync design tokens from Figma'
+          title: '🎨 Design Tokens Update'
+          body: |
+            ## Automated Token Sync
+            
+            Design tokens updated from Figma.
+            
+            - [ ] Token validation passed
+            - [ ] Component validation passed
+            - [ ] Visual review in Storybook
+          branch: tokens/auto-sync
+          delete-branch: true
+          labels: |
+            tokens
+            automated
