@@ -25,8 +25,17 @@ export type PreviewComponent =
   | 'shared-axis'
   | 'scale-transform'
   | 'slide-transition'
+  // Motion Primitives
+  | 'mp-accordion'
+  | 'mp-dialog'
+  | 'mp-morphing-dialog'
+  | 'mp-text-effect'
+  | 'mp-animated-number'
+  | 'mp-sliding-number'
+  | 'mp-transition-panel'
+  | 'mp-carousel'
 
-export type PreviewMode = 'components' | 'transitions' | 'navigation'
+export type PreviewMode = 'components' | 'transitions' | 'navigation' | 'motion-primitives'
 
 export type ExportFormat =
   | 'css'
@@ -40,7 +49,7 @@ export type ExportFormat =
   | 'shadcn'
   | 'tailwind'
   | 'vue'
-  | 'framer'
+  | 'framer-motion'
   | 'react-spring'
 
 export interface MotionState {

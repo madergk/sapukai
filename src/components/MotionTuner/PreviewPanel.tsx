@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { useMotion, type PreviewComponent } from '@/context/MotionContext'
 import { ComponentPreview } from './ComponentPreview'
-import { cn } from '@/utils'
+import { MotionPrimitivesPreview } from './MotionPrimitivesPreview'
+import { cn, generateFramerMotionExport } from '@/utils'
 
 interface TabButtonProps {
   active: boolean
@@ -76,6 +77,17 @@ export function PreviewPanel() {
       { value: 'slide-transition', label: 'Slide Transition' },
     ]
 
+    const motionPrimitiveOptions: Array<{ value: PreviewComponent; label: string }> = [
+      { value: 'mp-accordion', label: 'MP Accordion' },
+      { value: 'mp-dialog', label: 'MP Dialog' },
+      { value: 'mp-morphing-dialog', label: 'Morphing Dialog' },
+      { value: 'mp-text-effect', label: 'Text Effect' },
+      { value: 'mp-animated-number', label: 'Animated Number' },
+      { value: 'mp-sliding-number', label: 'Sliding Number' },
+      { value: 'mp-transition-panel', label: 'Transition Panel' },
+      { value: 'mp-carousel', label: 'Carousel' },
+    ]
+
     switch (state.previewMode) {
       case 'components':
         return componentOptions
@@ -83,6 +95,8 @@ export function PreviewPanel() {
         return navigationOptions
       case 'transitions':
         return transitionOptions
+      case 'motion-primitives':
+        return motionPrimitiveOptions
       default:
         return componentOptions
     }
@@ -167,6 +181,12 @@ export function PreviewPanel() {
         >
           Transitions
         </TabButton>
+        <TabButton
+          active={state.previewMode === 'motion-primitives'}
+          onClick={() => setPreviewMode('motion-primitives')}
+        >
+          Motion Primitives
+        </TabButton>
       </div>
 
       {/* Content */}
@@ -186,15 +206,25 @@ export function PreviewPanel() {
           </div>
 
           {/* Preview Area */}
-          <ComponentPreview component={state.previewComponent} />
+          {state.previewMode === 'motion-primitives' ? (
+            <MotionPrimitivesPreview component={state.previewComponent} />
+          ) : (
+            <ComponentPreview component={state.previewComponent} />
+          )}
 
           {/* CSS Implementation */}
           <div className="flex flex-col gap-2 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-tertiary)] p-4">
-            <p className="text-base text-[var(--motion-text-muted)]">CSS Implementation</p>
+            <p className="text-base text-[var(--motion-text-muted)]">
+              {state.previewMode === 'motion-primitives'
+                ? 'Motion Implementation'
+                : 'CSS Implementation'}
+            </p>
             <div className="rounded-lg bg-[var(--motion-surface-primary)] p-3">
               <pre className="font-mono text-xs text-[var(--motion-text-primary)]">
                 <code>
-                  {`.element {\n  transition: all ${currentDurationMS}ms ${currentEasingCSS};\n}\n\n/* Or individual properties */\n.element {\n  transition: transform ${currentDurationMS}ms ${currentEasingCSS},\n              opacity ${currentDurationMS}ms ${currentEasingCSS};\n}`}
+                  {state.previewMode === 'motion-primitives'
+                    ? generateFramerMotionExport(state.easingCurve, currentDurationMS)
+                    : `.element {\n  transition: all ${currentDurationMS}ms ${currentEasingCSS};\n}\n\n/* Or individual properties */\n.element {\n  transition: transform ${currentDurationMS}ms ${currentEasingCSS},\n              opacity ${currentDurationMS}ms ${currentEasingCSS};\n}`}
                 </code>
               </pre>
             </div>

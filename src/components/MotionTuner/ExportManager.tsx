@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useMotion, type ExportFormat } from '@/context/MotionContext'
 import { Button } from '@/components/primitives/Button'
 import { copyToClipboard } from '@/utils/clipboard'
-import { cn } from '@/utils'
+import { cn, generateFramerMotionExport } from '@/utils'
 
 const EXPORT_FORMATS: Array<{ value: ExportFormat; label: string; description: string }> = [
   { value: 'css', label: 'CSS', description: 'Standard CSS custom properties and transitions' },
@@ -49,7 +49,7 @@ const EXPORT_FORMATS: Array<{ value: ExportFormat; label: string; description: s
     description: 'Transition component + CSS classes',
   },
   {
-    value: 'framer',
+    value: 'framer-motion',
     label: 'Framer Motion',
     description: 'Motion component with cubic-bezier easing',
   },
@@ -331,29 +331,8 @@ const open = ref(false)
 </style>
 `
 
-      case 'framer':
-        return `// Framer Motion
-import { motion } from 'framer-motion';
-
-const transition = {
-  duration: ${currentDurationMS / 1000},
-  ease: [${x1}, ${y1}, ${x2}, ${y2}],
-};
-
-export function MotionCard() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={transition}
-      whileHover={{ scale: 1.02 }}
-    >
-      Motion Card
-    </motion.div>
-  );
-}
-`
+      case 'framer-motion':
+        return generateFramerMotionExport(state.easingCurve, currentDurationMS)
 
       case 'react-spring':
         return `// React Spring
@@ -544,7 +523,7 @@ export function MotionPanel({ open }: { open: boolean }) {
               <li>Adjust translate/opacity for your component</li>
             </>
           )}
-          {state.exportFormat === 'framer' && (
+          {state.exportFormat === 'framer-motion' && (
             <>
               <li>Framer easing uses [x1, y1, x2, y2] arrays</li>
               <li>Duration is in seconds</li>
