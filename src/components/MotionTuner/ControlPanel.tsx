@@ -158,17 +158,20 @@ function EasingTab() {
               Easing Preset
             </label>
             <Select
-              value={state.selectedEasing === 'custom' ? undefined : state.selectedEasing}
-              onChange={(value: string | undefined) => {
-                if (value) {
+              value={state.selectedEasing}
+              onChange={(value: string) => {
+                if (value && value !== 'custom') {
                   applyEasingPreset(value as keyof typeof easingTokens)
                 }
               }}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Custom" />
+                <SelectValue placeholder="Select easing" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="custom" disabled>
+                  Custom
+                </SelectItem>
                 {easingOptions.map(option => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}

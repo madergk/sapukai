@@ -27,6 +27,7 @@ interface SelectValueProps extends Omit<
 const SelectValue = React.forwardRef<HTMLSpanElement, SelectValueProps>(
   ({ className, placeholder, options = null, ...props }, ref) => (
     <ListboxSelectedOption
+      as="span"
       ref={ref}
       className={cn('truncate text-left', className)}
       placeholder={placeholder}
