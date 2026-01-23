@@ -154,9 +154,7 @@ function EasingTab() {
         <>
           {/* Basic Preset Selector */}
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium text-[var(--motion-text-secondary)]">
-              Easing Preset
-            </label>
+            <label className="text-sm font-medium text-[var(--content-zinc)]">Easing Preset</label>
             <Select
               value={state.selectedEasing}
               onChange={(value: string) => {

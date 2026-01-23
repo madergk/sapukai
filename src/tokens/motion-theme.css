@@ -10,7 +10,7 @@
   --motion-brand-primary: #00686f;
   --motion-brand-primary-hover: #0d9488;
   --motion-brand-primary-soft: #f0fdfa;
-  --motion-brand-primary-accent: #14b8a6;
+  --motion-brand-primary-accent: #ffffff;
 
   /* Motion - Surface Tokens (Light Mode) */
   --motion-surface-primary: #ffffff;
@@ -167,10 +167,10 @@
   --motion-border-muted: #27272a;
 
   /* Motion - Text Tokens (Dark Mode) */
-  --motion-text-primary: #fafafa;
+  --motion-text-primary: #ececec;
   --motion-text-secondary: #a1a1aa;
   --motion-text-muted: #71717a;
-  --motion-text-inverse: #09090b;
+  --motion-text-inverse: #111111;
 
   /* Motion - Canvas Tokens (Dark Mode) */
   --motion-canvas-grid: rgba(255, 255, 255, 0.1);
