@@ -1,7 +1,9 @@
 'use client'
-import { motion, AnimatePresence, Transition, Variants, Variant, MotionConfig } from 'motion/react'
+import { motion, AnimatePresence, MotionConfig } from 'motion/react'
+import type { Transition, Variants, Variant } from 'motion/react'
 import { cn } from '@/utils'
-import React, { createContext, useContext, useState, ReactNode } from 'react'
+import React, { createContext, useContext, useState } from 'react'
+import type { ReactNode } from 'react'
 
 export type AccordionContextType = {
   expandedValue: React.Key | null
@@ -101,9 +103,8 @@ function AccordionItem({ value, children, className }: AccordionItemProps) {
       {...(isExpanded ? { 'data-expanded': '' } : { 'data-closed': '' })}
     >
       {React.Children.map(children, child => {
-        if (React.isValidElement(child)) {
+        if (React.isValidElement<{ value?: React.Key; expanded?: boolean }>(child)) {
           return React.cloneElement(child, {
-            ...child.props,
             value,
             expanded: isExpanded,
           })

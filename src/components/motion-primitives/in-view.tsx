@@ -1,6 +1,8 @@
 'use client'
-import { ReactNode, useRef, useState } from 'react'
-import { motion, useInView, Variant, Transition, UseInViewOptions } from 'motion/react'
+import { useRef, useState } from 'react'
+import type { ReactNode } from 'react'
+import { motion, useInView } from 'motion/react'
+import type { Variant, Transition, UseInViewOptions } from 'motion/react'
 
 export type InViewProps = {
   children: ReactNode

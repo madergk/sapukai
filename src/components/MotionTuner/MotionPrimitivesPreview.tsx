@@ -1,6 +1,6 @@
 'use client'
 import * as React from 'react'
-import type { Transition, Variants } from 'motion/react'
+import type { Transition, Variant } from 'motion/react'
 import { useMotion, type PreviewComponent } from '@/context/MotionContext'
 import { bezierToMotionTransition } from '@/utils'
 import { Button } from '@/components/primitives/Button'
@@ -258,7 +258,7 @@ function MPSlidingNumberPreview() {
   )
 }
 
-const TRANSITION_PANEL_VARIANTS: Variants = {
+const TRANSITION_PANEL_VARIANTS: { enter: Variant; center: Variant; exit: Variant } = {
   enter: { opacity: 0, y: 10 },
   center: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: -10 },

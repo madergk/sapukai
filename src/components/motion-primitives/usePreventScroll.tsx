@@ -48,7 +48,6 @@ function chain(...callbacks: Array<(() => void) | undefined>): () => void {
   }
 }
 
-// @ts-expect-error - visualViewport may not be defined in all environments
 const visualViewport = typeof document !== 'undefined' && window.visualViewport
 
 export function isScrollable(node: Element): boolean {

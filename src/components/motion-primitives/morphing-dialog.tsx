@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from 'react'
-import { motion, AnimatePresence, MotionConfig, Transition, Variant } from 'motion/react'
+import { motion, AnimatePresence, MotionConfig } from 'motion/react'
+import type { Transition, Variant } from 'motion/react'
 import { createPortal } from 'react-dom'
 import { cn } from '@/utils'
 import { XIcon } from 'lucide-react'

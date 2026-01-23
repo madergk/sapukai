@@ -1,5 +1,6 @@
 'use client'
-import { AnimatePresence, Transition, Variant, motion, MotionProps } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
+import type { Transition, Variant, MotionProps } from 'motion/react'
 import { cn } from '@/utils'
 
 export type TransitionPanelProps = {
