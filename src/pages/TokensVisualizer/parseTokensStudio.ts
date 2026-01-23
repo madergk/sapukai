@@ -5,6 +5,7 @@ import type {
   TokenTheme,
   TokenScale,
   TokensStudioJSON,
+  TokensStudioValue,
 } from './types'
 
 // Helper to infer token type from value
@@ -119,9 +120,12 @@ export function parseTokensStudioJSON(data: TokensStudioJSON, setName = 'core'):
 
       // Check if this is a token (has value property)
       if (value && typeof value === 'object' && 'value' in value) {
-        const tokenValue = value.value
-        const tokenType = (value.type || value.$type || inferType(tokenValue)) as TokenType
-        const description = (value.description || value.$description || '') as string
+        const tokenEntry = value as TokensStudioValue
+        const tokenValue = tokenEntry.value
+        const tokenType = (tokenEntry.type ||
+          tokenEntry.$type ||
+          inferType(tokenValue)) as TokenType
+        const description = (tokenEntry.description || tokenEntry.$description || '') as string
 
         // Extract references from value (e.g., {color.primary})
         const references: string[] = []
@@ -149,7 +153,7 @@ export function parseTokensStudioJSON(data: TokensStudioJSON, setName = 'core'):
           description,
           references,
           referencedBy: [],
-          $extensions: (value.$extensions as Record<string, unknown>) || {},
+          $extensions: (tokenEntry.$extensions as Record<string, unknown>) || {},
           set: currentSet,
           sourceFormat: 'tokensStudio',
         }

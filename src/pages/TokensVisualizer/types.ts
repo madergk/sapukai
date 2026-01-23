@@ -106,4 +106,6 @@ export interface TokensStudioValue {
   $extensions?: Record<string, unknown>
 }
 
-export type TokensStudioJSON = Record<string, TokensStudioValue | TokensStudioJSON>
+export interface TokensStudioJSON {
+  [key: string]: TokensStudioValue | TokensStudioJSON
+}
