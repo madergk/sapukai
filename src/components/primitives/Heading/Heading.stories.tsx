@@ -60,8 +60,8 @@ export const WithContent: Story = {
         Manage your team and their account permissions here.
       </Heading>
       <p className="text-zinc-600 dark:text-zinc-400">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut
+        labore et dolore magna aliqua.
       </p>
     </div>
   ),

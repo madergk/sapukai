@@ -36,7 +36,7 @@ function isToken(obj: any): obj is TokensStudioToken {
 function resolveReference(ref: string, primitives: Record<string, any>): string | null {
   // Remove curly braces: {Zinc.500} -> Zinc.500
   const path = ref.replace(/[{}]/g, '').split('.')
-  
+
   let current: any = primitives
   for (const part of path) {
     if (current && typeof current === 'object') {
@@ -57,45 +57,52 @@ function resolveReference(ref: string, primitives: Record<string, any>): string 
       return null
     }
   }
-  
+
   if (current && current.$value) {
     return current.$value
   }
-  
+
   return null
 }
 
 /**
  * Convert Tokens Studio format to DTCG format
  */
-function convertToken(token: TokensStudioToken): { $value: string | number; $type: string; $description?: string } {
+function convertToken(token: TokensStudioToken): {
+  $value: string | number
+  $type: string
+  $description?: string
+} {
   const result: { $value: string | number; $type: string; $description?: string } = {
     $value: token.value,
     $type: token.type === 'color' ? 'color' : token.type === 'number' ? 'number' : 'dimension',
   }
-  
+
   if (token.description) {
     result.$description = token.description
   }
-  
+
   return result
 }
 
 /**
  * Process a group of tokens recursively
  */
-function processGroup(group: TokensStudioGroup, primitives?: Record<string, any>): Record<string, any> {
+function processGroup(
+  group: TokensStudioGroup,
+  primitives?: Record<string, any>
+): Record<string, any> {
   const result: Record<string, any> = {}
-  
+
   for (const [key, value] of Object.entries(group)) {
     // Skip metadata keys
     if (key.startsWith('$')) continue
-    
+
     const normalizedKey = key.toLowerCase().replace(/\s+/g, '')
-    
+
     if (isToken(value)) {
       let tokenValue = value.value
-      
+
       // Resolve references if we have primitives
       if (typeof tokenValue === 'string' && tokenValue.startsWith('{') && primitives) {
         const resolved = resolveReference(tokenValue, primitives)
@@ -103,12 +110,12 @@ function processGroup(group: TokensStudioGroup, primitives?: Record<string, any>
           tokenValue = resolved
         }
       }
-      
+
       result[normalizedKey] = {
         $value: tokenValue,
         $type: value.type === 'color' ? 'color' : value.type === 'number' ? 'dimension' : 'string',
       }
-      
+
       if (value.description) {
         result[normalizedKey].$description = value.description
       }
@@ -116,7 +123,7 @@ function processGroup(group: TokensStudioGroup, primitives?: Record<string, any>
       result[normalizedKey] = processGroup(value as TokensStudioGroup, primitives)
     }
   }
-  
+
   return result
 }
 
@@ -148,7 +155,7 @@ async function convertTokensStudio(): Promise<void> {
 
   // Process primitives first (Tailwind Colors)
   const processSpinner = ora('Processing tokens...').start()
-  
+
   const primitivesKey = Object.keys(sourceData).find(k => k.includes('Primitives'))
   const lightKey = Object.keys(sourceData).find(k => k.includes('Light'))
   const darkKey = Object.keys(sourceData).find(k => k.includes('Dark'))
@@ -175,7 +182,7 @@ async function convertTokensStudio(): Promise<void> {
 
   if (dimensionsKey && sourceData[dimensionsKey]) {
     const dimData = sourceData[dimensionsKey]
-    
+
     // Border Radius
     if (dimData['Border Radius']) {
       for (const [key, value] of Object.entries(dimData['Border Radius'])) {
@@ -188,7 +195,7 @@ async function convertTokensStudio(): Promise<void> {
         }
       }
     }
-    
+
     // Spacing
     if (dimData['Spacing (Margin & Padding)']) {
       for (const [key, value] of Object.entries(dimData['Spacing (Margin & Padding)'])) {
@@ -202,7 +209,7 @@ async function convertTokensStudio(): Promise<void> {
         }
       }
     }
-    
+
     // Screens
     if (dimData['Screens']) {
       for (const [key, value] of Object.entries(dimData['Screens'])) {
@@ -263,20 +270,25 @@ async function convertTokensStudio(): Promise<void> {
 /**
  * Process semantic tokens with reference resolution
  */
-function processSemanticTokens(data: TokensStudioGroup, primitives: Record<string, any>): Record<string, any> {
+function processSemanticTokens(
+  data: TokensStudioGroup,
+  primitives: Record<string, any>
+): Record<string, any> {
   const result: Record<string, any> = {}
-  
+
   for (const [category, tokens] of Object.entries(data)) {
     const categoryKey = category.toLowerCase()
     result[categoryKey] = {}
-    
+
     if (typeof tokens === 'object' && !isToken(tokens)) {
       for (const [tokenName, tokenValue] of Object.entries(tokens as TokensStudioGroup)) {
-        const normalizedName = tokenName.replace(/^(content|border|background)/, '').toLowerCase() || tokenName.toLowerCase()
-        
+        const normalizedName =
+          tokenName.replace(/^(content|border|background)/, '').toLowerCase() ||
+          tokenName.toLowerCase()
+
         if (isToken(tokenValue)) {
           let resolvedValue = tokenValue.value
-          
+
           // Resolve references
           if (typeof resolvedValue === 'string' && resolvedValue.startsWith('{')) {
             const resolved = resolveReference(resolvedValue, primitives.colors)
@@ -284,7 +296,7 @@ function processSemanticTokens(data: TokensStudioGroup, primitives: Record<strin
               resolvedValue = resolved
             }
           }
-          
+
           result[categoryKey][normalizedName] = {
             $value: resolvedValue,
             $type: tokenValue.type,
@@ -294,14 +306,14 @@ function processSemanticTokens(data: TokensStudioGroup, primitives: Record<strin
           for (const [nestedName, nestedValue] of Object.entries(tokenValue as TokensStudioGroup)) {
             if (isToken(nestedValue)) {
               let resolvedValue = nestedValue.value
-              
+
               if (typeof resolvedValue === 'string' && resolvedValue.startsWith('{')) {
                 const resolved = resolveReference(resolvedValue, primitives.colors)
                 if (resolved) {
                   resolvedValue = resolved
                 }
               }
-              
+
               // Remove prefix from nested names
               const cleanName = nestedName.replace(/^(content|border|background)/, '').toLowerCase()
               result[categoryKey][cleanName] = {
@@ -314,12 +326,12 @@ function processSemanticTokens(data: TokensStudioGroup, primitives: Record<strin
       }
     }
   }
-  
+
   return result
 }
 
 // Run
-convertTokensStudio().catch((error) => {
+convertTokensStudio().catch(error => {
   console.error(chalk.red('\nError:'), error.message)
   process.exit(1)
 })

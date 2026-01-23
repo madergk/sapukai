@@ -39,6 +39,24 @@ export function Home({ onNavigate }: HomeProps) {
             </Button>
           </div>
         </div>
+
+        <div className="flex flex-col gap-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-8">
+          <Heading type="subheading" as="h3">
+            Explore design tokens
+          </Heading>
+          <Text className="text-zinc-500">
+            Map token relationships, validate naming rules, and export updates. Supports importing
+            Tokens Studio JSON to jumpstart analysis.
+          </Text>
+          <div>
+            <Button
+              onClick={() => onNavigate('/tokens-visualizer')}
+              className="bg-[var(--motion-brand-primary)] hover:bg-[var(--motion-brand-primary-hover)]"
+            >
+              Open Tokens Visualizer
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   )

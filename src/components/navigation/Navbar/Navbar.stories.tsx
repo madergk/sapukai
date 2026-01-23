@@ -2,13 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { MagnifyingGlassIcon, BellIcon } from '@heroicons/react/16/solid'
 import { Button } from '@/components/primitives/Button'
 import { Avatar } from '@/components/primitives/Avatar'
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarNav,
-  NavbarItem,
-  NavbarActions,
-} from './Navbar'
+import { Navbar, NavbarBrand, NavbarNav, NavbarItem, NavbarActions } from './Navbar'
 
 const meta = {
   title: 'Navigation/Navbar',
@@ -29,12 +23,12 @@ export const Default: Story = {
         <div className="size-8 rounded-lg bg-indigo-500 flex items-center justify-center">
           <span className="text-white font-bold">C</span>
         </div>
-        <span className="font-semibold text-zinc-900 dark:text-white">
-          Catalyst
-        </span>
+        <span className="font-semibold text-zinc-900 dark:text-white">Catalyst</span>
       </NavbarBrand>
       <NavbarNav>
-        <NavbarItem href="#" active>Home</NavbarItem>
+        <NavbarItem href="#" active>
+          Home
+        </NavbarItem>
         <NavbarItem href="#">Events</NavbarItem>
         <NavbarItem href="#">Orders</NavbarItem>
         <NavbarItem href="#">Settings</NavbarItem>
@@ -62,9 +56,7 @@ export const WithSearch: Story = {
         <div className="size-8 rounded-lg bg-indigo-500 flex items-center justify-center">
           <span className="text-white font-bold">C</span>
         </div>
-        <span className="font-semibold text-zinc-900 dark:text-white">
-          Catalyst
-        </span>
+        <span className="font-semibold text-zinc-900 dark:text-white">Catalyst</span>
       </NavbarBrand>
       <div className="hidden md:flex flex-1 items-center justify-center px-6">
         <div className="relative w-full max-w-md">
@@ -77,7 +69,9 @@ export const WithSearch: Story = {
         </div>
       </div>
       <NavbarActions>
-        <Button variant="outline" size="sm">Sign in</Button>
+        <Button variant="outline" size="sm">
+          Sign in
+        </Button>
         <Button size="sm">Sign up</Button>
       </NavbarActions>
     </Navbar>
@@ -88,12 +82,12 @@ export const Minimal: Story = {
   render: () => (
     <Navbar>
       <NavbarBrand>
-        <span className="font-semibold text-zinc-900 dark:text-white">
-          Catalyst
-        </span>
+        <span className="font-semibold text-zinc-900 dark:text-white">Catalyst</span>
       </NavbarBrand>
       <NavbarActions>
-        <Button variant="outline" size="sm">Log in</Button>
+        <Button variant="outline" size="sm">
+          Log in
+        </Button>
         <Button size="sm">Get started</Button>
       </NavbarActions>
     </Navbar>

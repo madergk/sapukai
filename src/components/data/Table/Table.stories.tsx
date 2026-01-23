@@ -24,11 +24,41 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 const users = [
-  { name: 'Lindsay Walton', title: 'Front-end Developer', email: 'lindsay.walton@example.com', role: 'Member', status: 'Active' },
-  { name: 'Courtney Henry', title: 'Designer', email: 'courtney.henry@example.com', role: 'Admin', status: 'Active' },
-  { name: 'Tom Cook', title: 'Director of Product', email: 'tom.cook@example.com', role: 'Member', status: 'Inactive' },
-  { name: 'Whitney Francis', title: 'Copywriter', email: 'whitney.francis@example.com', role: 'Member', status: 'Active' },
-  { name: 'Leonard Krasner', title: 'Senior Designer', email: 'leonard.krasner@example.com', role: 'Owner', status: 'Active' },
+  {
+    name: 'Lindsay Walton',
+    title: 'Front-end Developer',
+    email: 'lindsay.walton@example.com',
+    role: 'Member',
+    status: 'Active',
+  },
+  {
+    name: 'Courtney Henry',
+    title: 'Designer',
+    email: 'courtney.henry@example.com',
+    role: 'Admin',
+    status: 'Active',
+  },
+  {
+    name: 'Tom Cook',
+    title: 'Director of Product',
+    email: 'tom.cook@example.com',
+    role: 'Member',
+    status: 'Inactive',
+  },
+  {
+    name: 'Whitney Francis',
+    title: 'Copywriter',
+    email: 'whitney.francis@example.com',
+    role: 'Member',
+    status: 'Active',
+  },
+  {
+    name: 'Leonard Krasner',
+    title: 'Senior Designer',
+    email: 'leonard.krasner@example.com',
+    role: 'Owner',
+    status: 'Active',
+  },
 ]
 
 export const Default: Story = {
@@ -43,7 +73,7 @@ export const Default: Story = {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {users.map((user) => (
+        {users.map(user => (
           <TableRow key={user.email}>
             <TableCell className="font-medium">{user.name}</TableCell>
             <TableCell>{user.title}</TableCell>
@@ -68,7 +98,7 @@ export const Striped: Story = {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {users.map((user) => (
+        {users.map(user => (
           <TableRow key={user.email}>
             <TableCell className="font-medium">{user.name}</TableCell>
             <TableCell>{user.title}</TableCell>
@@ -93,7 +123,7 @@ export const Bordered: Story = {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {users.map((user) => (
+        {users.map(user => (
           <TableRow key={user.email}>
             <TableCell className="font-medium">{user.name}</TableCell>
             <TableCell>{user.title}</TableCell>
@@ -125,7 +155,10 @@ export const WithAvatarsAndBadges: Story = {
                 <Avatar
                   size={8}
                   src={`https://images.unsplash.com/photo-${1472099645785 + i * 1000}-5658abf4ff4e?w=100&h=100&fit=crop&crop=faces`}
-                  initials={user.name.split(' ').map(n => n[0]).join('')}
+                  initials={user.name
+                    .split(' ')
+                    .map(n => n[0])
+                    .join('')}
                 />
                 <div>
                   <div className="font-medium">{user.name}</div>
@@ -135,9 +168,7 @@ export const WithAvatarsAndBadges: Story = {
             </TableCell>
             <TableCell>{user.title}</TableCell>
             <TableCell>
-              <Badge color={user.status === 'Active' ? 'green' : 'zinc'}>
-                {user.status}
-              </Badge>
+              <Badge color={user.status === 'Active' ? 'green' : 'zinc'}>{user.status}</Badge>
             </TableCell>
             <TableCell>{user.role}</TableCell>
           </TableRow>
@@ -162,19 +193,25 @@ export const WithCaption: Story = {
       <TableBody>
         <TableRow>
           <TableCell className="font-medium">INV001</TableCell>
-          <TableCell><Badge color="green">Paid</Badge></TableCell>
+          <TableCell>
+            <Badge color="green">Paid</Badge>
+          </TableCell>
           <TableCell>Credit Card</TableCell>
           <TableCell className="text-right">$250.00</TableCell>
         </TableRow>
         <TableRow>
           <TableCell className="font-medium">INV002</TableCell>
-          <TableCell><Badge color="yellow">Pending</Badge></TableCell>
+          <TableCell>
+            <Badge color="yellow">Pending</Badge>
+          </TableCell>
           <TableCell>PayPal</TableCell>
           <TableCell className="text-right">$150.00</TableCell>
         </TableRow>
         <TableRow>
           <TableCell className="font-medium">INV003</TableCell>
-          <TableCell><Badge color="red">Unpaid</Badge></TableCell>
+          <TableCell>
+            <Badge color="red">Unpaid</Badge>
+          </TableCell>
           <TableCell>Bank Transfer</TableCell>
           <TableCell className="text-right">$350.00</TableCell>
         </TableRow>

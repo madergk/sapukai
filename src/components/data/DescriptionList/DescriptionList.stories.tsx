@@ -69,8 +69,8 @@ export const Vertical: Story = {
       <DescriptionListItem>
         <DescriptionListTerm>About</DescriptionListTerm>
         <DescriptionListDetails>
-          Fugiat ipsum ipsum deserunt culpa aute sint do nostrud anim incididunt
-          cillum culpa consequat. Excepteur qui ipsum aliquip consequat sint.
+          Fugiat ipsum ipsum deserunt culpa aute sint do nostrud anim incididunt cillum culpa
+          consequat. Excepteur qui ipsum aliquip consequat sint.
         </DescriptionListDetails>
       </DescriptionListItem>
     </DescriptionList>

@@ -83,8 +83,10 @@ function generateColorTable(tokens: Map<string, any>): string {
   for (const [name, token] of colorTokens) {
     const value = token.value
     const isRef = typeof value === 'string' && value.startsWith('{')
-    const preview = isRef ? '(alias)' : `<div style={{width: '24px', height: '24px', backgroundColor: '${value}', border: '1px solid #e4e4e7', borderRadius: '4px'}} />`
-    
+    const preview = isRef
+      ? '(alias)'
+      : `<div style={{width: '24px', height: '24px', backgroundColor: '${value}', border: '1px solid #e4e4e7', borderRadius: '4px'}} />`
+
     table += `| \`${name}\` | \`${value}\` | ${preview} |\n`
   }
 
@@ -96,7 +98,9 @@ function generateColorTable(tokens: Map<string, any>): string {
  */
 function generateSpacingTable(tokens: Map<string, any>): string {
   const spacingTokens = Array.from(tokens.entries())
-    .filter(([name]) => name.toLowerCase().includes('spacing') || name.toLowerCase().includes('space'))
+    .filter(
+      ([name]) => name.toLowerCase().includes('spacing') || name.toLowerCase().includes('space')
+    )
     .sort(([a], [b]) => a.localeCompare(b))
 
   if (spacingTokens.length === 0) {
@@ -118,10 +122,11 @@ function generateSpacingTable(tokens: Map<string, any>): string {
  */
 function generateTypographyTable(tokens: Map<string, any>): string {
   const typographyTokens = Array.from(tokens.entries())
-    .filter(([name]) => 
-      name.toLowerCase().includes('font') || 
-      name.toLowerCase().includes('typography') ||
-      name.toLowerCase().includes('text')
+    .filter(
+      ([name]) =>
+        name.toLowerCase().includes('font') ||
+        name.toLowerCase().includes('typography') ||
+        name.toLowerCase().includes('text')
     )
     .sort(([a], [b]) => a.localeCompare(b))
 
@@ -148,7 +153,7 @@ function generateMdxContent(tokens: TokensData): string {
   const lightTokens = flattenTokens(tokens.semantic?.light || {})
   const darkTokens = flattenTokens(tokens.semantic?.dark || {})
 
-  const lastUpdated = metadata?.extractedAt 
+  const lastUpdated = metadata?.extractedAt
     ? new Date(metadata.extractedAt).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
@@ -290,10 +295,10 @@ async function updateDocs(): Promise<void> {
 
   // Read tokens
   const tokens = readTokens()
-  
+
   if (!tokens) {
     spinner.warn('No tokens file found, using placeholder documentation')
-    
+
     // Create placeholder documentation
     const placeholderContent = `import { Meta } from '@storybook/addon-docs/blocks'
 
@@ -314,12 +319,12 @@ async function updateDocs(): Promise<void> {
 
 If you don't have access to the Figma API, you can manually create \`tokens/figma-tokens.json\` following the expected format.
 `
-    
+
     // Ensure docs directory exists
     if (!fs.existsSync(DOCS_DIR)) {
       fs.mkdirSync(DOCS_DIR, { recursive: true })
     }
-    
+
     fs.writeFileSync(DESIGN_TOKENS_MDX, placeholderContent)
     spinner.succeed('Created placeholder documentation')
     return
@@ -327,14 +332,14 @@ If you don't have access to the Figma API, you can manually create \`tokens/figm
 
   // Generate and write documentation
   const content = generateMdxContent(tokens)
-  
+
   // Ensure docs directory exists
   if (!fs.existsSync(DOCS_DIR)) {
     fs.mkdirSync(DOCS_DIR, { recursive: true })
   }
-  
+
   fs.writeFileSync(DESIGN_TOKENS_MDX, content)
-  
+
   spinner.succeed(`Updated ${chalk.cyan('src/docs/DesignTokens.mdx')}`)
 }
 
@@ -351,7 +356,7 @@ async function main(): Promise<void> {
 
 // Run if executed directly
 if (process.argv[1]?.includes('update-docs')) {
-  main().catch((error) => {
+  main().catch(error => {
     console.error(chalk.red('\nError:'), error.message)
     process.exit(1)
   })

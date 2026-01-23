@@ -21,44 +21,49 @@ A modern React component library built with TypeScript, Tailwind CSS v4, and Sto
 ## Component Library
 
 ### Primitives
-| Component | Description |
-|-----------|-------------|
-| `Avatar` | User profile images with fallback initials |
-| `Badge` | Status indicators and labels |
-| `Button` | Primary, secondary, and outline variants |
-| `Divider` | Visual separators |
-| `Heading` | Typography headings (h1-h6) |
-| `Text` | Body text with size variants |
+
+| Component | Description                                |
+| --------- | ------------------------------------------ |
+| `Avatar`  | User profile images with fallback initials |
+| `Badge`   | Status indicators and labels               |
+| `Button`  | Primary, secondary, and outline variants   |
+| `Divider` | Visual separators                          |
+| `Heading` | Typography headings (h1-h6)                |
+| `Text`    | Body text with size variants               |
 
 ### Forms
-| Component | Description |
-|-----------|-------------|
-| `Checkbox` | Binary selection with Radix UI |
-| `Input` | Text input fields |
-| `Listbox` | List selection component |
-| `Radio` | Single-choice selection groups |
-| `Select` | Dropdown selection with Radix UI |
-| `Switch` | Toggle switches |
-| `TextArea` | Multi-line text input |
+
+| Component  | Description                      |
+| ---------- | -------------------------------- |
+| `Checkbox` | Binary selection with Radix UI   |
+| `Input`    | Text input fields                |
+| `Listbox`  | List selection component         |
+| `Radio`    | Single-choice selection groups   |
+| `Select`   | Dropdown selection with Radix UI |
+| `Switch`   | Toggle switches                  |
+| `TextArea` | Multi-line text input            |
 
 ### Data Display
-| Component | Description |
-|-----------|-------------|
-| `DescriptionList` | Key-value pair displays |
-| `Table` | Data tables with sorting support |
+
+| Component         | Description                      |
+| ----------------- | -------------------------------- |
+| `DescriptionList` | Key-value pair displays          |
+| `Table`           | Data tables with sorting support |
 
 ### Feedback
-| Component | Description |
-|-----------|-------------|
-| `Dialog` | Modal dialogs with Radix UI |
+
+| Component | Description                 |
+| --------- | --------------------------- |
+| `Dialog`  | Modal dialogs with Radix UI |
 
 ### Navigation
-| Component | Description |
-|-----------|-------------|
-| `Dropdown` | Dropdown menus |
-| `Navbar` | Top navigation bar |
+
+| Component    | Description              |
+| ------------ | ------------------------ |
+| `Dropdown`   | Dropdown menus           |
+| `Navbar`     | Top navigation bar       |
 | `Pagination` | Page navigation controls |
-| `Sidebar` | Side navigation panel |
+| `Sidebar`    | Side navigation panel    |
 
 ---
 
@@ -78,6 +83,7 @@ An interactive tool for creating, visualizing, and exporting custom cubic bezier
 ### Preview Components
 
 Test your animations with built-in demos:
+
 - Modal Dialog (open/close)
 - Button States (hover/focus)
 - Accordion (expand/collapse)
@@ -138,6 +144,7 @@ Automated system to sync design tokens from Figma Variables.
 ### Setup
 
 1. **Create environment file**:
+
 ```bash
 cp .env.example .env
 ```
@@ -159,6 +166,7 @@ npm run sync-tokens
 ```
 
 This will:
+
 1. Fetch latest variables from Figma API
 2. Transform tokens to TypeScript and CSS
 3. Validate components for breaking changes
@@ -211,11 +219,7 @@ src/tokens/
 ```tsx
 import { primitiveColors, semanticColors } from '@/tokens'
 
-const Component = () => (
-  <div style={{ color: primitiveColors.zinc[900] }}>
-    Content
-  </div>
-)
+const Component = () => <div style={{ color: primitiveColors.zinc[900] }}>Content</div>
 ```
 
 #### In CSS/Tailwind
@@ -230,9 +234,7 @@ const Component = () => (
 #### With Tailwind Classes
 
 ```tsx
-<div className="bg-zinc-100 text-zinc-900">
-  Content
-</div>
+<div className="bg-zinc-100 text-zinc-900">Content</div>
 ```
 
 ---
@@ -270,31 +272,31 @@ sapukai/
 
 ## Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start Vite dev server |
-| `npm run build` | Build for production |
-| `npm run storybook` | Start Storybook |
-| `npm run build-storybook` | Build Storybook |
-| `npm run lint` | Run ESLint |
-| `npm run sync-tokens` | Sync tokens from Figma |
-| `npm run preview` | Preview production build |
+| Script                    | Description              |
+| ------------------------- | ------------------------ |
+| `npm run dev`             | Start Vite dev server    |
+| `npm run build`           | Build for production     |
+| `npm run storybook`       | Start Storybook          |
+| `npm run build-storybook` | Build Storybook          |
+| `npm run lint`            | Run ESLint               |
+| `npm run sync-tokens`     | Sync tokens from Figma   |
+| `npm run preview`         | Preview production build |
 
 ---
 
 ## Tech Stack
 
-| Category | Technology |
-|----------|------------|
-| Framework | React 19.2.0 |
-| Language | TypeScript 5.9 |
-| Styling | Tailwind CSS 4.1 |
-| Components | Radix UI |
-| Icons | Heroicons |
-| Build | Vite 7.2 |
-| Documentation | Storybook 10.1 |
+| Category        | Technology           |
+| --------------- | -------------------- |
+| Framework       | React 19.2.0         |
+| Language        | TypeScript 5.9       |
+| Styling         | Tailwind CSS 4.1     |
+| Components      | Radix UI             |
+| Icons           | Heroicons            |
+| Build           | Vite 7.2             |
+| Documentation   | Storybook 10.1       |
 | Token Transform | Style Dictionary 4.4 |
-| Testing | Vitest + Playwright |
+| Testing         | Vitest + Playwright  |
 
 ---
 
@@ -331,11 +333,13 @@ Based on 4px grid: `4, 8, 12, 16, 24, 32, 40, 48, 56, 64px`
 ### Figma API Access
 
 The Figma Variables API requires:
+
 - A Figma account
 - Access to the design file
 - Personal Access Token with read permissions
 
 **Note**: Variables REST API requires Figma Enterprise. Without Enterprise:
+
 1. Export tokens manually using Tokens Studio plugin
 2. Create `tokens/figma-tokens.json` manually
 

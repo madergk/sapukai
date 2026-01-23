@@ -101,15 +101,25 @@ export const IconOnly: Story = {
 export const AllVariants: Story = {
   render: () => (
     <div className="space-y-8">
-      {(['default', 'outline', 'plain'] as const).map((variant) => (
+      {(['default', 'outline', 'plain'] as const).map(variant => (
         <div key={variant} className="space-y-2">
           <p className="text-sm font-medium text-zinc-500 capitalize">{variant}</p>
           <div className="flex items-center gap-4">
-            <Button variant={variant} size="xs">Extra Small</Button>
-            <Button variant={variant} size="sm">Small</Button>
-            <Button variant={variant} size="base">Base</Button>
-            <Button variant={variant} size="lg">Large</Button>
-            <Button variant={variant} size="xl">Extra Large</Button>
+            <Button variant={variant} size="xs">
+              Extra Small
+            </Button>
+            <Button variant={variant} size="sm">
+              Small
+            </Button>
+            <Button variant={variant} size="base">
+              Base
+            </Button>
+            <Button variant={variant} size="lg">
+              Large
+            </Button>
+            <Button variant={variant} size="xl">
+              Extra Large
+            </Button>
           </div>
         </div>
       ))}
@@ -121,8 +131,12 @@ export const Disabled: Story = {
   render: () => (
     <div className="flex items-center gap-4">
       <Button disabled>Default</Button>
-      <Button variant="outline" disabled>Outline</Button>
-      <Button variant="plain" disabled>Plain</Button>
+      <Button variant="outline" disabled>
+        Outline
+      </Button>
+      <Button variant="plain" disabled>
+        Plain
+      </Button>
     </div>
   ),
 }

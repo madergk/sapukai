@@ -32,8 +32,8 @@ export const Default: Story = {
 export const WithLabel: Story = {
   args: {
     label: 'Enable notifications',
-    description: "",
-    labelPosition: "trailing"
+    description: '',
+    labelPosition: 'trailing',
   },
 }
 
@@ -81,10 +81,7 @@ export const SwitchGroup: Story = {
         description="Get email updates about your account"
         defaultChecked
       />
-      <Switch
-        label="Marketing emails"
-        description="Receive emails about new features and offers"
-      />
+      <Switch label="Marketing emails" description="Receive emails about new features and offers" />
     </div>
   ),
 }

@@ -5,6 +5,7 @@ A comprehensive web application for creating, visualizing, and exporting custom 
 ## Features
 
 ### 🎨 Interactive Bezier Canvas
+
 - Drag-and-drop control points with visual feedback
 - Real-time curve rendering with grid and axis labels
 - Hover states with shadows and glow effects
@@ -12,6 +13,7 @@ A comprehensive web application for creating, visualizing, and exporting custom 
 - High-DPI canvas rendering
 
 ### 🎛️ Control Panel
+
 Four tab-based sections:
 
 1. **Easing Curve**
@@ -34,6 +36,7 @@ Four tab-based sections:
    - Usage tips for each format
 
 ### 👁️ Live Preview Panel
+
 Real-time animation previews with your custom easing:
 
 - **Modal Dialog**: Open/close animations
@@ -44,6 +47,7 @@ Real-time animation previews with your custom easing:
 - **Page Transition**: Content fade and slide effects
 
 ### 💾 State Persistence
+
 - Automatically saves your settings to localStorage
 - Restores previous curve, duration, and active tab on reload
 
@@ -106,12 +110,14 @@ The Motion Tuner is now the default view when you start the app.
 The application includes Material Design 3 motion tokens:
 
 **Easing Categories:**
+
 - **Emphasized**: Expressive, personality-driven motion
 - **Standard**: Common, balanced motion patterns
 - **Legacy**: Traditional CSS timing functions
 - **Utility**: Functional, mechanical motion
 
 **Duration Categories:**
+
 - **Short** (50-200ms): Quick micro-interactions
 - **Medium** (250-400ms): Most common transitions
 - **Long** (450-600ms): Complex animations
@@ -146,39 +152,48 @@ var(--motion-duration-long-3)
 ## Export Formats
 
 ### 1. CSS
+
 Standard CSS custom properties and transition syntax.
 
 ### 2. JSON
+
 Structured data format with control point coordinates and metadata.
 
 ### 3. GSAP
+
 GreenSock Animation Platform code snippets with ease registration.
 
 ### 4. Design Tokens
+
 Style Dictionary compatible format following W3C specification.
 
 ### 5. M3 Tokens
+
 Material Design 3 motion token format with md.sys.motion prefix.
 
 ## Technical Details
 
 ### State Management
+
 - React Context API with useReducer
 - Persistent state in localStorage
 - Type-safe actions and state updates
 
 ### Canvas Rendering
+
 - Device pixel ratio support for high-DPI displays
 - 60fps smooth animations with requestAnimationFrame
 - Bezier curve mathematics for accurate rendering
 
 ### Accessibility
+
 - Keyboard navigation support
 - ARIA labels on interactive elements
 - Focus management in modals
 - Screen reader friendly
 
 ### Browser Compatibility
+
 - Modern Clipboard API with execCommand fallback
 - Canvas API support detection
 - Touch event support for mobile devices
@@ -201,6 +216,7 @@ Potential features for future development:
 ## Credits
 
 Built with:
+
 - React 19.2.0
 - TypeScript 5.9.3
 - Tailwind CSS v4

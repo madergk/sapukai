@@ -98,7 +98,7 @@ interface SyncOptions {
  */
 function parseArgs(): SyncOptions {
   const args = process.argv.slice(2)
-  const normalizedArgs = args.map((arg) => (arg.startsWith('---') ? `--${arg.slice(3)}` : arg))
+  const normalizedArgs = args.map(arg => (arg.startsWith('---') ? `--${arg.slice(3)}` : arg))
   return {
     dryRun: normalizedArgs.includes('--dry-run'),
   }
@@ -181,15 +181,15 @@ async function fetchFigmaVariables(): Promise<FigmaVariablesResponse> {
       const errorText = await response.text()
       spinner.fail('Failed to fetch from Figma API')
       console.error(chalk.red(`HTTP ${response.status}: ${errorText}`))
-      
+
       if (response.status === 403) {
         console.error(chalk.yellow('\nNote: The Variables API requires a Figma Enterprise plan.'))
-        console.error(chalk.yellow('If you don\'t have Enterprise, you can:'))
+        console.error(chalk.yellow("If you don't have Enterprise, you can:"))
         console.error(chalk.gray('  1. Export tokens manually from Figma'))
         console.error(chalk.gray('  2. Use Tokens Studio plugin'))
         console.error(chalk.gray('  3. Create tokens/figma-tokens.json manually'))
       }
-      
+
       process.exit(1)
     }
 
@@ -235,7 +235,10 @@ function processVariables(data: FigmaVariablesResponse): TokensOutput {
   // Process each collection
   for (const collection of Object.values(variableCollections)) {
     const collectionName = collection.name.toLowerCase()
-    const isPrimitive = collectionName.includes('primitive') || collectionName.includes('base') || collectionName.includes('core')
+    const isPrimitive =
+      collectionName.includes('primitive') ||
+      collectionName.includes('base') ||
+      collectionName.includes('core')
     const modes = collection.modes
 
     // Process each variable in the collection
@@ -252,7 +255,7 @@ function processVariables(data: FigmaVariablesResponse): TokensOutput {
         if (value === undefined) continue
 
         const resolvedValue = resolveValue(value, variable.resolvedType, variableMap)
-        
+
         const tokenValue: TokenValue = {
           $value: resolvedValue,
           $type: tokenType,
@@ -381,7 +384,7 @@ function compareTokens(
   if (!previousTokens) {
     return { added: 0, modified: 0, removed: 0 }
   }
-  
+
   let added = 0
   let modified = 0
   let removed = 0
@@ -450,11 +453,9 @@ async function main(): Promise<void> {
   }
 
   // Report changes
-  const previousTokens = options.dryRun
-    ? readTokensFile(TOKENS_FILE)
-    : readTokensFile(BACKUP_FILE)
+  const previousTokens = options.dryRun ? readTokensFile(TOKENS_FILE) : readTokensFile(BACKUP_FILE)
   const changes = compareTokens(tokens, previousTokens)
-  
+
   console.log(chalk.green('\n✓ Token extraction complete!\n'))
   console.log('Changes:')
   console.log(chalk.green(`  • ${changes.added} tokens added`))
@@ -467,7 +468,7 @@ async function main(): Promise<void> {
 }
 
 // Run if executed directly
-main().catch((error) => {
+main().catch(error => {
   console.error(chalk.red('\nError:'), error.message)
   process.exit(1)
 })

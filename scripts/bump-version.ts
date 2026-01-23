@@ -150,12 +150,15 @@ function updatePackageJson(newVersion: string): void {
  */
 function generateChangelogEntry(version: string, changes: TokenChanges): string {
   const date = new Date().toISOString().split('T')[0]
-  
+
   let entry = `## [${version}] - ${date}\n\n`
 
   if (changes.added.length > 0) {
     entry += `### Added\n\n`
-    entry += changes.added.slice(0, 10).map(t => `- \`${t}\``).join('\n')
+    entry += changes.added
+      .slice(0, 10)
+      .map(t => `- \`${t}\``)
+      .join('\n')
     if (changes.added.length > 10) {
       entry += `\n- ...and ${changes.added.length - 10} more tokens`
     }
@@ -164,7 +167,10 @@ function generateChangelogEntry(version: string, changes: TokenChanges): string 
 
   if (changes.modified.length > 0) {
     entry += `### Changed\n\n`
-    entry += changes.modified.slice(0, 10).map(t => `- \`${t}\``).join('\n')
+    entry += changes.modified
+      .slice(0, 10)
+      .map(t => `- \`${t}\``)
+      .join('\n')
     if (changes.modified.length > 10) {
       entry += `\n- ...and ${changes.modified.length - 10} more tokens`
     }
@@ -173,7 +179,10 @@ function generateChangelogEntry(version: string, changes: TokenChanges): string 
 
   if (changes.removed.length > 0) {
     entry += `### Removed\n\n`
-    entry += changes.removed.slice(0, 10).map(t => `- \`${t}\``).join('\n')
+    entry += changes.removed
+      .slice(0, 10)
+      .map(t => `- \`${t}\``)
+      .join('\n')
     if (changes.removed.length > 10) {
       entry += `\n- ...and ${changes.removed.length - 10} more tokens`
     }
@@ -192,7 +201,7 @@ function generateChangelogEntry(version: string, changes: TokenChanges): string 
  */
 function updateChangelog(entry: string): void {
   let changelog = ''
-  
+
   if (fs.existsSync(CHANGELOG_FILE)) {
     changelog = fs.readFileSync(CHANGELOG_FILE, 'utf-8')
   } else {
@@ -208,7 +217,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
   // Find the position after the header to insert new entry
   const headerEnd = changelog.indexOf('\n## ')
-  
+
   if (headerEnd === -1) {
     // No existing entries, append to end
     changelog += entry
@@ -223,16 +232,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 /**
  * Main version bump function
  */
-async function bumpVersionMain(options: { 
-  type?: VersionBumpType
-  skipChangelog?: boolean
-  dryRun?: boolean
-} = {}): Promise<VersionInfo | null> {
+async function bumpVersionMain(
+  options: {
+    type?: VersionBumpType
+    skipChangelog?: boolean
+    dryRun?: boolean
+  } = {}
+): Promise<VersionInfo | null> {
   const spinner = ora('Analyzing changes...').start()
 
   // Detect changes
   const changes = detectChanges()
-  const hasChanges = changes.added.length > 0 || changes.modified.length > 0 || changes.removed.length > 0
+  const hasChanges =
+    changes.added.length > 0 || changes.modified.length > 0 || changes.removed.length > 0
 
   if (!hasChanges && !options.dryRun) {
     spinner.info('No token changes detected')
@@ -262,7 +274,9 @@ async function bumpVersionMain(options: {
   // Update package.json
   const updateSpinner = ora('Updating package.json...').start()
   updatePackageJson(newVersion)
-  updateSpinner.succeed(`Updated version: ${chalk.yellow(currentVersion)} → ${chalk.green(newVersion)}`)
+  updateSpinner.succeed(
+    `Updated version: ${chalk.yellow(currentVersion)} → ${chalk.green(newVersion)}`
+  )
 
   // Update changelog
   if (!options.skipChangelog) {
@@ -308,7 +322,7 @@ async function main(): Promise<void> {
 
 // Run if executed directly
 if (process.argv[1]?.includes('bump-version')) {
-  main().catch((error) => {
+  main().catch(error => {
     console.error(chalk.red('\nError:'), error.message)
     process.exit(1)
   })

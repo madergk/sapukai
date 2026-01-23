@@ -41,9 +41,7 @@ export const Default: Story = {
           <div className="size-8 rounded-lg bg-indigo-500 flex items-center justify-center">
             <span className="text-white font-bold">C</span>
           </div>
-          <span className="font-semibold text-zinc-900 dark:text-white">
-            Catalyst
-          </span>
+          <span className="font-semibold text-zinc-900 dark:text-white">Catalyst</span>
         </SidebarHeader>
         <SidebarContent>
           <SidebarNav>
@@ -89,9 +87,7 @@ export const WithSections: Story = {
           <div className="size-8 rounded-lg bg-indigo-500 flex items-center justify-center">
             <span className="text-white font-bold">C</span>
           </div>
-          <span className="font-semibold text-zinc-900 dark:text-white">
-            Catalyst
-          </span>
+          <span className="font-semibold text-zinc-900 dark:text-white">Catalyst</span>
         </SidebarHeader>
         <SidebarContent>
           <SidebarSection>

@@ -10,19 +10,14 @@ export type BezierPoint = [number, number, number, number]
  * Evaluate a cubic bezier curve at parameter t (0-1)
  * Using the formula: B(t) = (1-t)³P0 + 3(1-t)²tP1 + 3(1-t)t²P2 + t³P3
  */
-export function evaluateBezier(
-  points: BezierPoint,
-  t: number
-): { x: number; y: number } {
+export function evaluateBezier(points: BezierPoint, t: number): { x: number; y: number } {
   const [x1, y1, x2, y2] = points
   const t1 = 1 - t
 
   // P0 = (0,0), P3 = (1,1) for cubic-bezier timing functions
-  const x =
-    3 * t1 * t1 * t * x1 + 3 * t1 * t * t * x2 + t * t * t
+  const x = 3 * t1 * t1 * t * x1 + 3 * t1 * t * t * x2 + t * t * t
 
-  const y =
-    3 * t1 * t1 * t * y1 + 3 * t1 * t * t * y2 + t * t * t
+  const y = 3 * t1 * t1 * t * y1 + 3 * t1 * t * t * y2 + t * t * t
 
   return { x, y }
 }
@@ -57,10 +52,7 @@ export function clamp(value: number, min: number, max: number): number {
  * Constrain control point to valid bezier bounds
  * X must be between 0-1, Y can be any value
  */
-export function constrainControlPoint(
-  x: number,
-  y: number
-): { x: number; y: number } {
+export function constrainControlPoint(x: number, y: number): { x: number; y: number } {
   return {
     x: clamp(x, 0, 1),
     y: y, // Y can be negative or > 1 for cubic-bezier
@@ -84,12 +76,7 @@ export function parseCubicBezierCSS(css: string): BezierPoint | null {
 
   if (!match) return null
 
-  return [
-    parseFloat(match[1]),
-    parseFloat(match[2]),
-    parseFloat(match[3]),
-    parseFloat(match[4]),
-  ]
+  return [parseFloat(match[1]), parseFloat(match[2]), parseFloat(match[3]), parseFloat(match[4])]
 }
 
 /**
@@ -137,12 +124,7 @@ export function bezierToCanvas(
 /**
  * Calculate distance between two points
  */
-export function distance(
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number
-): number {
+export function distance(x1: number, y1: number, x2: number, y2: number): number {
   return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
 }
 

@@ -62,8 +62,8 @@ export const Confirmation: Story = {
         <DialogHeader>
           <DialogTitle>Are you sure?</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            This action cannot be undone. This will permanently delete your account and remove your
+            data from our servers.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="gap-2 sm:gap-0">
@@ -88,9 +88,7 @@ export const WithForm: Story = {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Create new project</DialogTitle>
-          <DialogDescription>
-            Add a new project to your workspace.
-          </DialogDescription>
+          <DialogDescription>Add a new project to your workspace.</DialogDescription>
         </DialogHeader>
         <form className="space-y-4">
           <Input label="Project name" placeholder="My awesome project" />

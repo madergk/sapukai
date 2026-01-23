@@ -77,9 +77,9 @@ jobs:
           title: '🎨 Design Tokens Update'
           body: |
             ## Automated Token Sync
-            
+
             Design tokens updated from Figma.
-            
+
             - [ ] Token validation passed
             - [ ] Component validation passed
             - [ ] Visual review in Storybook

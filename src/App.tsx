@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Home } from '@/pages/Home'
 import { MotionTuner } from '@/pages/MotionTuner'
+import { TokensVisualizer } from '@/pages/TokensVisualizer'
 
 function App() {
   const [path, setPath] = React.useState(() => window.location.pathname || '/')
@@ -22,6 +23,10 @@ function App() {
 
   if (path === '/motion-tuner') {
     return <MotionTuner currentPath={path} onNavigate={navigate} />
+  }
+
+  if (path === '/tokens-visualizer') {
+    return <TokensVisualizer currentPath={path} onNavigate={navigate} />
   }
 
   if (path === '/') {

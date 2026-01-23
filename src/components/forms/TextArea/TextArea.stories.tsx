@@ -75,12 +75,7 @@ export const States: Story = {
     <div className="w-80 space-y-6">
       <TextArea label="Default" placeholder="Default state" />
       <TextArea label="Disabled" placeholder="Disabled state" disabled />
-      <TextArea
-        label="Error"
-        placeholder="Error state"
-        error
-        helperText="This field is required"
-      />
+      <TextArea label="Error" placeholder="Error state" error helperText="This field is required" />
     </div>
   ),
 }

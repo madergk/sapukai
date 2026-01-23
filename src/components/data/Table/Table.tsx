@@ -9,13 +9,20 @@ const Table = React.forwardRef<
     bordered?: boolean
   }
 >(({ className, striped, fullWidth, bordered, ...props }, ref) => (
-  <div className={cn('w-full overflow-auto', fullWidth && 'rounded-lg border border-zinc-200 dark:border-zinc-700')}>
+  <div
+    className={cn(
+      'w-full overflow-auto',
+      fullWidth && 'rounded-lg border border-zinc-200 dark:border-zinc-700'
+    )}
+  >
     <table
       ref={ref}
       className={cn(
         'w-full caption-bottom text-sm',
-        striped && '[&_tbody_tr:nth-child(even)]:bg-zinc-50 dark:[&_tbody_tr:nth-child(even)]:bg-zinc-800/50',
-        bordered && '[&_td]:border [&_th]:border [&_td]:border-zinc-200 [&_th]:border-zinc-200 dark:[&_td]:border-zinc-700 dark:[&_th]:border-zinc-700',
+        striped &&
+          '[&_tbody_tr:nth-child(even)]:bg-zinc-50 dark:[&_tbody_tr:nth-child(even)]:bg-zinc-800/50',
+        bordered &&
+          '[&_td]:border [&_th]:border [&_td]:border-zinc-200 [&_th]:border-zinc-200 dark:[&_td]:border-zinc-700 dark:[&_th]:border-zinc-700',
         className
       )}
       {...props}
@@ -40,11 +47,7 @@ const TableBody = React.forwardRef<
   HTMLTableSectionElement,
   React.HTMLAttributes<HTMLTableSectionElement>
 >(({ className, ...props }, ref) => (
-  <tbody
-    ref={ref}
-    className={cn('[&_tr:last-child]:border-0', className)}
-    {...props}
-  />
+  <tbody ref={ref} className={cn('[&_tr:last-child]:border-0', className)} {...props} />
 ))
 TableBody.displayName = 'TableBody'
 
@@ -64,21 +67,20 @@ const TableFooter = React.forwardRef<
 ))
 TableFooter.displayName = 'TableFooter'
 
-const TableRow = React.forwardRef<
-  HTMLTableRowElement,
-  React.HTMLAttributes<HTMLTableRowElement>
->(({ className, ...props }, ref) => (
-  <tr
-    ref={ref}
-    className={cn(
-      'border-b border-zinc-200 transition-colors',
-      'hover:bg-zinc-50',
-      'dark:border-zinc-700 dark:hover:bg-zinc-800/50',
-      className
-    )}
-    {...props}
-  />
-))
+const TableRow = React.forwardRef<HTMLTableRowElement, React.HTMLAttributes<HTMLTableRowElement>>(
+  ({ className, ...props }, ref) => (
+    <tr
+      ref={ref}
+      className={cn(
+        'border-b border-zinc-200 transition-colors',
+        'hover:bg-zinc-50',
+        'dark:border-zinc-700 dark:hover:bg-zinc-800/50',
+        className
+      )}
+      {...props}
+    />
+  )
+)
 TableRow.displayName = 'TableRow'
 
 const TableHead = React.forwardRef<
@@ -103,11 +105,7 @@ const TableCell = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <td
     ref={ref}
-    className={cn(
-      'p-4 align-middle text-zinc-900',
-      'dark:text-white',
-      className
-    )}
+    className={cn('p-4 align-middle text-zinc-900', 'dark:text-white', className)}
     {...props}
   />
 ))
@@ -125,13 +123,4 @@ const TableCaption = React.forwardRef<
 ))
 TableCaption.displayName = 'TableCaption'
 
-export {
-  Table,
-  TableHeader,
-  TableBody,
-  TableFooter,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableCaption,
-}
+export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption }

@@ -65,9 +65,7 @@ export const WithGroups: Story = {
 export const WithLabel: Story = {
   render: () => (
     <div className="w-56 space-y-1.5">
-      <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-        Country
-      </label>
+      <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Country</label>
       <Select defaultValue="us">
         <SelectTrigger>
           <SelectValue placeholder="Select country" />
@@ -99,9 +97,7 @@ export const Disabled: Story = {
 export const WithError: Story = {
   render: () => (
     <div className="w-56 space-y-1.5">
-      <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-        Status
-      </label>
+      <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Status</label>
       <Select>
         <SelectTrigger error>
           <SelectValue placeholder="Select status" />
@@ -111,9 +107,7 @@ export const WithError: Story = {
           <SelectItem value="inactive">Inactive</SelectItem>
         </SelectContent>
       </Select>
-      <p className="text-sm text-red-600 dark:text-red-400">
-        Please select a status
-      </p>
+      <p className="text-sm text-red-600 dark:text-red-400">Please select a status</p>
     </div>
   ),
 }

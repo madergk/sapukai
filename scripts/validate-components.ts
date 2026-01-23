@@ -48,7 +48,12 @@ function getComponentFiles(dir: string): string[] {
     const fullPath = path.join(dir, item.name)
     if (item.isDirectory()) {
       files.push(...getComponentFiles(fullPath))
-    } else if (item.isFile() && /\.(tsx?|jsx?)$/.test(item.name) && !item.name.includes('.stories.') && !item.name.includes('.test.')) {
+    } else if (
+      item.isFile() &&
+      /\.(tsx?|jsx?)$/.test(item.name) &&
+      !item.name.includes('.stories.') &&
+      !item.name.includes('.test.')
+    ) {
       files.push(fullPath)
     }
   }
@@ -129,7 +134,7 @@ function validateFile(
 
   // Check for hardcoded color values
   const hardcodedColorPattern = /#[0-9a-fA-F]{3,8}\b|rgb\(|rgba\(|hsl\(|hsla\(/g
-  
+
   lines.forEach((line, index) => {
     // Skip comments
     if (line.trim().startsWith('//') || line.trim().startsWith('*')) {
@@ -158,17 +163,18 @@ function validateFile(
   for (const removedToken of deprecatedTokens.removed) {
     const tokenParts = removedToken.split('.')
     const lastPart = tokenParts[tokenParts.length - 1]
-    
+
     // Search for potential usage of removed tokens
     const tokenPattern = new RegExp(`\\b${lastPart}\\b`, 'i')
-    
+
     lines.forEach((line, index) => {
       if (tokenPattern.test(line) && !line.trim().startsWith('//')) {
         result.issues.push({
           type: 'error',
           message: `Potentially using removed token: ${removedToken}`,
           line: index + 1,
-          suggestion: 'This token was removed in the latest update. Please replace with an existing token.',
+          suggestion:
+            'This token was removed in the latest update. Please replace with an existing token.',
         })
       }
     })
@@ -178,9 +184,9 @@ function validateFile(
   for (const [oldName, newName] of deprecatedTokens.renamed) {
     const oldParts = oldName.split('.')
     const lastOldPart = oldParts[oldParts.length - 1]
-    
+
     const tokenPattern = new RegExp(`\\b${lastOldPart}\\b`, 'i')
-    
+
     lines.forEach((line, index) => {
       if (tokenPattern.test(line) && !line.trim().startsWith('//')) {
         result.issues.push({
@@ -206,14 +212,14 @@ async function validateComponents(): Promise<ValidationReport> {
   spinner.text = `Found ${componentFiles.length} component files`
 
   const deprecatedTokens = findDeprecatedTokens()
-  
+
   const results: ValidationResult[] = []
   let warnings = 0
   let errors = 0
 
   for (const file of componentFiles) {
     const result = validateFile(file, deprecatedTokens)
-    
+
     if (result.issues.length > 0) {
       results.push(result)
       for (const issue of result.issues) {
@@ -251,12 +257,12 @@ function printReport(report: ValidationReport): void {
 
   for (const result of report.results) {
     console.log(chalk.cyan(`  ${result.file}`))
-    
+
     for (const issue of result.issues) {
       const icon = issue.type === 'error' ? chalk.red('✗') : chalk.yellow('⚠')
       const lineInfo = issue.line ? chalk.gray(`:${issue.line}`) : ''
       console.log(`    ${icon} ${issue.message}${lineInfo}`)
-      
+
       if (issue.suggestion) {
         console.log(chalk.gray(`      → ${issue.suggestion}`))
       }
@@ -288,7 +294,7 @@ async function main(): Promise<ValidationReport> {
 
 // Run if executed directly
 if (process.argv[1]?.includes('validate-components')) {
-  main().catch((error) => {
+  main().catch(error => {
     console.error(chalk.red('\nError:'), error.message)
     process.exit(1)
   })

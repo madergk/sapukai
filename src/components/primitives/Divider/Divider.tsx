@@ -20,17 +20,12 @@ const dividerVariants = cva('border-0', {
 })
 
 export interface DividerProps
-  extends React.HTMLAttributes<HTMLHRElement>,
-    VariantProps<typeof dividerVariants> {}
+  extends React.HTMLAttributes<HTMLHRElement>, VariantProps<typeof dividerVariants> {}
 
 const Divider = React.forwardRef<HTMLHRElement, DividerProps>(
   ({ className, type, orientation, ...props }, ref) => {
     return (
-      <hr
-        className={cn(dividerVariants({ type, orientation }), className)}
-        ref={ref}
-        {...props}
-      />
+      <hr className={cn(dividerVariants({ type, orientation }), className)} ref={ref} {...props} />
     )
   }
 )
