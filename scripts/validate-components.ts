@@ -88,6 +88,68 @@ function extractTokenKeys(tokens: any, prefix = ''): Set<string> {
 }
 
 /**
+ * Extract token keys with their values from tokens JSON
+ * Returns a Map of token path -> token value
+ */
+function extractTokensWithValues(tokens: any, prefix = ''): Map<string, string> {
+  const tokenMap = new Map<string, string>()
+
+  for (const [key, value] of Object.entries(tokens)) {
+    const currentPath = prefix ? `${prefix}.${key}` : key
+
+    if (value && typeof value === 'object') {
+      if ('$value' in value) {
+        // This is a token - store its path and value
+        const tokenValue = (value as { $value: any }).$value
+        // Normalize value to string for comparison
+        const normalizedValue =
+          typeof tokenValue === 'object' ? JSON.stringify(tokenValue) : String(tokenValue)
+        tokenMap.set(currentPath, normalizedValue)
+      } else {
+        // This is a nested object
+        const nestedTokens = extractTokensWithValues(value, currentPath)
+        for (const [nestedKey, nestedValue] of nestedTokens) {
+          tokenMap.set(nestedKey, nestedValue)
+        }
+      }
+    }
+  }
+
+  return tokenMap
+}
+
+/**
+ * Calculate similarity between two token paths
+ * Used to help prioritize rename candidates
+ */
+function calculatePathSimilarity(path1: string, path2: string): number {
+  const parts1 = path1.toLowerCase().split('.')
+  const parts2 = path2.toLowerCase().split('.')
+
+  // Check if they share the same category (first part)
+  let similarity = 0
+  if (parts1[0] === parts2[0]) {
+    similarity += 0.3
+  }
+
+  // Check if the last part (token name) is similar
+  const lastName1 = parts1[parts1.length - 1]
+  const lastName2 = parts2[parts2.length - 1]
+
+  if (lastName1 === lastName2) {
+    similarity += 0.5
+  } else if (lastName1.includes(lastName2) || lastName2.includes(lastName1)) {
+    similarity += 0.3
+  }
+
+  // Check for common parts in the middle
+  const commonParts = parts1.filter(part => parts2.includes(part))
+  similarity += (commonParts.length / Math.max(parts1.length, parts2.length)) * 0.2
+
+  return Math.min(similarity, 1)
+}
+
+/**
  * Find deprecated tokens (removed or renamed)
  */
 function findDeprecatedTokens(): { removed: Set<string>; renamed: Map<string, string> } {
@@ -104,15 +166,58 @@ function findDeprecatedTokens(): { removed: Set<string>; renamed: Map<string, st
   const newKeys = extractTokenKeys(newTokens)
   const oldKeys = extractTokenKeys(oldTokens)
 
-  // Find removed tokens
-  for (const key of oldKeys) {
-    if (!newKeys.has(key)) {
-      removed.add(key)
-    }
+  // Extract tokens with their values for rename detection
+  const oldTokensWithValues = extractTokensWithValues(oldTokens)
+  const newTokensWithValues = extractTokensWithValues(newTokens)
+
+  // Create a reverse map of new tokens: value -> [paths]
+  // A value could potentially map to multiple paths if duplicated
+  const newValueToPathsMap = new Map<string, string[]>()
+  for (const [path, value] of newTokensWithValues) {
+    const paths = newValueToPathsMap.get(value) || []
+    paths.push(path)
+    newValueToPathsMap.set(value, paths)
   }
 
-  // TODO: Implement rename detection based on similar values
-  // This would require comparing token values to suggest renames
+  // Find removed tokens and detect renames based on matching values
+  for (const key of oldKeys) {
+    if (!newKeys.has(key)) {
+      const oldValue = oldTokensWithValues.get(key)
+
+      if (oldValue !== undefined) {
+        // Check if any new token has the same value
+        const matchingNewPaths = newValueToPathsMap.get(oldValue)
+
+        if (matchingNewPaths && matchingNewPaths.length > 0) {
+          // Find the best match based on path similarity
+          let bestMatch = matchingNewPaths[0]
+          let bestSimilarity = calculatePathSimilarity(key, bestMatch)
+
+          for (const newPath of matchingNewPaths) {
+            const similarity = calculatePathSimilarity(key, newPath)
+            if (similarity > bestSimilarity) {
+              bestSimilarity = similarity
+              bestMatch = newPath
+            }
+          }
+
+          // Only consider it a rename if the path didn't exist before
+          // (to avoid false positives when a token is removed and another with same value exists)
+          if (!oldKeys.has(bestMatch)) {
+            renamed.set(key, bestMatch)
+          } else {
+            // The matching path already existed, so this is truly removed
+            removed.add(key)
+          }
+        } else {
+          // No matching value found, token is removed
+          removed.add(key)
+        }
+      } else {
+        removed.add(key)
+      }
+    }
+  }
 
   return { removed, renamed }
 }
