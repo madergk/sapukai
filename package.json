@@ -1,7 +1,7 @@
 {
   "name": "sapukai",
   "private": true,
-  "version": "0.1.5",
+  "version": "0.1.6",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -18,28 +18,18 @@
     "test:scripts": "vitest run scripts/__tests__",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "sync-tokens": "tsx scripts/sync-tokens.ts",
-    "sync-figma": "tsx scripts/sync-figma-tokens.ts",
-    "sync-tokens-local": "tsx scripts/sync-figma-tokens-local.ts",
-    "convert-tokens": "tsx scripts/convert-tokens-studio.ts",
+    "token:sync": "tsx scripts/tokens/sync.ts",
+    "token:postprocess": "tsx scripts/tokens/postprocess.ts",
+    "token:publish": "tsx scripts/tokens/publish.ts",
     "build-tokens": "tsx style-dictionary.config.ts",
-    "validate": "npm run validate-tokens && npm run validate-components && npm run typecheck",
-    "validate:strict": "npm run validate-tokens && npm run validate-components && npm run lint && npm run typecheck",
-    "validate-components": "tsx scripts/validate-components.ts",
-    "validate-tokens": "tsx scripts/validate-tokens.ts",
-    "update-docs": "tsx scripts/update-docs.ts",
     "bump-version": "tsx scripts/bump-version.ts",
     "rollback-tokens": "tsx scripts/rollback-tokens.ts",
-    "generate-report": "tsx scripts/generate-report.ts",
     "notify": "tsx scripts/notify.ts",
-    "ci": "npm run validate && npm run test && npm run build",
+    "ci": "npm run typecheck && npm run test && npm run build",
     "release": "tsx scripts/release.ts",
     "prepare": "husky"
   },
   "lint-staged": {
-    "tokens/*.json": [
-      "npm run validate-tokens --"
-    ],
     "*.{ts,tsx}": [
       "eslint --fix --no-warn-ignored"
     ],

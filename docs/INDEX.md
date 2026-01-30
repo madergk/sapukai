@@ -86,10 +86,11 @@ proyecto/
 │   └── IMPLEMENTATION_SUMMARY.md            ← Detalles técnicos
 │
 ├── 🔧 scripts/
-│   ├── sync-figma-tokens-mcp.ts            ← Script MCP
+│   ├── tokens/                             ← Orquestación tokens
+│   │   ├── sync.ts                         ← Orquestador
+│   │   └── sources/figma-mcp.ts            ← Script MCP
 │   ├── figma-console-helper.ts             ← Helpers
-│   ├── demo-figma-extract.ts               ← Demo interactiva
-│   └── sync-tokens.ts (actualizado)        ← Orquestador
+│   └── demo-figma-extract.ts               ← Demo interactiva
 │
 ├── 📋 .env.mcp.example                     ← Configuración
 └── 🎨 tokens/
@@ -143,13 +144,13 @@ proyecto/
 2. Ejecutar demo-figma-extract.ts
 3. Copiar script a Figma Console
 4. Pegar JSON en tokens/figma-tokens.json
-5. npm run sync-tokens -- --skip-figma
+5. npm run token:sync -- --source=local
 ```
 
 ### Flujo Automatizado (Próximamente)
 
 ```
-1. npm run sync-tokens -- --mcp
+1. npm run token:sync -- --source=mcp
 2. Claude Code hace el rest
 ```
 
@@ -193,12 +194,11 @@ cat docs/TOKENS_FLOW.md                  # Comparativa
 cat docs/IMPLEMENTATION_SUMMARY.md       # Técnico
 
 # Sincronizar tokens
-npm run sync-tokens -- --skip-figma      # Manual
-npm run sync-tokens -- --mcp             # Automático (próx)
+npm run token:sync -- --source=local     # Manual
+npm run token:sync -- --source=mcp       # Automático
 
-# Validar
-npm run validate-tokens                  # Validar estructura
-npm run validate-components              # Validar uso
+# Postprocess
+npm run token:postprocess                # Reporte + docs
 
 # Rollback
 npm run rollback-tokens -- --list        # Ver versiones
@@ -281,11 +281,11 @@ Nivel 4: IMPLEMENTATION_SUMMARY (Referencia)
 
 ```bash
 # Setup
-FIGMA_FILE_KEY=tu_key_aqui npm run sync-tokens -- --skip-figma
+FIGMA_FILE_KEY=tu_key_aqui npm run token:sync -- --source=local
 
 # Uso diario
-npm run sync-tokens -- --skip-figma        # Sincronizar
-npm run validate-tokens                    # Validar
+npm run token:sync -- --source=local       # Sincronizar
+npm run token:postprocess                  # Reporte + docs
 git diff src/tokens/                       # Ver cambios
 
 # Rollback
@@ -294,7 +294,7 @@ npm run rollback-tokens -- --version=0.1.5
 
 # Info
 npx tsx scripts/demo-figma-extract.ts      # Ver instrucciones
-npm run validate-tokens --help             # Ayuda
+tsx scripts/tokens/report.ts -- --list     # Listar reportes
 ```
 
 ---
@@ -304,8 +304,8 @@ npm run validate-tokens --help             # Ayuda
 - [ ] Leer QUICKSTART_MCP.md (5 min)
 - [ ] Ejecutar `npx tsx scripts/demo-figma-extract.ts` (2 min)
 - [ ] Extraer tokens desde Figma Console (5 min)
-- [ ] Ejecutar `npm run sync-tokens -- --skip-figma` (2 min)
-- [ ] Validar con `npm run validate-tokens` (2 min)
+- [ ] Ejecutar `npm run token:sync -- --source=local` (2 min)
+- [ ] Postprocess con `npm run token:postprocess` (2 min)
 - [ ] Hacer git push (si todo está bien)
 - [ ] Leer TOKENS_FLOW.md para entender mejor (15 min)
 

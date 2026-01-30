@@ -64,7 +64,7 @@ tokens/figma-tokens.json
 ### 5️⃣ Sincroniza los tokens
 
 ```bash
-npm run sync-tokens -- --skip-figma
+npm run token:sync -- --source=local
 ```
 
 ✅ **¡Listo!** Tus tokens están sincronizados.
@@ -78,13 +78,13 @@ npm run sync-tokens -- --skip-figma
 npx tsx scripts/demo-figma-extract.ts
 
 # Sincronizar (sin fetch de API)
-npm run sync-tokens -- --skip-figma
+npm run token:sync -- --source=local
 
 # Preview de cambios (sin aplicarlos)
-npm run sync-tokens -- --skip-figma --dry-run
+npm run token:sync -- --source=local --dry-run
 
-# Validar tokens
-npm run validate-tokens
+# Postprocess (reporte + docs)
+npm run token:postprocess -- --skip-storybook
 
 # Ver versiones anteriores
 npm run rollback-tokens -- --list
@@ -114,11 +114,11 @@ En `tokens/figma-tokens.json` (formato W3C Design Tokens).
 1. Ejecuta el script de nuevo en la consola
 2. Copia el JSON actualizado
 3. Reemplaza `tokens/figma-tokens.json`
-4. Ejecuta `npm run sync-tokens -- --skip-figma`
+4. Ejecuta `npm run token:sync -- --source=local`
 
 ### ¿Puedo automatizarlo?
 
-**Próximamente** con `npm run sync-tokens -- --mcp`
+**Disponible** con `npm run token:sync -- --source=mcp`
 
 ### ¿Qué formatos genera?
 
@@ -188,7 +188,7 @@ Cuando necesites sincronizar de nuevo:
 # 2. Pega el script de nuevo
 # 3. Copia el nuevo JSON
 # 4. Actualiza tokens/figma-tokens.json
-# 5. npm run sync-tokens -- --skip-figma
+# 5. npm run token:sync -- --source=local
 
 # ¡Hecho! Tus tokens están actualizados.
 ```
@@ -251,7 +251,7 @@ console.log('✅ Copiado al portapapeles!')
 | "figma is not defined"     | Asegúrate de estar en la consola de Figma (F12 en la página de Figma) |
 | "getAll is not a function" | Tu versión de Figma podría ser antigua. Actualiza.                    |
 | JSON muy grande            | Guárdalo en un archivo `.txt` temporal y luego cópialo                |
-| "No changes detected"      | Usa `npm run sync-tokens -- --force`                                  |
+| "No changes detected"      | Ejecuta `npm run token:sync -- --source=local`                        |
 
 ---
 
@@ -264,7 +264,7 @@ npx tsx scripts/demo-figma-extract.ts
 # Paso 2: Seguir los pasos de arriba
 
 # Paso 3: Sincronizar
-npm run sync-tokens -- --skip-figma
+npm run token:sync -- --source=local
 
 # ✅ ¡Hecho!
 ```

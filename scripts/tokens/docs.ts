@@ -7,8 +7,8 @@ import * as fs from 'fs'
 import * as path from 'path'
 import chalk from 'chalk'
 import ora from 'ora'
+import { TOKENS_FILE } from './config'
 
-const TOKENS_FILE = path.join(process.cwd(), 'tokens', 'figma-tokens.json')
 const DOCS_DIR = path.join(process.cwd(), 'src', 'docs')
 const DESIGN_TOKENS_MDX = path.join(DOCS_DIR, 'DesignTokens.mdx')
 
@@ -26,9 +26,6 @@ interface TokensData {
   }
 }
 
-/**
- * Read tokens file
- */
 function readTokens(): TokensData | null {
   if (!fs.existsSync(TOKENS_FILE)) {
     return null
@@ -37,9 +34,6 @@ function readTokens(): TokensData | null {
   return JSON.parse(fs.readFileSync(TOKENS_FILE, 'utf-8'))
 }
 
-/**
- * Flatten tokens for display
- */
 function flattenTokens(obj: Record<string, any>, prefix = ''): Map<string, any> {
   const result = new Map<string, any>()
 
@@ -65,9 +59,6 @@ function flattenTokens(obj: Record<string, any>, prefix = ''): Map<string, any> 
   return result
 }
 
-/**
- * Generate color token table
- */
 function generateColorTable(tokens: Map<string, any>): string {
   const colorTokens = Array.from(tokens.entries())
     .filter(([, v]) => v.type === 'color')
@@ -93,9 +84,6 @@ function generateColorTable(tokens: Map<string, any>): string {
   return table
 }
 
-/**
- * Generate spacing token table
- */
 function generateSpacingTable(tokens: Map<string, any>): string {
   const spacingTokens = Array.from(tokens.entries())
     .filter(
@@ -117,9 +105,6 @@ function generateSpacingTable(tokens: Map<string, any>): string {
   return table
 }
 
-/**
- * Generate typography token table
- */
 function generateTypographyTable(tokens: Map<string, any>): string {
   const typographyTokens = Array.from(tokens.entries())
     .filter(
@@ -144,9 +129,6 @@ function generateTypographyTable(tokens: Map<string, any>): string {
   return table
 }
 
-/**
- * Generate the MDX documentation content
- */
 function generateMdxContent(tokens: TokensData): string {
   const metadata = tokens.$metadata
   const primitiveTokens = flattenTokens(tokens.primitives)
@@ -264,7 +246,7 @@ const textColor = semanticColors.light.content.primary
 To update tokens from Figma:
 
 \`\`\`bash
-npm run sync-tokens
+npm run token:sync
 \`\`\`
 
 This will:
@@ -287,19 +269,14 @@ This will:
 `
 }
 
-/**
- * Update the documentation file
- */
-async function updateDocs(): Promise<void> {
+export async function updateDocs(): Promise<void> {
   const spinner = ora('Updating documentation...').start()
 
-  // Read tokens
   const tokens = readTokens()
 
   if (!tokens) {
     spinner.warn('No tokens file found, using placeholder documentation')
 
-    // Create placeholder documentation
     const placeholderContent = `import { Meta } from '@storybook/addon-docs/blocks'
 
 <Meta title="Foundation/Design Tokens" />
@@ -307,12 +284,12 @@ async function updateDocs(): Promise<void> {
 # Design Tokens
 
 > **Note**: No tokens have been synced from Figma yet.
-> Run \`npm run sync-tokens\` to fetch and generate token documentation.
+> Run \`npm run token:sync\` to fetch tokens from Figma.
 
 ## Getting Started
 
 1. Create a \`.env\` file with your Figma credentials (see \`.env.example\`)
-2. Run \`npm run sync-tokens\` to fetch tokens from Figma
+2. Run \`npm run token:sync\` to fetch tokens from Figma
 3. This documentation will be automatically updated
 
 ## Manual Token Files
@@ -320,7 +297,6 @@ async function updateDocs(): Promise<void> {
 If you don't have access to the Figma API, you can manually create \`tokens/figma-tokens.json\` following the expected format.
 `
 
-    // Ensure docs directory exists
     if (!fs.existsSync(DOCS_DIR)) {
       fs.mkdirSync(DOCS_DIR, { recursive: true })
     }
@@ -330,10 +306,8 @@ If you don't have access to the Figma API, you can manually create \`tokens/figm
     return
   }
 
-  // Generate and write documentation
   const content = generateMdxContent(tokens)
 
-  // Ensure docs directory exists
   if (!fs.existsSync(DOCS_DIR)) {
     fs.mkdirSync(DOCS_DIR, { recursive: true })
   }
@@ -343,9 +317,6 @@ If you don't have access to the Figma API, you can manually create \`tokens/figm
   spinner.succeed(`Updated ${chalk.cyan('src/docs/DesignTokens.mdx')}`)
 }
 
-/**
- * Main execution
- */
 async function main(): Promise<void> {
   console.log(chalk.blue('\n📚 Updating documentation...\n'))
 
@@ -354,12 +325,9 @@ async function main(): Promise<void> {
   console.log(chalk.green('\n✓ Documentation updated successfully\n'))
 }
 
-// Run if executed directly
-if (process.argv[1]?.includes('update-docs')) {
+if (process.argv[1]?.includes('tokens/docs')) {
   main().catch(error => {
     console.error(chalk.red('\nError:'), error.message)
     process.exit(1)
   })
 }
-
-export { main as updateDocs }

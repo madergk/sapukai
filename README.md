@@ -162,34 +162,30 @@ cp .env.example .env
 ### Syncing Tokens
 
 ```bash
-npm run sync-tokens
+npm run token:sync -- --source=api
 ```
 
 This will:
 
-1. Fetch latest variables from Figma API
+1. Fetch latest variables from the selected source
 2. Transform tokens to TypeScript and CSS
-3. Validate components for breaking changes
-4. Update Storybook documentation
-5. Bump the package version
-6. Create a git commit and tag
+3. Generate reports, update docs, and build Storybook (via postprocess)
 
 ### Sync Options
 
 ```bash
-npm run sync-tokens -- --dry-run       # Preview changes
-npm run sync-tokens -- --no-version    # Skip version bump
-npm run sync-tokens -- --force         # Force sync
-npm run sync-tokens -- --skip-validation
+npm run token:sync -- --source=api --dry-run
+npm run token:sync -- --source=mcp
+npm run token:sync -- --source=tokens-studio
 ```
 
 ### Individual Scripts
 
 ```bash
-npm run sync-figma          # Fetch tokens from Figma
+npm run token:sync          # Fetch + build tokens (choose source)
+npm run token:postprocess   # Report + refs + docs + Storybook
+npm run token:publish       # Branch + commit + push
 npm run build-tokens        # Transform with Style Dictionary
-npm run validate-components # Validate components
-npm run update-docs         # Update documentation
 npm run bump-version        # Bump version
 ```
 
@@ -245,10 +241,7 @@ const Component = () => <div style={{ color: primitiveColors.zinc[900] }}>Conten
 sapukai/
 ├── .storybook/              # Storybook configuration
 ├── scripts/                 # Token sync scripts
-│   ├── sync-tokens.ts       # Main orchestrator
-│   ├── sync-figma-tokens.ts
-│   ├── validate-components.ts
-│   ├── update-docs.ts
+│   ├── tokens/              # Consolidated token automation
 │   └── bump-version.ts
 ├── src/
 │   ├── components/
@@ -279,7 +272,7 @@ sapukai/
 | `npm run storybook`       | Start Storybook          |
 | `npm run build-storybook` | Build Storybook          |
 | `npm run lint`            | Run ESLint               |
-| `npm run sync-tokens`     | Sync tokens from Figma   |
+| `npm run token:sync`      | Sync tokens from Figma   |
 | `npm run preview`         | Preview production build |
 
 ---

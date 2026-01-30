@@ -1,608 +1,699 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>📊 Tokens Map - Estructura & Conexiones</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            color: #e2e8f0;
-            min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
-        }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        color: #e2e8f0;
+        min-height: 100vh;
+        padding: 20px;
+        overflow-x: hidden;
+      }
 
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-        }
+      .container {
+        max-width: 1600px;
+        margin: 0 auto;
+      }
 
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
+      header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
 
+      h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        background: linear-gradient(135deg, #60a5fa, #a78bfa);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .subtitle {
+        color: #94a3b8;
+        font-size: 1.1em;
+        margin-bottom: 20px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+      }
+
+      .card {
+        background: rgba(30, 41, 59, 0.7);
+        border: 1px solid rgba(100, 116, 139, 0.3);
+        border-radius: 12px;
+        padding: 24px;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s;
+        cursor: pointer;
+      }
+
+      .card:hover {
+        border-color: rgba(100, 116, 139, 0.6);
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .card h2 {
+        font-size: 1.4em;
+        margin-bottom: 15px;
+        color: #60a5fa;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .icon {
+        font-size: 1.5em;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .stat {
+        background: rgba(100, 116, 139, 0.2);
+        padding: 12px;
+        border-radius: 8px;
+        font-size: 0.9em;
+      }
+
+      .stat-label {
+        color: #94a3b8;
+        font-size: 0.85em;
+      }
+
+      .stat-value {
+        color: #60a5fa;
+        font-weight: 600;
+        font-size: 1.3em;
+      }
+
+      .hierarchy {
+        background: rgba(30, 41, 59, 0.7);
+        border: 1px solid rgba(100, 116, 139, 0.3);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 40px;
+      }
+
+      .hierarchy h2 {
+        color: #60a5fa;
+        margin-bottom: 20px;
+      }
+
+      .tree {
+        font-family: 'Courier New', monospace;
+        font-size: 0.9em;
+        line-height: 1.8;
+        color: #cbd5e1;
+        margin-left: 20px;
+      }
+
+      .tree-item {
+        margin: 8px 0;
+        padding-left: 20px;
+        border-left: 2px solid rgba(100, 116, 139, 0.3);
+        position: relative;
+      }
+
+      .tree-item::before {
+        content: '├─';
+        position: absolute;
+        left: -8px;
+        color: #475569;
+      }
+
+      .tree-level-2 {
+        margin-left: 20px;
+      }
+
+      .tree-level-3 {
+        margin-left: 40px;
+        font-size: 0.85em;
+        color: #94a3b8;
+      }
+
+      .connection-map {
+        background: rgba(30, 41, 59, 0.7);
+        border: 1px solid rgba(100, 116, 139, 0.3);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 40px;
+      }
+
+      .connection-map h2 {
+        color: #60a5fa;
+        margin-bottom: 20px;
+      }
+
+      .flow {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin: 15px 0;
+        padding: 12px;
+        background: rgba(100, 116, 139, 0.1);
+        border-radius: 8px;
+      }
+
+      .flow-box {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+        border: 1px solid rgba(59, 130, 246, 0.5);
+        padding: 10px 15px;
+        border-radius: 6px;
+        font-weight: 600;
+        color: #60a5fa;
+        flex: 1;
+        text-align: center;
+      }
+
+      .arrow {
+        color: #94a3b8;
+        font-size: 1.5em;
+      }
+
+      .color-palette {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        gap: 10px;
+        margin: 15px 0;
+      }
+
+      .color-swatch {
+        aspect-ratio: 1;
+        border-radius: 8px;
+        border: 2px solid rgba(100, 116, 139, 0.3);
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .color-swatch:hover {
+        border-color: #60a5fa;
+        transform: scale(1.05);
+      }
+
+      .color-label {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.7);
+        color: #e2e8f0;
+        padding: 4px;
+        font-size: 0.7em;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      .color-swatch:hover .color-label {
+        opacity: 1;
+      }
+
+      .section-title {
+        color: #a78bfa;
+        margin-top: 30px;
+        margin-bottom: 15px;
+        font-size: 1.2em;
+        border-left: 4px solid #a78bfa;
+        padding-left: 12px;
+      }
+
+      .info-box {
+        background: rgba(59, 130, 246, 0.1);
+        border-left: 4px solid #60a5fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0;
+        font-size: 0.95em;
+        line-height: 1.6;
+      }
+
+      code {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: #60a5fa;
+        font-family: 'Courier New', monospace;
+      }
+
+      .search-box {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      input[type='text'] {
+        flex: 1;
+        padding: 12px 15px;
+        background: rgba(100, 116, 139, 0.2);
+        border: 1px solid rgba(100, 116, 139, 0.5);
+        border-radius: 8px;
+        color: #e2e8f0;
+        font-size: 1em;
+      }
+
+      input[type='text']::placeholder {
+        color: #64748b;
+      }
+
+      input[type='text']:focus {
+        outline: none;
+        border-color: #60a5fa;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      }
+
+      @media (max-width: 768px) {
         h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #60a5fa, #a78bfa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .subtitle {
-            color: #94a3b8;
-            font-size: 1.1em;
-            margin-bottom: 20px;
+          font-size: 1.8em;
         }
 
         .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .card {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid rgba(100, 116, 139, 0.3);
-            border-radius: 12px;
-            padding: 24px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .card:hover {
-            border-color: rgba(100, 116, 139, 0.6);
-            box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .card h2 {
-            font-size: 1.4em;
-            margin-bottom: 15px;
-            color: #60a5fa;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .icon {
-            font-size: 1.5em;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .stat {
-            background: rgba(100, 116, 139, 0.2);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 0.9em;
-        }
-
-        .stat-label {
-            color: #94a3b8;
-            font-size: 0.85em;
-        }
-
-        .stat-value {
-            color: #60a5fa;
-            font-weight: 600;
-            font-size: 1.3em;
-        }
-
-        .hierarchy {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid rgba(100, 116, 139, 0.3);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 40px;
-        }
-
-        .hierarchy h2 {
-            color: #60a5fa;
-            margin-bottom: 20px;
+          grid-template-columns: 1fr;
         }
 
         .tree {
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-            line-height: 1.8;
-            color: #cbd5e1;
-            margin-left: 20px;
+          font-size: 0.8em;
         }
+      }
 
-        .tree-item {
-            margin: 8px 0;
-            padding-left: 20px;
-            border-left: 2px solid rgba(100, 116, 139, 0.3);
-            position: relative;
-        }
-
-        .tree-item::before {
-            content: "├─";
-            position: absolute;
-            left: -8px;
-            color: #475569;
-        }
-
-        .tree-level-2 {
-            margin-left: 20px;
-        }
-
-        .tree-level-3 {
-            margin-left: 40px;
-            font-size: 0.85em;
-            color: #94a3b8;
-        }
-
-        .connection-map {
-            background: rgba(30, 41, 59, 0.7);
-            border: 1px solid rgba(100, 116, 139, 0.3);
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 40px;
-        }
-
-        .connection-map h2 {
-            color: #60a5fa;
-            margin-bottom: 20px;
-        }
-
-        .flow {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin: 15px 0;
-            padding: 12px;
-            background: rgba(100, 116, 139, 0.1);
-            border-radius: 8px;
-        }
-
-        .flow-box {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
-            border: 1px solid rgba(59, 130, 246, 0.5);
-            padding: 10px 15px;
-            border-radius: 6px;
-            font-weight: 600;
-            color: #60a5fa;
-            flex: 1;
-            text-align: center;
-        }
-
-        .arrow {
-            color: #94a3b8;
-            font-size: 1.5em;
-        }
-
-        .color-palette {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .color-swatch {
-            aspect-ratio: 1;
-            border-radius: 8px;
-            border: 2px solid rgba(100, 116, 139, 0.3);
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .color-swatch:hover {
-            border-color: #60a5fa;
-            transform: scale(1.05);
-        }
-
-        .color-label {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.7);
-            color: #e2e8f0;
-            padding: 4px;
-            font-size: 0.7em;
-            text-align: center;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .color-swatch:hover .color-label {
-            opacity: 1;
-        }
-
-        .section-title {
-            color: #a78bfa;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-            border-left: 4px solid #a78bfa;
-            padding-left: 12px;
-        }
-
-        .info-box {
-            background: rgba(59, 130, 246, 0.1);
-            border-left: 4px solid #60a5fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            font-size: 0.95em;
-            line-height: 1.6;
-        }
-
-        code {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 2px 6px;
-            border-radius: 4px;
-            color: #60a5fa;
-            font-family: 'Courier New', monospace;
-        }
-
-        .search-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            padding: 12px 15px;
-            background: rgba(100, 116, 139, 0.2);
-            border: 1px solid rgba(100, 116, 139, 0.5);
-            border-radius: 8px;
-            color: #e2e8f0;
-            font-size: 1em;
-        }
-
-        input[type="text"]::placeholder {
-            color: #64748b;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #60a5fa;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.8em;
-            }
-
-            .grid {
-                grid-template-columns: 1fr;
-            }
-
-            .tree {
-                font-size: 0.8em;
-            }
-        }
-
-        .highlight {
-            background: rgba(251, 146, 60, 0.3);
-            border-radius: 4px;
-            padding: 2px 4px;
-            color: #fb923c;
-        }
+      .highlight {
+        background: rgba(251, 146, 60, 0.3);
+        border-radius: 4px;
+        padding: 2px 4px;
+        color: #fb923c;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <header>
-            <h1>📊 Tokens Visualizer</h1>
-            <p class="subtitle">Estructura jerárquica y conexiones del sistema de diseño Sapukai</p>
-        </header>
+      <header>
+        <h1>📊 Tokens Visualizer</h1>
+        <p class="subtitle">Estructura jerárquica y conexiones del sistema de diseño Sapukai</p>
+      </header>
 
-        <!-- Búsqueda -->
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="🔍 Busca tokens por nombre..." />
+      <!-- Búsqueda -->
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Busca tokens por nombre..." />
+      </div>
+
+      <!-- Estadísticas Principales -->
+      <div class="grid">
+        <div class="card">
+          <h2><span class="icon">🎨</span> Tokens de Color</h2>
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-label">Primitivos</div>
+              <div class="stat-value">660</div>
+            </div>
+            <div class="stat">
+              <div class="stat-label">Semánticos</div>
+              <div class="stat-value">104</div>
+            </div>
+          </div>
+          <div class="info-box" style="margin-top: 15px">
+            Incluye 22 paletas Tailwind + colores semánticos para light/dark mode
+          </div>
         </div>
 
-        <!-- Estadísticas Principales -->
-        <div class="grid">
-            <div class="card">
-                <h2><span class="icon">🎨</span> Tokens de Color</h2>
-                <div class="stats">
-                    <div class="stat">
-                        <div class="stat-label">Primitivos</div>
-                        <div class="stat-value">660</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Semánticos</div>
-                        <div class="stat-value">104</div>
-                    </div>
-                </div>
-                <div class="info-box" style="margin-top: 15px;">
-                    Incluye 22 paletas Tailwind + colores semánticos para light/dark mode
-                </div>
+        <div class="card">
+          <h2><span class="icon">📏</span> Dimensiones</h2>
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-label">Spacing</div>
+              <div class="stat-value">45</div>
             </div>
-
-            <div class="card">
-                <h2><span class="icon">📏</span> Dimensiones</h2>
-                <div class="stats">
-                    <div class="stat">
-                        <div class="stat-label">Spacing</div>
-                        <div class="stat-value">45</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Border Radius</div>
-                        <div class="stat-value">8</div>
-                    </div>
-                </div>
-                <div class="info-box" style="margin-top: 15px;">
-                    Sistema de espaciado modular desde 0px a 384px
-                </div>
+            <div class="stat">
+              <div class="stat-label">Border Radius</div>
+              <div class="stat-value">8</div>
             </div>
-
-            <div class="card">
-                <h2><span class="icon">📱</span> Responsividad</h2>
-                <div class="stats">
-                    <div class="stat">
-                        <div class="stat-label">Breakpoints</div>
-                        <div class="stat-value">5</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-label">Rango</div>
-                        <div class="stat-value">640px-2K</div>
-                    </div>
-                </div>
-                <div class="info-box" style="margin-top: 15px;">
-                    sm, md, lg, xl, 2xl para diseño responsive
-                </div>
-            </div>
+          </div>
+          <div class="info-box" style="margin-top: 15px">
+            Sistema de espaciado modular desde 0px a 384px
+          </div>
         </div>
 
-        <!-- Flujo de Tokens -->
-        <div class="connection-map">
-            <h2>🔄 Flujo de Transformación de Tokens</h2>
-            <div class="flow">
-                <div class="flow-box">Figma + Tokens Studio</div>
-                <span class="arrow">→</span>
-                <div class="flow-box">figma-tokens.json</div>
+        <div class="card">
+          <h2><span class="icon">📱</span> Responsividad</h2>
+          <div class="stats">
+            <div class="stat">
+              <div class="stat-label">Breakpoints</div>
+              <div class="stat-value">5</div>
             </div>
-            <div class="flow">
-                <div class="flow-box">W3C Design Tokens Format</div>
-                <span class="arrow">→</span>
-                <div class="flow-box">style-dictionary.config.ts</div>
+            <div class="stat">
+              <div class="stat-label">Rango</div>
+              <div class="stat-value">640px-2K</div>
             </div>
-            <div class="flow">
-                <div class="flow-box">Transformación Automática</div>
-                <span class="arrow">→</span>
-                <div class="flow-box">src/tokens/ (CSS, TS, iOS, Android)</div>
+          </div>
+          <div class="info-box" style="margin-top: 15px">
+            sm, md, lg, xl, 2xl para diseño responsive
+          </div>
+        </div>
+      </div>
+
+      <!-- Flujo de Tokens -->
+      <div class="connection-map">
+        <h2>🔄 Flujo de Transformación de Tokens</h2>
+        <div class="flow">
+          <div class="flow-box">Figma + Tokens Studio</div>
+          <span class="arrow">→</span>
+          <div class="flow-box">figma-tokens.json</div>
+        </div>
+        <div class="flow">
+          <div class="flow-box">W3C Design Tokens Format</div>
+          <span class="arrow">→</span>
+          <div class="flow-box">style-dictionary.config.ts</div>
+        </div>
+        <div class="flow">
+          <div class="flow-box">Transformación Automática</div>
+          <span class="arrow">→</span>
+          <div class="flow-box">src/tokens/ (CSS, TS, iOS, Android)</div>
+        </div>
+        <div class="flow">
+          <div class="flow-box">src/index.css</div>
+          <span class="arrow">→</span>
+          <div class="flow-box">Aplicación React</div>
+        </div>
+      </div>
+
+      <!-- Estructura Jerárquica -->
+      <div class="hierarchy">
+        <h2>🏗️ Estructura de Tokens</h2>
+
+        <div class="section-title">📚 Root Structure</div>
+        <div class="tree">
+          <div class="tree-item">
+            figma-tokens.json
+            <div class="tree-level-2">
+              <div class="tree-item">$schema: W3C Design Tokens</div>
+              <div class="tree-item">
+                $metadata: Source & Version Info
+                <div class="tree-level-3">
+                  <div class="tree-item">source: "Figma (Tokens Studio)"</div>
+                  <div class="tree-item">fileKey: "rxkEYwOrb..."</div>
+                  <div class="tree-item">extractedAt: "2026-01-21T15:23:12Z"</div>
+                  <div class="tree-item">version: "1.0.0"</div>
+                </div>
+              </div>
             </div>
-            <div class="flow">
-                <div class="flow-box">src/index.css</div>
-                <span class="arrow">→</span>
-                <div class="flow-box">Aplicación React</div>
-            </div>
+          </div>
         </div>
 
-        <!-- Estructura Jerárquica -->
-        <div class="hierarchy">
-            <h2>🏗️ Estructura de Tokens</h2>
-
-            <div class="section-title">📚 Root Structure</div>
-            <div class="tree">
-                <div class="tree-item">figma-tokens.json
-                    <div class="tree-level-2">
-                        <div class="tree-item">$schema: W3C Design Tokens</div>
-                        <div class="tree-item">$metadata: Source & Version Info
-                            <div class="tree-level-3">
-                                <div class="tree-item">source: "Figma (Tokens Studio)"</div>
-                                <div class="tree-item">fileKey: "rxkEYwOrb..."</div>
-                                <div class="tree-item">extractedAt: "2026-01-21T15:23:12Z"</div>
-                                <div class="tree-item">version: "1.0.0"</div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="section-title">🎯 Primitivos (Tokens Base)</div>
+        <div class="tree">
+          <div class="tree-item">
+            primitives/
+            <div class="tree-level-2">
+              <div class="tree-item">
+                colors/ (22 paletas)
+                <div class="tree-level-3">
+                  <div class="tree-item">
+                    <span class="highlight">slate</span> - Grises fríos (50-950)
+                  </div>
+                  <div class="tree-item">
+                    <span class="highlight">gray</span> - Grises puros (50-950)
+                  </div>
+                  <div class="tree-item">
+                    <span class="highlight">zinc</span> - Grises tiernos (50-950)
+                  </div>
+                  <div class="tree-item">
+                    <span class="highlight">red, orange, amber</span> - Cálidos
+                  </div>
+                  <div class="tree-item">
+                    <span class="highlight">lime, green, emerald, teal</span> - Verdes
+                  </div>
+                  <div class="tree-item">
+                    <span class="highlight">cyan, sky, blue, indigo</span> - Azules
+                  </div>
+                  <div class="tree-item">
+                    <span class="highlight">violet, purple, fuchsia, pink, rose</span> - Morados
+                  </div>
+                  <div class="tree-item">
+                    <span class="highlight">white, black</span> - Acromáticos
+                  </div>
                 </div>
-            </div>
-
-            <div class="section-title">🎯 Primitivos (Tokens Base)</div>
-            <div class="tree">
-                <div class="tree-item">primitives/
-                    <div class="tree-level-2">
-                        <div class="tree-item">colors/ (22 paletas)
-                            <div class="tree-level-3">
-                                <div class="tree-item"><span class="highlight">slate</span> - Grises fríos (50-950)</div>
-                                <div class="tree-item"><span class="highlight">gray</span> - Grises puros (50-950)</div>
-                                <div class="tree-item"><span class="highlight">zinc</span> - Grises tiernos (50-950)</div>
-                                <div class="tree-item"><span class="highlight">red, orange, amber</span> - Cálidos</div>
-                                <div class="tree-item"><span class="highlight">lime, green, emerald, teal</span> - Verdes</div>
-                                <div class="tree-item"><span class="highlight">cyan, sky, blue, indigo</span> - Azules</div>
-                                <div class="tree-item"><span class="highlight">violet, purple, fuchsia, pink, rose</span> - Morados</div>
-                                <div class="tree-item"><span class="highlight">white, black</span> - Acromáticos</div>
-                            </div>
-                        </div>
-                        <div class="tree-item">borderRadius/ (8 valores)
-                            <div class="tree-level-3">
-                                <div class="tree-item">none (0px) → full (9999px)</div>
-                                <div class="tree-item">Cada paleta: 50 valores (del más claro al más oscuro)</div>
-                            </div>
-                        </div>
-                        <div class="tree-item">spacing/ (45 valores)
-                            <div class="tree-level-3">
-                                <div class="tree-item">0px → 384px (escala: 4px, 8px, 12px...)</div>
-                                <div class="tree-item">Decimales: 0.5, 1.5, 2.5, 3.5</div>
-                            </div>
-                        </div>
-                        <div class="tree-item">screens/ (5 breakpoints)
-                            <div class="tree-level-3">
-                                <div class="tree-item">sm: 640px | md: 768px | lg: 1024px</div>
-                                <div class="tree-item">xl: 1280px | 2xl: 1536px</div>
-                            </div>
-                        </div>
-                    </div>
+              </div>
+              <div class="tree-item">
+                borderRadius/ (8 valores)
+                <div class="tree-level-3">
+                  <div class="tree-item">none (0px) → full (9999px)</div>
+                  <div class="tree-item">Cada paleta: 50 valores (del más claro al más oscuro)</div>
                 </div>
-            </div>
-
-            <div class="section-title">🎭 Semánticos (Tokens Contextuales)</div>
-            <div class="tree">
-                <div class="tree-item">semantic/
-                    <div class="tree-level-2">
-                        <div class="tree-item"><span class="highlight">light</span> - Modo claro
-                            <div class="tree-level-3">
-                                <div class="tree-item">core: white, black (colores base)</div>
-                                <div class="tree-item">content: primary, secondary, tertiary + inverse*</div>
-                                <div class="tree-item">content: named colors (red, orange, blue...)</div>
-                                <div class="tree-item">border: primary, secondary, tertiary + states</div>
-                                <div class="tree-item">background: primary, secondary, tertiary + colors</div>
-                            </div>
-                        </div>
-                        <div class="tree-item"><span class="highlight">dark</span> - Modo oscuro
-                            <div class="tree-level-3">
-                                <div class="tree-item">Misma estructura que light</div>
-                                <div class="tree-item">Colores invertidos para legibilidad</div>
-                                <div class="tree-item">Contraste óptimo en fondo oscuro</div>
-                            </div>
-                        </div>
-                    </div>
+              </div>
+              <div class="tree-item">
+                spacing/ (45 valores)
+                <div class="tree-level-3">
+                  <div class="tree-item">0px → 384px (escala: 4px, 8px, 12px...)</div>
+                  <div class="tree-item">Decimales: 0.5, 1.5, 2.5, 3.5</div>
                 </div>
+              </div>
+              <div class="tree-item">
+                screens/ (5 breakpoints)
+                <div class="tree-level-3">
+                  <div class="tree-item">sm: 640px | md: 768px | lg: 1024px</div>
+                  <div class="tree-item">xl: 1280px | 2xl: 1536px</div>
+                </div>
+              </div>
             </div>
+          </div>
         </div>
 
-        <!-- Conexiones y Dependencias -->
-        <div class="connection-map">
-            <h2>🔗 Conexiones Entre Tokens</h2>
-
-            <div class="section-title">Referenciamiento de Primitivos a Semánticos</div>
-
-            <h3 style="color: #cbd5e1; margin: 20px 0 15px;">Ejemplo: Color Primary (Light Mode)</h3>
-            <div class="info-box">
-                <code>semantic.light.content.primary</code>
-                <br style="margin: 8px 0;">
-                ↓ Referencia
-                <br style="margin: 8px 0;">
-                <code>primitives.colors.amber.600</code> = #d97706
+        <div class="section-title">🎭 Semánticos (Tokens Contextuales)</div>
+        <div class="tree">
+          <div class="tree-item">
+            semantic/
+            <div class="tree-level-2">
+              <div class="tree-item">
+                <span class="highlight">light</span> - Modo claro
+                <div class="tree-level-3">
+                  <div class="tree-item">core: white, black (colores base)</div>
+                  <div class="tree-item">content: primary, secondary, tertiary + inverse*</div>
+                  <div class="tree-item">content: named colors (red, orange, blue...)</div>
+                  <div class="tree-item">border: primary, secondary, tertiary + states</div>
+                  <div class="tree-item">background: primary, secondary, tertiary + colors</div>
+                </div>
+              </div>
+              <div class="tree-item">
+                <span class="highlight">dark</span> - Modo oscuro
+                <div class="tree-level-3">
+                  <div class="tree-item">Misma estructura que light</div>
+                  <div class="tree-item">Colores invertidos para legibilidad</div>
+                  <div class="tree-item">Contraste óptimo en fondo oscuro</div>
+                </div>
+              </div>
             </div>
+          </div>
+        </div>
+      </div>
 
-            <h3 style="color: #cbd5e1; margin: 20px 0 15px;">Ejemplo: Border Color (Dark Mode)</h3>
-            <div class="info-box">
-                <code>semantic.dark.border.primary</code>
-                <br style="margin: 8px 0;">
-                ↓ Referencia
-                <br style="margin: 8px 0;">
-                <code>primitives.colors.zinc.700</code> = #3f3f46
-            </div>
+      <!-- Conexiones y Dependencias -->
+      <div class="connection-map">
+        <h2>🔗 Conexiones Entre Tokens</h2>
 
-            <h3 style="color: #cbd5e1; margin: 20px 0 15px;">Mapeo de Colores Semánticos</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
-                <div style="background: rgba(100, 116, 139, 0.2); padding: 12px; border-radius: 8px; border-left: 4px solid #ef4444;">
-                    <strong style="color: #ef4444;">Error</strong>
-                    <br><code style="color: #fca5a5;">#ef4444</code>
-                    <br><small style="color: #94a3b8;">primitives.colors.red.500</small>
-                </div>
-                <div style="background: rgba(100, 116, 139, 0.2); padding: 12px; border-radius: 8px; border-left: 4px solid #f59e0b;">
-                    <strong style="color: #f59e0b;">Warning</strong>
-                    <br><code style="color: #fbbf24;">#f59e0b</code>
-                    <br><small style="color: #94a3b8;">primitives.colors.amber.500</small>
-                </div>
-                <div style="background: rgba(100, 116, 139, 0.2); padding: 12px; border-radius: 8px; border-left: 4px solid #22c55e;">
-                    <strong style="color: #22c55e;">Success</strong>
-                    <br><code style="color: #86efac;">#22c55e</code>
-                    <br><small style="color: #94a3b8;">primitives.colors.green.500</small>
-                </div>
-                <div style="background: rgba(100, 116, 139, 0.2); padding: 12px; border-radius: 8px; border-left: 4px solid #3b82f6;">
-                    <strong style="color: #3b82f6;">Info</strong>
-                    <br><code style="color: #60a5fa;">#3b82f6</code>
-                    <br><small style="color: #94a3b8;">primitives.colors.blue.500</small>
-                </div>
-            </div>
+        <div class="section-title">Referenciamiento de Primitivos a Semánticos</div>
+
+        <h3 style="color: #cbd5e1; margin: 20px 0 15px">Ejemplo: Color Primary (Light Mode)</h3>
+        <div class="info-box">
+          <code>semantic.light.content.primary</code>
+          <br style="margin: 8px 0" />
+          ↓ Referencia
+          <br style="margin: 8px 0" />
+          <code>primitives.colors.amber.600</code> = #d97706
         </div>
 
-        <!-- Paletas de Colores -->
-        <div class="hierarchy">
-            <h2>🎨 Paletas de Colores Primitivas</h2>
-
-            <h3 style="color: #cbd5e1; margin: 20px 0 15px;">Estructura de Paleta (Ejemplo: Slate)</h3>
-            <div class="color-palette">
-                <div class="color-swatch" style="background: #f8fafc;"><div class="color-label">50</div></div>
-                <div class="color-swatch" style="background: #f1f5f9;"><div class="color-label">100</div></div>
-                <div class="color-swatch" style="background: #e2e8f0;"><div class="color-label">200</div></div>
-                <div class="color-swatch" style="background: #cbd5e1;"><div class="color-label">300</div></div>
-                <div class="color-swatch" style="background: #94a3b8;"><div class="color-label">400</div></div>
-                <div class="color-swatch" style="background: #64748b;"><div class="color-label">500</div></div>
-                <div class="color-swatch" style="background: #475569;"><div class="color-label">600</div></div>
-                <div class="color-swatch" style="background: #334155;"><div class="color-label">700</div></div>
-                <div class="color-swatch" style="background: #1e293b;"><div class="color-label">800</div></div>
-                <div class="color-swatch" style="background: #0f172a;"><div class="color-label">900</div></div>
-                <div class="color-swatch" style="background: #0031ff;"><div class="color-label">950</div></div>
-            </div>
-
-            <div class="info-box" style="margin-top: 20px;">
-                <strong>Patrón:</strong> Cada paleta tiene 11 valores (50, 100, 200... 900, 950)
-                <br>Colores de <strong>más claros a más oscuros</strong>, facilitando el diseño con suficiente contraste
-            </div>
+        <h3 style="color: #cbd5e1; margin: 20px 0 15px">Ejemplo: Border Color (Dark Mode)</h3>
+        <div class="info-box">
+          <code>semantic.dark.border.primary</code>
+          <br style="margin: 8px 0" />
+          ↓ Referencia
+          <br style="margin: 8px 0" />
+          <code>primitives.colors.zinc.700</code> = #3f3f46
         </div>
 
-        <!-- Archivos Generados -->
-        <div class="hierarchy">
-            <h2>📁 Archivos Generados por Style Dictionary</h2>
-            <div class="tree">
-                <div class="tree-item">src/tokens/
-                    <div class="tree-level-2">
-                        <div class="tree-item">theme.css - Variables CSS compatibles con Tailwind v4</div>
-                        <div class="tree-item">motion-theme.css - Tokens de animación (easing, durations)</div>
-                        <div class="tree-item">default-theme.css - Overrides y estilos base</div>
-                        <div class="tree-item">colors.ts - Tokens de color en TypeScript</div>
-                        <div class="tree-item">typography.ts - Escala tipográfica</div>
-                        <div class="tree-item">spacing.ts - Sistema de espaciado</div>
-                        <div class="tree-item">shadows.ts - Sombras predefinidas</div>
-                        <div class="tree-item">motion.ts - Funciones de animación</div>
-                        <div class="tree-item">index.ts - Barrel export</div>
-                    </div>
-                </div>
-            </div>
+        <h3 style="color: #cbd5e1; margin: 20px 0 15px">Mapeo de Colores Semánticos</h3>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+          "
+        >
+          <div
+            style="
+              background: rgba(100, 116, 139, 0.2);
+              padding: 12px;
+              border-radius: 8px;
+              border-left: 4px solid #ef4444;
+            "
+          >
+            <strong style="color: #ef4444">Error</strong>
+            <br /><code style="color: #fca5a5">#ef4444</code> <br /><small style="color: #94a3b8"
+              >primitives.colors.red.500</small
+            >
+          </div>
+          <div
+            style="
+              background: rgba(100, 116, 139, 0.2);
+              padding: 12px;
+              border-radius: 8px;
+              border-left: 4px solid #f59e0b;
+            "
+          >
+            <strong style="color: #f59e0b">Warning</strong>
+            <br /><code style="color: #fbbf24">#f59e0b</code> <br /><small style="color: #94a3b8"
+              >primitives.colors.amber.500</small
+            >
+          </div>
+          <div
+            style="
+              background: rgba(100, 116, 139, 0.2);
+              padding: 12px;
+              border-radius: 8px;
+              border-left: 4px solid #22c55e;
+            "
+          >
+            <strong style="color: #22c55e">Success</strong>
+            <br /><code style="color: #86efac">#22c55e</code> <br /><small style="color: #94a3b8"
+              >primitives.colors.green.500</small
+            >
+          </div>
+          <div
+            style="
+              background: rgba(100, 116, 139, 0.2);
+              padding: 12px;
+              border-radius: 8px;
+              border-left: 4px solid #3b82f6;
+            "
+          >
+            <strong style="color: #3b82f6">Info</strong>
+            <br /><code style="color: #60a5fa">#3b82f6</code> <br /><small style="color: #94a3b8"
+              >primitives.colors.blue.500</small
+            >
+          </div>
+        </div>
+      </div>
 
-            <h3 style="color: #cbd5e1; margin: 20px 0 15px;">Comando para Sincronizar</h3>
-            <div class="info-box">
-                <code>npm run sync-tokens</code>
-                <br>Regenera todos los archivos desde figma-tokens.json
-            </div>
+      <!-- Paletas de Colores -->
+      <div class="hierarchy">
+        <h2>🎨 Paletas de Colores Primitivas</h2>
+
+        <h3 style="color: #cbd5e1; margin: 20px 0 15px">Estructura de Paleta (Ejemplo: Slate)</h3>
+        <div class="color-palette">
+          <div class="color-swatch" style="background: #f8fafc">
+            <div class="color-label">50</div>
+          </div>
+          <div class="color-swatch" style="background: #f1f5f9">
+            <div class="color-label">100</div>
+          </div>
+          <div class="color-swatch" style="background: #e2e8f0">
+            <div class="color-label">200</div>
+          </div>
+          <div class="color-swatch" style="background: #cbd5e1">
+            <div class="color-label">300</div>
+          </div>
+          <div class="color-swatch" style="background: #94a3b8">
+            <div class="color-label">400</div>
+          </div>
+          <div class="color-swatch" style="background: #64748b">
+            <div class="color-label">500</div>
+          </div>
+          <div class="color-swatch" style="background: #475569">
+            <div class="color-label">600</div>
+          </div>
+          <div class="color-swatch" style="background: #334155">
+            <div class="color-label">700</div>
+          </div>
+          <div class="color-swatch" style="background: #1e293b">
+            <div class="color-label">800</div>
+          </div>
+          <div class="color-swatch" style="background: #0f172a">
+            <div class="color-label">900</div>
+          </div>
+          <div class="color-swatch" style="background: #0031ff">
+            <div class="color-label">950</div>
+          </div>
         </div>
 
-        <!-- Resumen Final -->
-        <div class="card" style="grid-column: span 1; margin-top: 30px;">
-            <h2><span class="icon">✨</span> Resumen del Sistema</h2>
-            <div style="margin-top: 15px; line-height: 2;">
-                <p>✅ <strong>660+ Colores:</strong> 22 paletas Tailwind + semánticos</p>
-                <p>✅ <strong>45+ Dimensiones:</strong> Espaciado modular</p>
-                <p>✅ <strong>2 Modos:</strong> Light y Dark automáticos</p>
-                <p>✅ <strong>5 Breakpoints:</strong> Diseño responsive</p>
-                <p>✅ <strong>W3C Standard:</strong> Compatible con herramientas</p>
-                <p>✅ <strong>Multi-plataforma:</strong> Web, iOS, Android</p>
-            </div>
+        <div class="info-box" style="margin-top: 20px">
+          <strong>Patrón:</strong> Cada paleta tiene 11 valores (50, 100, 200... 900, 950)
+          <br />Colores de <strong>más claros a más oscuros</strong>, facilitando el diseño con
+          suficiente contraste
         </div>
+      </div>
+
+      <!-- Archivos Generados -->
+      <div class="hierarchy">
+        <h2>📁 Archivos Generados por Style Dictionary</h2>
+        <div class="tree">
+          <div class="tree-item">
+            src/tokens/
+            <div class="tree-level-2">
+              <div class="tree-item">theme.css - Variables CSS compatibles con Tailwind v4</div>
+              <div class="tree-item">
+                motion-theme.css - Tokens de animación (easing, durations)
+              </div>
+              <div class="tree-item">default-theme.css - Overrides y estilos base</div>
+              <div class="tree-item">colors.ts - Tokens de color en TypeScript</div>
+              <div class="tree-item">typography.ts - Escala tipográfica</div>
+              <div class="tree-item">spacing.ts - Sistema de espaciado</div>
+              <div class="tree-item">shadows.ts - Sombras predefinidas</div>
+              <div class="tree-item">motion.ts - Funciones de animación</div>
+              <div class="tree-item">index.ts - Barrel export</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="color: #cbd5e1; margin: 20px 0 15px">Comando para Sincronizar</h3>
+        <div class="info-box">
+          <code>npm run sync-tokens</code>
+          <br />Regenera todos los archivos desde figma-tokens.json
+        </div>
+      </div>
+
+      <!-- Resumen Final -->
+      <div class="card" style="grid-column: span 1; margin-top: 30px">
+        <h2><span class="icon">✨</span> Resumen del Sistema</h2>
+        <div style="margin-top: 15px; line-height: 2">
+          <p>✅ <strong>660+ Colores:</strong> 22 paletas Tailwind + semánticos</p>
+          <p>✅ <strong>45+ Dimensiones:</strong> Espaciado modular</p>
+          <p>✅ <strong>2 Modos:</strong> Light y Dark automáticos</p>
+          <p>✅ <strong>5 Breakpoints:</strong> Diseño responsive</p>
+          <p>✅ <strong>W3C Standard:</strong> Compatible con herramientas</p>
+          <p>✅ <strong>Multi-plataforma:</strong> Web, iOS, Android</p>
+        </div>
+      </div>
     </div>
 
     <script>
-        // Búsqueda simple
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            if (searchTerm) {
-                // Podrías implementar búsqueda aquí
-                console.log('Buscando:', searchTerm);
-            }
-        });
+      // Búsqueda simple
+      document.getElementById('searchInput').addEventListener('input', function (e) {
+        const searchTerm = e.target.value.toLowerCase()
+        if (searchTerm) {
+          // Podrías implementar búsqueda aquí
+          console.log('Buscando:', searchTerm)
+        }
+      })
     </script>
-</body>
+  </body>
 </html>

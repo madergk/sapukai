@@ -90,7 +90,7 @@ function main() {
   console.log(chalk.gray('   Pega todo el JSON ahí\n'))
 
   console.log(chalk.cyan('📌 Paso 6: Sincroniza los tokens\n'))
-  console.log(chalk.yellow('   npm run sync-tokens -- --skip-figma\n'))
+  console.log(chalk.yellow('   npm run token:sync -- --source=local\n'))
 
   console.log(chalk.green.bold('✨ ¡Listo! Tus tokens serán procesados y sincronizados.\n'))
 
@@ -98,14 +98,14 @@ function main() {
 
   // Show quick reference
   console.log(chalk.cyan('📚 Comandos Disponibles:\n'))
-  console.log(chalk.gray('  npm run sync-tokens -- --skip-figma'))
+  console.log(chalk.gray('  npm run token:sync -- --source=local'))
   console.log(chalk.gray('    → Sincroniza sin intentar fetch de API\n'))
 
-  console.log(chalk.gray('  npm run sync-tokens -- --dry-run'))
+  console.log(chalk.gray('  npm run token:sync -- --source=local --dry-run'))
   console.log(chalk.gray('    → Simula cambios sin aplicarlos\n'))
 
-  console.log(chalk.gray('  npm run validate-tokens'))
-  console.log(chalk.gray('    → Valida estructura de tokens\n'))
+  console.log(chalk.gray('  npm run token:postprocess'))
+  console.log(chalk.gray('    → Reporte + docs + Storybook\n'))
 
   console.log(chalk.gray('  npm run rollback-tokens -- --list'))
   console.log(chalk.gray('    → Ver versiones anteriores\n'))
@@ -170,7 +170,7 @@ function main() {
   console.log(chalk.gray('  3. F12 → Console → Pega y presiona Enter'))
   console.log(chalk.gray('  4. Copia el JSON resultante'))
   console.log(chalk.gray('  5. Guarda en tokens/figma-tokens.json'))
-  console.log(chalk.gray('  6. npm run sync-tokens -- --skip-figma\n'))
+  console.log(chalk.gray('  6. npm run token:sync -- --source=local\n'))
 
   console.log(chalk.cyan('📖 Documentación completa en: docs/TOKENS_MCP_GUIDE.md\n'))
 }

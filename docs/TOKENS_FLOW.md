@@ -13,7 +13,7 @@
              │ (Fails with HTTP 403 without Enterprise)
              │
 ┌────────────┴─────────────────────────┐
-│ sync-figma-tokens.ts (REST API)      │
+│ token:sync --source=api             │
 │ ✗ Requires Enterprise plan           │
 │ ✗ Requires Variables API access      │
 │ ✗ Network-dependent                  │
@@ -85,7 +85,7 @@
 │ }                                      │
 └────────────┬──────────────────────────┘
              │
-             ↓ (npm run sync-tokens -- --skip-figma)
+             ↓ (npm run token:sync -- --source=local)
              │
 ┌────────────┴──────────────────────────┐
 │ style-dictionary.config.ts           │
@@ -140,14 +140,14 @@ cat > tokens/figma-tokens.json << 'EOF'
 EOF
 
 # 7. Sincroniza
-npm run sync-tokens -- --skip-figma
+npm run token:sync -- --source=local
 ```
 
 ### Opción B: Automatizada (Future)
 
 ```bash
 # Una vez que MCP esté completamente integrado:
-npm run sync-tokens -- --mcp
+npm run token:sync -- --source=mcp
 
 # Esto:
 # 1. Abre Figma en navegador
@@ -258,7 +258,7 @@ SEMANA 1: Configuración
 SEMANAL: Cambios
 ├─ Diseñador actualiza variables en Figma
 ├─ Extraes JSON nuevamente (cuando necesites sync)
-├─ npm run sync-tokens -- --skip-figma
+├─ npm run token:sync -- --source=local
 └─ Revisas cambios: git diff src/tokens/
 
 DEPLOYMENT
@@ -271,25 +271,19 @@ DEPLOYMENT
 
 ```bash
 # Sincronización completa (REST API)
-npm run sync-tokens
+npm run token:sync -- --source=api
 
-# Sincronización con MCP (cuando esté listo)
-npm run sync-tokens -- --mcp
+# Sincronización con MCP
+npm run token:sync -- --source=mcp
 
 # Sin fetch de Figma (solo transform)
-npm run sync-tokens -- --skip-figma
+npm run token:sync -- --source=local
 
 # Preview de cambios
-npm run sync-tokens -- --dry-run
+npm run token:sync -- --source=api --dry-run
 
-# Interactivo (selecciona pasos)
-npm run sync-tokens -- --interactive
-
-# Con notificaciones
-npm run sync-tokens -- --notify
-
-# Validar tokens
-npm run validate-tokens
+# Postprocess (reporte + docs + Storybook)
+npm run token:postprocess
 
 # Rollback a versión anterior
 npm run rollback-tokens -- --list

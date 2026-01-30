@@ -5,6 +5,7 @@
 ## Quick Start
 
 ### Prerequisites
+
 - Node.js 18+
 - npm or pnpm
 - Figma account (for token sync)
@@ -26,16 +27,19 @@ cp .env.example .env
 ```
 
 **Required environment variables:**
+
 - `FIGMA_ACCESS_TOKEN`: Your Figma personal access token
 - `FIGMA_FILE_KEY`: The Figma file key for token source
 
 **Optional:**
+
 - `SLACK_WEBHOOK_URL`: For Slack notifications on token sync
 - `DISCORD_WEBHOOK_URL`: For Discord notifications on token sync
 
 ## Core Commands
 
 ### Development
+
 ```bash
 npm run dev              # Start Vite dev server (localhost:5173)
 npm run storybook       # Start Storybook (localhost:6006)
@@ -43,12 +47,14 @@ npm run preview         # Preview production build
 ```
 
 ### Building
+
 ```bash
 npm run build           # Build for production
 npm run build-storybook # Build Storybook static site
 ```
 
 ### Code Quality
+
 ```bash
 npm run lint            # Run ESLint
 npm run lint:fix        # Auto-fix ESLint issues
@@ -58,6 +64,7 @@ npm run typecheck       # TypeScript type checking
 ```
 
 ### Testing
+
 ```bash
 npm run test            # Run Vitest once
 npm run test:watch      # Run Vitest in watch mode
@@ -67,40 +74,31 @@ npm run test:scripts    # Test utility scripts
 
 ## Token Management
 
-### Full Token Synchronization
+### Token Synchronization
 
 ```bash
-npm run sync-tokens          # Full automated sync pipeline
-npm run sync-tokens -- --dry-run              # Preview without committing
-npm run sync-tokens -- --no-version           # Skip version bump
-npm run sync-tokens -- --force                # Force sync (ignore validation warnings)
-npm run sync-tokens -- --skip-validation      # Skip component validation checks
+npm run token:sync -- --source=api           # Fetch from Figma API + build tokens
+npm run token:sync -- --source=mcp           # MCP-assisted fetch + build tokens
+npm run token:sync -- --source=tokens-studio # Convert Tokens Studio export + build tokens
+npm run token:sync -- --source=local         # Use local figma-tokens.json + build tokens
 ```
 
-**What the full sync does:**
-1. Fetches tokens from Figma API
+**What the sync flow does:**
+
+1. Fetches tokens from the selected source
 2. Transforms tokens using Style Dictionary
-3. Converts Tokens Studio format
-4. Validates token schema
-5. Checks for breaking changes in components
-6. Updates Storybook documentation
-7. Bumps version number (if not skipped)
-8. Creates automatic git commit
-9. Sends notifications (if webhooks configured)
+3. Generates CSS/TS outputs in `src/tokens/`
 
 ### Individual Token Steps
 
 ```bash
-npm run sync-figma      # Fetch tokens from Figma API only
-npm run build-tokens    # Transform tokens with Style Dictionary
-npm run convert-tokens  # Convert Tokens Studio format
-npm run validate-tokens # Validate token schema
-npm run validate-components # Check for component breaking changes
-npm run update-docs     # Auto-update Storybook documentation
-npm run bump-version    # Increment version (semver)
-npm run rollback-tokens # Restore tokens from backup
-npm run generate-report # Generate sync report
-npm run notify          # Send webhook notifications
+npm run token:sync          # Fetch + build tokens (select source with --source)
+npm run token:postprocess   # Report + reference updates + docs + Storybook
+npm run token:publish       # Branch + commit + push to origin
+npm run build-tokens        # Transform tokens with Style Dictionary
+npm run bump-version        # Increment version (semver)
+npm run rollback-tokens     # Restore tokens from backup
+npm run notify              # Send webhook notifications
 ```
 
 ## Project Structure
@@ -129,11 +127,13 @@ sapukai/
 │   ├── context/             # React Context (MotionContext, ThemeContext)
 │   └── docs/                # Storybook MDX documentation
 ├── scripts/                 # Automation scripts
-│   ├── sync-tokens.ts       # Main orchestrator
-│   ├── sync-figma-tokens.ts # Figma API integration
-│   ├── validate-tokens.ts   # Token schema validation
-│   ├── validate-components.ts # Component compatibility checks
-│   ├── update-docs.ts       # Storybook doc generation
+│   ├── tokens/              # Consolidated token automation
+│   │   ├── sync.ts          # Fetch + build
+│   │   ├── postprocess.ts   # Report + refs + docs + Storybook
+│   │   ├── publish.ts       # Branch + commit + push
+│   │   ├── report.ts        # Change report generator
+│   │   ├── docs.ts          # Storybook docs generator
+│   │   └── sources/         # Source adapters (api/mcp/local/tokens-studio)
 │   ├── bump-version.ts      # Version management
 │   └── __tests__/           # Script tests
 ├── tokens/                  # Token source files
@@ -150,17 +150,17 @@ sapukai/
 
 ## Key Technologies
 
-| Area | Technology | Version |
-|------|-----------|---------|
-| **Framework** | React | 19.2.0 |
-| **Language** | TypeScript | 5.9.3 |
-| **Styling** | Tailwind CSS | 4.1.18 |
-| **Components** | Radix UI | Latest |
-| **Icons** | Heroicons, Lucide | 2.2.0, 0.562.0 |
-| **Animation** | Motion | 12.29.0 |
-| **Build** | Vite | 7.2.4 |
-| **Docs** | Storybook | 10.1.11 |
-| **Testing** | Vitest + Playwright | 4.0.17, 1.57.0 |
+| Area           | Technology          | Version        |
+| -------------- | ------------------- | -------------- |
+| **Framework**  | React               | 19.2.0         |
+| **Language**   | TypeScript          | 5.9.3          |
+| **Styling**    | Tailwind CSS        | 4.1.18         |
+| **Components** | Radix UI            | Latest         |
+| **Icons**      | Heroicons, Lucide   | 2.2.0, 0.562.0 |
+| **Animation**  | Motion              | 12.29.0        |
+| **Build**      | Vite                | 7.2.4          |
+| **Docs**       | Storybook           | 10.1.11        |
+| **Testing**    | Vitest + Playwright | 4.0.17, 1.57.0 |
 
 ## Development Workflow
 
@@ -174,13 +174,14 @@ sapukai/
 ### Adding New Tokens
 
 1. Update design tokens in Figma
-2. Run `npm run sync-tokens` to automatically pull and process
+2. Run `npm run token:sync -- --source=api` to pull and process
 3. Tokens are generated in `src/tokens/` and `src/tokens/theme.css`
 4. Use token variables in components
 
 ### Modifying Motion Presets
 
 The Motion Tuner (`src/components/MotionTuner/`) allows:
+
 - Creating cubic bezier curves with visual editor
 - 13 preset easing functions (Material Design 3, CSS defaults, etc.)
 - 16 duration presets (50ms - 1000ms)
@@ -189,9 +190,10 @@ The Motion Tuner (`src/components/MotionTuner/`) allows:
 ### Before Committing
 
 Git hooks (Husky + lint-staged) automatically run:
+
 ```bash
 # These run automatically before git commit:
-npm run validate-tokens      # Validate token schema
+npm run lint:fix             # Fix ESLint issues
 npm run lint:fix             # Fix ESLint issues
 npm run format               # Format code with Prettier
 ```
@@ -219,8 +221,7 @@ npm run test:scripts
 ### Test Files Location
 
 Tests are in `scripts/__tests__/`:
-- `validate-tokens.test.ts` - Token schema validation
-- `generate-report.test.ts` - Report generation
+
 - `rollback-tokens.test.ts` - Backup/rollback functionality
 
 ## CI/CD Pipeline
@@ -228,12 +229,6 @@ Tests are in `scripts/__tests__/`:
 ### Validation Commands
 
 ```bash
-# All validation checks
-npm run validate
-
-# Strict validation (includes linting)
-npm run validate:strict
-
 # CI pipeline: validate → test → build
 npm run ci
 ```
@@ -241,21 +236,25 @@ npm run ci
 ## Design System Details
 
 ### Color Scale
+
 - **Primary**: Teal (#00686f)
 - **Neutrals**: Zinc (50-950)
 - **Semantic**: Error, Warning, Success, Info
 - All colors are CSS variables in `src/tokens/theme.css`
 
 ### Typography
+
 - **Headings**: Nunito 600
 - **Body**: Nunito 400
 - **Code**: Menlo / Martian Mono
 
 ### Spacing
+
 - Grid-based: 4px multiples (4, 8, 12, 16, 24, 32, 40, 48, 56, 64px)
 - Used consistently across all components
 
 ### Motion Tokens
+
 - **Easing curves**: emphasized, standard, linear
 - **Durations**: short-1, short-2, medium-1, long-1-3, extra-long-4
 - Defined in `src/tokens/motion.ts` and `src/tokens/motion-theme.css`
@@ -265,21 +264,27 @@ npm run ci
 ### Available Components (20+)
 
 **Primitives**
+
 - Avatar, Badge, Button, Divider, Heading, Text
 
 **Forms**
+
 - Input, Select, Checkbox, Radio, Switch, TextArea, Listbox
 
 **Data Display**
+
 - Table (with sorting), DescriptionList
 
 **Feedback**
+
 - Dialog (Modal)
 
 **Navigation**
+
 - Navbar, Sidebar, Dropdown, Pagination
 
 **Motion-Enhanced**
+
 - Animated Accordion, Dialog, and other components
 
 All components use Radix UI primitives for accessibility compliance.
@@ -313,14 +318,11 @@ All components use Radix UI primitives for accessibility compliance.
 If token sync fails:
 
 ```bash
-# Check what changed (dry-run)
-npm run sync-tokens -- --dry-run
+# Generate report and update docs
+npm run token:postprocess -- --skip-storybook
 
 # Rollback to previous version
 npm run rollback-tokens
-
-# Check sync report
-npm run generate-report
 ```
 
 ## Git Workflow
@@ -341,6 +343,7 @@ All work is on: `claude/create-claude-md-JS4L2`
 ### Version Bumping
 
 The `npm run bump-version` script automatically:
+
 - Updates `package.json` version
 - Updates version in component files
 - Follows semantic versioning (major.minor.patch)
@@ -385,6 +388,7 @@ This handles versioning, tagging, and notifications.
 ## Need Help?
 
 For Claude Code specific help:
+
 - Run `/help` in the CLI for Claude Code commands
 - Check https://github.com/anthropics/claude-code/issues for issues
 - Review this CLAUDE.md for project-specific guidance

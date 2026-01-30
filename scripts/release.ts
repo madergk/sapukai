@@ -162,13 +162,13 @@ async function stepPreflightChecks(options: ReleaseOptions): Promise<StepResult>
 }
 
 async function stepValidate(): Promise<StepResult> {
-  console.log(chalk.cyan('\n📋 Step 1/7: Validating codebase\n'))
+  console.log(chalk.cyan('\n📋 Step 1/7: Type checking\n'))
 
   const start = Date.now()
-  const result = await execAsync('npm', ['run', 'validate'])
+  const result = await execAsync('npm', ['run', 'typecheck'])
 
   if (result.code !== 0) {
-    return { success: false, message: 'Validation failed' }
+    return { success: false, message: 'Typecheck failed' }
   }
 
   return { success: true, duration: Date.now() - start }

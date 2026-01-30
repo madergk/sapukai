@@ -23,28 +23,19 @@ interface TokensStudioGroup {
   [key: string]: TokensStudioToken | TokensStudioGroup
 }
 
-/**
- * Check if value is a token (has value and type)
- */
 function isToken(obj: any): obj is TokensStudioToken {
   return obj && typeof obj === 'object' && 'value' in obj && 'type' in obj
 }
 
-/**
- * Resolve token references like {Zinc.500} to actual values
- */
 function resolveReference(ref: string, primitives: Record<string, any>): string | null {
-  // Remove curly braces: {Zinc.500} -> Zinc.500
-  const path = ref.replace(/[{}]/g, '').split('.')
+  const pathParts = ref.replace(/[{}]/g, '').split('.')
 
   let current: any = primitives
-  for (const part of path) {
+  for (const part of pathParts) {
     if (current && typeof current === 'object') {
-      // Try exact match first
       if (current[part]) {
         current = current[part]
       } else {
-        // Try lowercase match
         const lowerPart = part.toLowerCase()
         const key = Object.keys(current).find(k => k.toLowerCase() === lowerPart)
         if (key) {
@@ -65,9 +56,6 @@ function resolveReference(ref: string, primitives: Record<string, any>): string 
   return null
 }
 
-/**
- * Convert Tokens Studio format to DTCG format
- */
 function convertToken(token: TokensStudioToken): {
   $value: string | number
   $type: string
@@ -85,9 +73,6 @@ function convertToken(token: TokensStudioToken): {
   return result
 }
 
-/**
- * Process a group of tokens recursively
- */
 function processGroup(
   group: TokensStudioGroup,
   primitives?: Record<string, any>
@@ -95,7 +80,6 @@ function processGroup(
   const result: Record<string, any> = {}
 
   for (const [key, value] of Object.entries(group)) {
-    // Skip metadata keys
     if (key.startsWith('$')) continue
 
     const normalizedKey = key.toLowerCase().replace(/\s+/g, '')
@@ -103,7 +87,6 @@ function processGroup(
     if (isToken(value)) {
       let tokenValue = value.value
 
-      // Resolve references if we have primitives
       if (typeof tokenValue === 'string' && tokenValue.startsWith('{') && primitives) {
         const resolved = resolveReference(tokenValue, primitives)
         if (resolved) {
@@ -127,13 +110,9 @@ function processGroup(
   return result
 }
 
-/**
- * Main conversion function
- */
 async function convertTokensStudio(): Promise<void> {
   console.log(chalk.blue('\n🔄 Converting Tokens Studio format...\n'))
 
-  // Check if source file exists
   if (!fs.existsSync(TOKENS_STUDIO_FILE)) {
     console.error(chalk.red('Error: tokens/tokens.json not found'))
     console.error(chalk.yellow('Export your tokens from Tokens Studio plugin first'))
@@ -142,18 +121,15 @@ async function convertTokensStudio(): Promise<void> {
 
   const spinner = ora('Reading Tokens Studio file...').start()
 
-  // Read source file
   const sourceData = JSON.parse(fs.readFileSync(TOKENS_STUDIO_FILE, 'utf-8'))
   spinner.succeed('Read Tokens Studio file')
 
-  // Backup existing output if it exists
   if (fs.existsSync(OUTPUT_FILE)) {
     const backupSpinner = ora('Backing up existing tokens...').start()
     fs.copyFileSync(OUTPUT_FILE, BACKUP_FILE)
     backupSpinner.succeed('Backed up existing tokens')
   }
 
-  // Process primitives first (Tailwind Colors)
   const processSpinner = ora('Processing tokens...').start()
 
   const primitivesKey = Object.keys(sourceData).find(k => k.includes('Primitives'))
@@ -161,7 +137,6 @@ async function convertTokensStudio(): Promise<void> {
   const darkKey = Object.keys(sourceData).find(k => k.includes('Dark'))
   const dimensionsKey = Object.keys(sourceData).find(k => k.includes('Dimensions'))
 
-  // Build primitives
   const primitives: Record<string, any> = {
     colors: {},
     borderRadius: {},
@@ -183,7 +158,6 @@ async function convertTokensStudio(): Promise<void> {
   if (dimensionsKey && sourceData[dimensionsKey]) {
     const dimData = sourceData[dimensionsKey]
 
-    // Border Radius
     if (dimData['Border Radius']) {
       for (const [key, value] of Object.entries(dimData['Border Radius'])) {
         if (isToken(value)) {
@@ -196,11 +170,9 @@ async function convertTokensStudio(): Promise<void> {
       }
     }
 
-    // Spacing
     if (dimData['Spacing (Margin & Padding)']) {
       for (const [key, value] of Object.entries(dimData['Spacing (Margin & Padding)'])) {
         if (isToken(value)) {
-          // Normalize key: replace special chars
           const normalizedKey = key.replace('․', '.')
           primitives.spacing[normalizedKey] = {
             $value: `${value.value}px`,
@@ -210,7 +182,6 @@ async function convertTokensStudio(): Promise<void> {
       }
     }
 
-    // Screens
     if (dimData['Screens']) {
       for (const [key, value] of Object.entries(dimData['Screens'])) {
         if (isToken(value)) {
@@ -224,25 +195,21 @@ async function convertTokensStudio(): Promise<void> {
     }
   }
 
-  // Build semantic tokens (light and dark)
   const semantic: Record<string, any> = {
     light: {},
     dark: {},
   }
 
-  // Process light mode
   if (lightKey && sourceData[lightKey]) {
     semantic.light = processSemanticTokens(sourceData[lightKey], primitives)
   }
 
-  // Process dark mode
   if (darkKey && sourceData[darkKey]) {
     semantic.dark = processSemanticTokens(sourceData[darkKey], primitives)
   }
 
   processSpinner.succeed('Processed tokens')
 
-  // Build output
   const output = {
     $schema: 'https://design-tokens.org/schema.json',
     $metadata: {
@@ -255,7 +222,6 @@ async function convertTokensStudio(): Promise<void> {
     semantic,
   }
 
-  // Write output
   const writeSpinner = ora('Writing figma-tokens.json...').start()
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2))
   writeSpinner.succeed(`Written to ${chalk.cyan('tokens/figma-tokens.json')}`)
@@ -263,13 +229,10 @@ async function convertTokensStudio(): Promise<void> {
   console.log(chalk.green('\n✓ Conversion complete!\n'))
   console.log('Next steps:')
   console.log(chalk.gray('  1. Run: npm run build-tokens'))
-  console.log(chalk.gray('  2. Or full sync: npm run sync-tokens -- --skip-figma'))
+  console.log(chalk.gray('  2. Or full sync: npm run token:sync -- --source=local'))
   console.log('')
 }
 
-/**
- * Process semantic tokens with reference resolution
- */
 function processSemanticTokens(
   data: TokensStudioGroup,
   primitives: Record<string, any>
@@ -289,7 +252,6 @@ function processSemanticTokens(
         if (isToken(tokenValue)) {
           let resolvedValue = tokenValue.value
 
-          // Resolve references
           if (typeof resolvedValue === 'string' && resolvedValue.startsWith('{')) {
             const resolved = resolveReference(resolvedValue, primitives.colors)
             if (resolved) {
@@ -302,7 +264,6 @@ function processSemanticTokens(
             $type: tokenValue.type,
           }
         } else if (typeof tokenValue === 'object') {
-          // Handle nested groups like Extensions
           for (const [nestedName, nestedValue] of Object.entries(tokenValue as TokensStudioGroup)) {
             if (isToken(nestedValue)) {
               let resolvedValue = nestedValue.value
@@ -314,7 +275,6 @@ function processSemanticTokens(
                 }
               }
 
-              // Remove prefix from nested names
               const cleanName = nestedName.replace(/^(content|border|background)/, '').toLowerCase()
               result[categoryKey][cleanName] = {
                 $value: resolvedValue,
@@ -330,8 +290,11 @@ function processSemanticTokens(
   return result
 }
 
-// Run
-convertTokensStudio().catch(error => {
-  console.error(chalk.red('\nError:'), error.message)
-  process.exit(1)
-})
+if (process.argv[1]?.includes('tokens-studio')) {
+  convertTokensStudio().catch(error => {
+    console.error(chalk.red('\nError:'), error.message)
+    process.exit(1)
+  })
+}
+
+export { convertTokensStudio }

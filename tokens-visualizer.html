@@ -1,684 +1,705 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tokens Visualizer - Estructura Jerárquica</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+          sans-serif;
+        background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
 
-        header {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+      header {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
 
-        h1 {
-            color: #1a1a1a;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-        }
+      h1 {
+        color: #1a1a1a;
+        margin-bottom: 10px;
+        font-size: 2.5em;
+      }
 
-        .header-subtitle {
-            color: #666;
-            font-size: 1.1em;
-            margin-bottom: 20px;
-        }
+      .header-subtitle {
+        color: #666;
+        font-size: 1.1em;
+        margin-bottom: 20px;
+      }
 
-        .controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr auto auto;
-            gap: 15px;
-            margin-top: 20px;
-        }
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto auto;
+        gap: 15px;
+        margin-top: 20px;
+      }
 
-        .search-container {
-            position: relative;
-        }
+      .search-container {
+        position: relative;
+      }
 
-        input[type="search"], input[type="text"], select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
+      input[type='search'],
+      input[type='text'],
+      select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1em;
+        transition: border-color 0.3s;
+      }
 
-        input[type="search"]:focus, input[type="text"]:focus, select:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
+      input[type='search']:focus,
+      input[type='text']:focus,
+      select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      }
 
-        .button-group {
-            display: flex;
-            gap: 10px;
-        }
+      .button-group {
+        display: flex;
+        gap: 10px;
+      }
 
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1em;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
+      button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s;
+      }
 
-        button.primary {
-            background: #3b82f6;
-            color: white;
-        }
+      button.primary {
+        background: #3b82f6;
+        color: white;
+      }
 
-        button.primary:hover {
-            background: #2563eb;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
+      button.primary:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      }
 
-        button.secondary {
-            background: #f3f4f6;
-            color: #1a1a1a;
-            border: 2px solid #e5e7eb;
-        }
+      button.secondary {
+        background: #f3f4f6;
+        color: #1a1a1a;
+        border: 2px solid #e5e7eb;
+      }
 
-        button.secondary:hover {
-            background: #e5e7eb;
-            border-color: #d1d5db;
-        }
+      button.secondary:hover {
+        background: #e5e7eb;
+        border-color: #d1d5db;
+      }
 
+      .main-content {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 20px;
+      }
+
+      .sidebar {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        height: fit-content;
+        position: sticky;
+        top: 20px;
+      }
+
+      .sidebar h3 {
+        font-size: 1.2em;
+        margin-bottom: 15px;
+        color: #1a1a1a;
+        border-bottom: 3px solid #3b82f6;
+        padding-bottom: 10px;
+      }
+
+      .category-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .category-btn {
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        background: white;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: left;
+        font-weight: 500;
+        transition: all 0.3s;
+      }
+
+      .category-btn:hover {
+        border-color: #3b82f6;
+        background: #f0f9ff;
+      }
+
+      .category-btn.active {
+        background: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+      }
+
+      .content-area {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .section {
+        margin-bottom: 35px;
+      }
+
+      .section-title {
+        font-size: 1.5em;
+        color: #1a1a1a;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .section-icon {
+        width: 32px;
+        height: 32px;
+        background: #3b82f6;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+      }
+
+      .token-group {
+        margin-bottom: 25px;
+        border: 1px solid #f0f0f0;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .group-header {
+        background: #f9fafb;
+        padding: 15px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 600;
+        color: #374151;
+        transition: background 0.3s;
+      }
+
+      .group-header:hover {
+        background: #f3f4f6;
+      }
+
+      .group-header.collapsed {
+        color: #9ca3af;
+      }
+
+      .toggle-icon {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #6b7280;
+        transition: transform 0.3s;
+      }
+
+      .group-header.collapsed .toggle-icon {
+        transform: rotate(-90deg);
+      }
+
+      .group-content {
+        padding: 15px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        background: white;
+      }
+
+      .token-item {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 12px;
+        transition: all 0.3s;
+        cursor: pointer;
+      }
+
+      .token-item:hover {
+        border-color: #3b82f6;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        transform: translateY(-2px);
+      }
+
+      .token-name {
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+        font-size: 0.95em;
+      }
+
+      .token-value {
+        font-family: 'Monaco', 'Courier New', monospace;
+        font-size: 0.85em;
+        color: #6b7280;
+        word-break: break-all;
+        margin-bottom: 8px;
+      }
+
+      .color-preview {
+        width: 100%;
+        height: 35px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 8px;
+      }
+
+      .token-type {
+        display: inline-block;
+        padding: 4px 8px;
+        background: #f0f9ff;
+        color: #0284c7;
+        border-radius: 4px;
+        font-size: 0.75em;
+        font-weight: 600;
+      }
+
+      .dependency-indicator {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 4px 8px;
+        background: #fef3c7;
+        color: #b45309;
+        border-radius: 4px;
+        font-size: 0.75em;
+        font-weight: 600;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #9ca3af;
+      }
+
+      .empty-state-icon {
+        font-size: 3em;
+        margin-bottom: 15px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+      }
+
+      .stat-card {
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #bae6fd;
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 1.8em;
+        font-weight: 700;
+        color: #0284c7;
+      }
+
+      .stat-label {
+        font-size: 0.85em;
+        color: #0c4a6e;
+        margin-top: 5px;
+      }
+
+      .theme-toggle {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .theme-btn {
+        flex: 1;
+        padding: 10px;
+        border: 2px solid #e0e0e0;
+        background: white;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.3s;
+        font-size: 0.9em;
+      }
+
+      .theme-btn.active {
+        background: #3b82f6;
+        color: white;
+        border-color: #3b82f6;
+      }
+
+      .mode-indicator {
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.85em;
+        font-weight: 600;
+        margin-top: 10px;
+        text-align: center;
+      }
+
+      .light-mode .mode-indicator {
+        background: #fef3c7;
+        color: #b45309;
+      }
+
+      .dark-mode .mode-indicator {
+        background: #1f2937;
+        color: #fef3c7;
+      }
+
+      .dependency-graph {
+        background: #f9fafb;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 15px;
+        font-size: 0.85em;
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid #e5e7eb;
+      }
+
+      .dependency-item {
+        padding: 8px;
+        color: #6b7280;
+        margin-bottom: 5px;
+        font-family: 'Monaco', 'Courier New', monospace;
+      }
+
+      .dependency-item strong {
+        color: #374151;
+      }
+
+      .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        color: #9ca3af;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.3s;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .modal-content {
+        background-color: white;
+        margin: 5% auto;
+        padding: 30px;
+        border-radius: 12px;
+        max-width: 500px;
+        animation: slideIn 0.3s;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .close-modal {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .close-modal:hover {
+        color: #000;
+      }
+
+      @media (max-width: 1024px) {
         .main-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 20px;
+          grid-template-columns: 1fr;
         }
 
         .sidebar {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            height: fit-content;
-            position: sticky;
-            top: 20px;
+          position: relative;
+          top: 0;
         }
 
-        .sidebar h3 {
-            font-size: 1.2em;
-            margin-bottom: 15px;
-            color: #1a1a1a;
-            border-bottom: 3px solid #3b82f6;
-            padding-bottom: 10px;
+        .controls {
+          grid-template-columns: 1fr;
         }
+      }
 
-        .category-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+      .highlight {
+        background: #fef08a;
+        animation: pulse 0.5s;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          background: #fef08a;
         }
-
-        .category-btn {
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            text-align: left;
-            font-weight: 500;
-            transition: all 0.3s;
+        50% {
+          background: #fde047;
         }
+      }
 
-        .category-btn:hover {
-            border-color: #3b82f6;
-            background: #f0f9ff;
-        }
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
 
-        .category-btn.active {
-            background: #3b82f6;
-            color: white;
-            border-color: #3b82f6;
-        }
+      ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 10px;
+      }
 
-        .content-area {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+      }
 
-        .section {
-            margin-bottom: 35px;
-        }
-
-        .section-title {
-            font-size: 1.5em;
-            color: #1a1a1a;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #f0f0f0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-icon {
-            width: 32px;
-            height: 32px;
-            background: #3b82f6;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        .token-group {
-            margin-bottom: 25px;
-            border: 1px solid #f0f0f0;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .group-header {
-            background: #f9fafb;
-            padding: 15px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-weight: 600;
-            color: #374151;
-            transition: background 0.3s;
-        }
-
-        .group-header:hover {
-            background: #f3f4f6;
-        }
-
-        .group-header.collapsed {
-            color: #9ca3af;
-        }
-
-        .toggle-icon {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #6b7280;
-            transition: transform 0.3s;
-        }
-
-        .group-header.collapsed .toggle-icon {
-            transform: rotate(-90deg);
-        }
-
-        .group-content {
-            padding: 15px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            background: white;
-        }
-
-        .token-item {
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 12px;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-
-        .token-item:hover {
-            border-color: #3b82f6;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-            transform: translateY(-2px);
-        }
-
-        .token-name {
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-            font-size: 0.95em;
-        }
-
-        .token-value {
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 0.85em;
-            color: #6b7280;
-            word-break: break-all;
-            margin-bottom: 8px;
-        }
-
-        .color-preview {
-            width: 100%;
-            height: 35px;
-            border-radius: 6px;
-            border: 1px solid #e5e7eb;
-            margin-bottom: 8px;
-        }
-
-        .token-type {
-            display: inline-block;
-            padding: 4px 8px;
-            background: #f0f9ff;
-            color: #0284c7;
-            border-radius: 4px;
-            font-size: 0.75em;
-            font-weight: 600;
-        }
-
-        .dependency-indicator {
-            display: inline-block;
-            margin-top: 8px;
-            padding: 4px 8px;
-            background: #fef3c7;
-            color: #b45309;
-            border-radius: 4px;
-            font-size: 0.75em;
-            font-weight: 600;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #9ca3af;
-        }
-
-        .empty-state-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #bae6fd;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.8em;
-            font-weight: 700;
-            color: #0284c7;
-        }
-
-        .stat-label {
-            font-size: 0.85em;
-            color: #0c4a6e;
-            margin-top: 5px;
-        }
-
-        .theme-toggle {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .theme-btn {
-            flex: 1;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-            font-size: 0.9em;
-        }
-
-        .theme-btn.active {
-            background: #3b82f6;
-            color: white;
-            border-color: #3b82f6;
-        }
-
-        .mode-indicator {
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.85em;
-            font-weight: 600;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .light-mode .mode-indicator {
-            background: #fef3c7;
-            color: #b45309;
-        }
-
-        .dark-mode .mode-indicator {
-            background: #1f2937;
-            color: #fef3c7;
-        }
-
-        .dependency-graph {
-            background: #f9fafb;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
-            font-size: 0.85em;
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #e5e7eb;
-        }
-
-        .dependency-item {
-            padding: 8px;
-            color: #6b7280;
-            margin-bottom: 5px;
-            font-family: 'Monaco', 'Courier New', monospace;
-        }
-
-        .dependency-item strong {
-            color: #374151;
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 60px 20px;
-            color: #9ca3af;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 500px;
-            animation: slideIn 0.3s;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .close-modal {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close-modal:hover {
-            color: #000;
-        }
-
-        @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-
-            .sidebar {
-                position: relative;
-                top: 0;
-            }
-
-            .controls {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .highlight {
-            background: #fef08a;
-            animation: pulse 0.5s;
-        }
-
-        @keyframes pulse {
-            0%, 100% { background: #fef08a; }
-            50% { background: #fde047; }
-        }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <header>
-            <h1>Design Tokens Visualizer</h1>
-            <p class="header-subtitle">Estructura jerárquica de tokens - Figma Tokens Studio</p>
+      <header>
+        <h1>Design Tokens Visualizer</h1>
+        <p class="header-subtitle">Estructura jerárquica de tokens - Figma Tokens Studio</p>
 
-            <div class="controls">
-                <div class="search-container">
-                    <input type="search" id="searchInput" placeholder="Buscar tokens..." />
-                </div>
-                <select id="typeFilter">
-                    <option value="">Todos los tipos</option>
-                    <option value="color">Colores</option>
-                    <option value="dimension">Dimensiones</option>
-                </select>
-                <div class="button-group">
-                    <button class="secondary" onclick="expandAll()">Expandir Todo</button>
-                    <button class="secondary" onclick="collapseAll()">Colapsar Todo</button>
-                </div>
-            </div>
-        </header>
-
-        <div class="stats" id="statsContainer"></div>
-
-        <div class="main-content">
-            <aside class="sidebar">
-                <h3>Categorías</h3>
-                <div class="category-list" id="categoryList"></div>
-
-                <div class="theme-toggle">
-                    <button class="theme-btn active" onclick="filterByTheme('all')">Todo</button>
-                    <button class="theme-btn" onclick="filterByTheme('light')">Light</button>
-                    <button class="theme-btn" onclick="filterByTheme('dark')">Dark</button>
-                </div>
-
-                <div class="mode-indicator" id="modeIndicator"></div>
-            </aside>
-
-            <main class="content-area" id="contentArea">
-                <div class="empty-state">
-                    <div class="empty-state-icon">📂</div>
-                    <p>Cargando tokens...</p>
-                </div>
-            </main>
+        <div class="controls">
+          <div class="search-container">
+            <input type="search" id="searchInput" placeholder="Buscar tokens..." />
+          </div>
+          <select id="typeFilter">
+            <option value="">Todos los tipos</option>
+            <option value="color">Colores</option>
+            <option value="dimension">Dimensiones</option>
+          </select>
+          <div class="button-group">
+            <button class="secondary" onclick="expandAll()">Expandir Todo</button>
+            <button class="secondary" onclick="collapseAll()">Colapsar Todo</button>
+          </div>
         </div>
+      </header>
+
+      <div class="stats" id="statsContainer"></div>
+
+      <div class="main-content">
+        <aside class="sidebar">
+          <h3>Categorías</h3>
+          <div class="category-list" id="categoryList"></div>
+
+          <div class="theme-toggle">
+            <button class="theme-btn active" onclick="filterByTheme('all')">Todo</button>
+            <button class="theme-btn" onclick="filterByTheme('light')">Light</button>
+            <button class="theme-btn" onclick="filterByTheme('dark')">Dark</button>
+          </div>
+
+          <div class="mode-indicator" id="modeIndicator"></div>
+        </aside>
+
+        <main class="content-area" id="contentArea">
+          <div class="empty-state">
+            <div class="empty-state-icon">📂</div>
+            <p>Cargando tokens...</p>
+          </div>
+        </main>
+      </div>
     </div>
 
     <script>
-        let tokensData = null;
-        let filteredData = null;
-        let currentCategory = 'primitives';
-        let currentTheme = 'all';
-        let expandedGroups = new Set();
+      let tokensData = null
+      let filteredData = null
+      let currentCategory = 'primitives'
+      let currentTheme = 'all'
+      let expandedGroups = new Set()
 
-        // Cargar JSON desde el servidor
-        async function loadTokens() {
-            try {
-                const response = await fetch('./figma-tokens.json');
-                if (!response.ok) throw new Error('No se pudo cargar el archivo de tokens');
-                tokensData = await response.json();
-                initializeUI();
-                renderContent();
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('contentArea').innerHTML = `
+      // Cargar JSON desde el servidor
+      async function loadTokens() {
+        try {
+          const response = await fetch('./figma-tokens.json')
+          if (!response.ok) throw new Error('No se pudo cargar el archivo de tokens')
+          tokensData = await response.json()
+          initializeUI()
+          renderContent()
+        } catch (error) {
+          console.error('Error:', error)
+          document.getElementById('contentArea').innerHTML = `
                     <div class="no-results">
                         <p>Error al cargar tokens: ${error.message}</p>
                         <p style="margin-top: 10px; font-size: 0.9em;">
                             Asegúrate de que el archivo figma-tokens.json esté en el mismo directorio.
                         </p>
                     </div>
-                `;
+                `
+        }
+      }
+
+      function initializeUI() {
+        const categoryList = document.getElementById('categoryList')
+        categoryList.innerHTML = ''
+
+        // Categorías Primitivos
+        const primitivesCategories = ['colors', 'spacing', 'borderRadius', 'screens']
+        primitivesCategories.forEach(cat => {
+          const btn = document.createElement('button')
+          btn.className = 'category-btn active'
+          btn.textContent = `Primitivos: ${cat}`
+          btn.onclick = () => selectCategory('primitives', cat)
+          categoryList.appendChild(btn)
+        })
+
+        const hr = document.createElement('div')
+        hr.style.height = '1px'
+        hr.style.background = '#e5e7eb'
+        hr.style.margin = '15px 0'
+        categoryList.appendChild(hr)
+
+        // Categorías Semánticos
+        const semanticCategories = ['content', 'border', 'background']
+        semanticCategories.forEach(cat => {
+          const btn = document.createElement('button')
+          btn.className = 'category-btn'
+          btn.textContent = `Semántico: ${cat}`
+          btn.onclick = () => selectCategory('semantic', cat)
+          categoryList.appendChild(btn)
+        })
+
+        updateStats()
+      }
+
+      function selectCategory(category, subcategory) {
+        currentCategory = category
+        currentSubcategory = subcategory
+        updateCategoryButtons()
+        expandedGroups.clear()
+        renderContent()
+      }
+
+      function filterByTheme(theme) {
+        currentTheme = theme
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+          btn.classList.remove('active')
+        })
+        event.target.classList.add('active')
+        updateModeIndicator()
+        renderContent()
+      }
+
+      function updateModeIndicator() {
+        const indicator = document.getElementById('modeIndicator')
+        if (currentTheme === 'all') {
+          indicator.textContent = '🌓 Ambos modos'
+        } else if (currentTheme === 'light') {
+          indicator.textContent = '☀️ Modo Light'
+        } else {
+          indicator.textContent = '🌙 Modo Dark'
+        }
+      }
+
+      function updateCategoryButtons() {
+        document.querySelectorAll('.category-btn').forEach(btn => {
+          btn.classList.remove('active')
+          if (btn.textContent.includes(currentSubcategory)) {
+            btn.classList.add('active')
+          }
+        })
+      }
+
+      function updateStats() {
+        const statsContainer = document.getElementById('statsContainer')
+
+        let colorCount = 0
+        let dimensionCount = 0
+        let groupCount = 0
+
+        if (tokensData.primitives) {
+          const colors = tokensData.primitives.colors
+          for (let palette in colors) {
+            if (typeof colors[palette] === 'object') {
+              if (colors[palette].$value) {
+                colorCount++
+              } else {
+                colorCount += Object.keys(colors[palette]).length
+              }
             }
+          }
+
+          if (tokensData.primitives.spacing) {
+            dimensionCount += Object.keys(tokensData.primitives.spacing).length
+          }
+          if (tokensData.primitives.borderRadius) {
+            dimensionCount += Object.keys(tokensData.primitives.borderRadius).length
+          }
+          if (tokensData.primitives.screens) {
+            dimensionCount += Object.keys(tokensData.primitives.screens).length
+          }
+
+          groupCount = Object.keys(tokensData.primitives).length
         }
 
-        function initializeUI() {
-            const categoryList = document.getElementById('categoryList');
-            categoryList.innerHTML = '';
-
-            // Categorías Primitivos
-            const primitivesCategories = ['colors', 'spacing', 'borderRadius', 'screens'];
-            primitivesCategories.forEach(cat => {
-                const btn = document.createElement('button');
-                btn.className = 'category-btn active';
-                btn.textContent = `Primitivos: ${cat}`;
-                btn.onclick = () => selectCategory('primitives', cat);
-                categoryList.appendChild(btn);
-            });
-
-            const hr = document.createElement('div');
-            hr.style.height = '1px';
-            hr.style.background = '#e5e7eb';
-            hr.style.margin = '15px 0';
-            categoryList.appendChild(hr);
-
-            // Categorías Semánticos
-            const semanticCategories = ['content', 'border', 'background'];
-            semanticCategories.forEach(cat => {
-                const btn = document.createElement('button');
-                btn.className = 'category-btn';
-                btn.textContent = `Semántico: ${cat}`;
-                btn.onclick = () => selectCategory('semantic', cat);
-                categoryList.appendChild(btn);
-            });
-
-            updateStats();
+        if (tokensData.semantic) {
+          groupCount += Object.keys(tokensData.semantic).length
         }
 
-        function selectCategory(category, subcategory) {
-            currentCategory = category;
-            currentSubcategory = subcategory;
-            updateCategoryButtons();
-            expandedGroups.clear();
-            renderContent();
-        }
-
-        function filterByTheme(theme) {
-            currentTheme = theme;
-            document.querySelectorAll('.theme-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            updateModeIndicator();
-            renderContent();
-        }
-
-        function updateModeIndicator() {
-            const indicator = document.getElementById('modeIndicator');
-            if (currentTheme === 'all') {
-                indicator.textContent = '🌓 Ambos modos';
-            } else if (currentTheme === 'light') {
-                indicator.textContent = '☀️ Modo Light';
-            } else {
-                indicator.textContent = '🌙 Modo Dark';
-            }
-        }
-
-        function updateCategoryButtons() {
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.textContent.includes(currentSubcategory)) {
-                    btn.classList.add('active');
-                }
-            });
-        }
-
-        function updateStats() {
-            const statsContainer = document.getElementById('statsContainer');
-
-            let colorCount = 0;
-            let dimensionCount = 0;
-            let groupCount = 0;
-
-            if (tokensData.primitives) {
-                const colors = tokensData.primitives.colors;
-                for (let palette in colors) {
-                    if (typeof colors[palette] === 'object') {
-                        if (colors[palette].$value) {
-                            colorCount++;
-                        } else {
-                            colorCount += Object.keys(colors[palette]).length;
-                        }
-                    }
-                }
-
-                if (tokensData.primitives.spacing) {
-                    dimensionCount += Object.keys(tokensData.primitives.spacing).length;
-                }
-                if (tokensData.primitives.borderRadius) {
-                    dimensionCount += Object.keys(tokensData.primitives.borderRadius).length;
-                }
-                if (tokensData.primitives.screens) {
-                    dimensionCount += Object.keys(tokensData.primitives.screens).length;
-                }
-
-                groupCount = Object.keys(tokensData.primitives).length;
-            }
-
-            if (tokensData.semantic) {
-                groupCount += Object.keys(tokensData.semantic).length;
-            }
-
-            statsContainer.innerHTML = `
+        statsContainer.innerHTML = `
                 <div class="stat-card">
                     <div class="stat-value">${colorCount}</div>
                     <div class="stat-label">Colores</div>
@@ -695,212 +716,213 @@
                     <div class="stat-value">${tokensData.$metadata.version}</div>
                     <div class="stat-label">Versión</div>
                 </div>
-            `;
+            `
+      }
+
+      function renderContent() {
+        updateModeIndicator()
+
+        let content = ''
+
+        if (currentCategory === 'primitives') {
+          content = renderPrimitives()
+        } else {
+          content = renderSemantic()
         }
 
-        function renderContent() {
-            updateModeIndicator();
+        document.getElementById('contentArea').innerHTML = content
+        setupCollapse()
+        applySearch()
+      }
 
-            let content = '';
-
-            if (currentCategory === 'primitives') {
-                content = renderPrimitives();
-            } else {
-                content = renderSemantic();
-            }
-
-            document.getElementById('contentArea').innerHTML = content;
-            setupCollapse();
-            applySearch();
+      function renderPrimitives() {
+        if (!tokensData.primitives || !currentSubcategory) {
+          return '<div class="empty-state"><p>Selecciona una categoría</p></div>'
         }
 
-        function renderPrimitives() {
-            if (!tokensData.primitives || !currentSubcategory) {
-                return '<div class="empty-state"><p>Selecciona una categoría</p></div>';
-            }
+        const categoryData = tokensData.primitives[currentSubcategory]
+        if (!categoryData) return '<div class="empty-state"><p>No hay datos</p></div>'
 
-            const categoryData = tokensData.primitives[currentSubcategory];
-            if (!categoryData) return '<div class="empty-state"><p>No hay datos</p></div>';
-
-            let html = `<div class="section">
+        let html = `<div class="section">
                 <div class="section-title">
                     <div class="section-icon">🎨</div>
                     ${currentSubcategory.charAt(0).toUpperCase() + currentSubcategory.slice(1)}
-                </div>`;
+                </div>`
 
-            if (currentSubcategory === 'colors') {
-                for (let palette in categoryData) {
-                    const paletteTokens = categoryData[palette];
-                    html += `<div class="token-group">
+        if (currentSubcategory === 'colors') {
+          for (let palette in categoryData) {
+            const paletteTokens = categoryData[palette]
+            html += `<div class="token-group">
                         <div class="group-header" onclick="toggleGroup(this)">
                             <span><strong>${palette.toUpperCase()}</strong> Paleta de colores</span>
                             <div class="toggle-icon">▼</div>
                         </div>
-                        <div class="group-content">`;
+                        <div class="group-content">`
 
-                    if (paletteTokens.$value) {
-                        html += renderColorToken(`${palette}`, paletteTokens.$value);
-                    } else {
-                        for (let shade in paletteTokens) {
-                            const token = paletteTokens[shade];
-                            if (token.$value) {
-                                html += renderColorToken(`${palette}-${shade}`, token.$value);
-                            }
-                        }
-                    }
-
-                    html += `</div></div>`;
-                }
+            if (paletteTokens.$value) {
+              html += renderColorToken(`${palette}`, paletteTokens.$value)
             } else {
-                let groupContent = '<div class="token-group"><div class="group-content">';
-                for (let tokenName in categoryData) {
-                    const token = categoryData[tokenName];
-                    if (token.$value) {
-                        groupContent += renderDimensionToken(tokenName, token.$value, token.$type);
-                    }
+              for (let shade in paletteTokens) {
+                const token = paletteTokens[shade]
+                if (token.$value) {
+                  html += renderColorToken(`${palette}-${shade}`, token.$value)
                 }
-                groupContent += '</div></div>';
-                html += groupContent;
+              }
             }
 
-            html += '</div>';
-            return html;
+            html += `</div></div>`
+          }
+        } else {
+          let groupContent = '<div class="token-group"><div class="group-content">'
+          for (let tokenName in categoryData) {
+            const token = categoryData[tokenName]
+            if (token.$value) {
+              groupContent += renderDimensionToken(tokenName, token.$value, token.$type)
+            }
+          }
+          groupContent += '</div></div>'
+          html += groupContent
         }
 
-        function renderSemantic() {
-            if (!tokensData.semantic) {
-                return '<div class="empty-state"><p>No hay datos semánticos</p></div>';
-            }
+        html += '</div>'
+        return html
+      }
 
-            let html = '<div class="section">';
+      function renderSemantic() {
+        if (!tokensData.semantic) {
+          return '<div class="empty-state"><p>No hay datos semánticos</p></div>'
+        }
 
-            let themesToShow = currentTheme === 'all' ? ['light', 'dark'] : [currentTheme];
+        let html = '<div class="section">'
 
-            themesToShow.forEach(theme => {
-                const themeData = tokensData.semantic[theme];
-                if (!themeData || !themeData[currentSubcategory]) return;
+        let themesToShow = currentTheme === 'all' ? ['light', 'dark'] : [currentTheme]
 
-                const categoryData = themeData[currentSubcategory];
+        themesToShow.forEach(theme => {
+          const themeData = tokensData.semantic[theme]
+          if (!themeData || !themeData[currentSubcategory]) return
 
-                html += `<div style="margin-bottom: 30px;">
+          const categoryData = themeData[currentSubcategory]
+
+          html += `<div style="margin-bottom: 30px;">
                     <div class="section-title">
                         <div class="section-icon">${theme === 'light' ? '☀️' : '🌙'}</div>
                         ${theme.charAt(0).toUpperCase() + theme.slice(1)} - ${currentSubcategory}
                     </div>
                     <div class="token-group">
-                        <div class="group-content">`;
+                        <div class="group-content">`
 
-                for (let tokenName in categoryData) {
-                    const token = categoryData[tokenName];
-                    if (token.$value) {
-                        html += renderColorToken(`${theme}-${currentSubcategory}-${tokenName}`, token.$value);
-                    }
-                }
+          for (let tokenName in categoryData) {
+            const token = categoryData[tokenName]
+            if (token.$value) {
+              html += renderColorToken(`${theme}-${currentSubcategory}-${tokenName}`, token.$value)
+            }
+          }
 
-                html += `</div></div></div>`;
-            });
+          html += `</div></div></div>`
+        })
 
-            html += '</div>';
-            return html;
-        }
+        html += '</div>'
+        return html
+      }
 
-        function renderColorToken(name, value) {
-            return `<div class="token-item" data-token="${name}">
+      function renderColorToken(name, value) {
+        return `<div class="token-item" data-token="${name}">
                 <div class="token-name">${name}</div>
                 <div class="color-preview" style="background-color: ${value};" title="${value}"></div>
                 <div class="token-value">${value}</div>
                 <span class="token-type">color</span>
-            </div>`;
-        }
+            </div>`
+      }
 
-        function renderDimensionToken(name, value, type = 'dimension') {
-            return `<div class="token-item" data-token="${name}">
+      function renderDimensionToken(name, value, type = 'dimension') {
+        return `<div class="token-item" data-token="${name}">
                 <div class="token-name">${name}</div>
                 <div class="token-value">${value}</div>
                 <span class="token-type">${type}</span>
-            </div>`;
-        }
+            </div>`
+      }
 
-        function setupCollapse() {
-            document.querySelectorAll('.group-header').forEach(header => {
-                header.addEventListener('click', function(e) {
-                    if (e.target.closest('.toggle-icon') || e.target === this) {
-                        toggleGroup(this);
-                    }
-                });
-            });
-        }
-
-        function toggleGroup(header) {
-            header.classList.toggle('collapsed');
-            const content = header.nextElementSibling;
-            if (content) {
-                content.style.display = content.style.display === 'none' ? 'grid' : 'none';
+      function setupCollapse() {
+        document.querySelectorAll('.group-header').forEach(header => {
+          header.addEventListener('click', function (e) {
+            if (e.target.closest('.toggle-icon') || e.target === this) {
+              toggleGroup(this)
             }
+          })
+        })
+      }
+
+      function toggleGroup(header) {
+        header.classList.toggle('collapsed')
+        const content = header.nextElementSibling
+        if (content) {
+          content.style.display = content.style.display === 'none' ? 'grid' : 'none'
         }
+      }
 
-        function expandAll() {
-            document.querySelectorAll('.group-header').forEach(header => {
-                header.classList.remove('collapsed');
-                const content = header.nextElementSibling;
-                if (content) content.style.display = 'grid';
-            });
-        }
+      function expandAll() {
+        document.querySelectorAll('.group-header').forEach(header => {
+          header.classList.remove('collapsed')
+          const content = header.nextElementSibling
+          if (content) content.style.display = 'grid'
+        })
+      }
 
-        function collapseAll() {
-            document.querySelectorAll('.group-header').forEach(header => {
-                header.classList.add('collapsed');
-                const content = header.nextElementSibling;
-                if (content) content.style.display = 'none';
-            });
-        }
+      function collapseAll() {
+        document.querySelectorAll('.group-header').forEach(header => {
+          header.classList.add('collapsed')
+          const content = header.nextElementSibling
+          if (content) content.style.display = 'none'
+        })
+      }
 
-        function applySearch() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const typeFilter = document.getElementById('typeFilter').value;
+      function applySearch() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase()
+        const typeFilter = document.getElementById('typeFilter').value
 
-            document.querySelectorAll('.token-item').forEach(item => {
-                const tokenName = item.dataset.token.toLowerCase();
-                const tokenType = item.querySelector('.token-type').textContent;
+        document.querySelectorAll('.token-item').forEach(item => {
+          const tokenName = item.dataset.token.toLowerCase()
+          const tokenType = item.querySelector('.token-type').textContent
 
-                let visible = true;
+          let visible = true
 
-                if (searchTerm && !tokenName.includes(searchTerm)) {
-                    visible = false;
-                }
+          if (searchTerm && !tokenName.includes(searchTerm)) {
+            visible = false
+          }
 
-                if (typeFilter && !tokenType.includes(typeFilter)) {
-                    visible = false;
-                }
+          if (typeFilter && !tokenType.includes(typeFilter)) {
+            visible = false
+          }
 
-                item.style.display = visible ? 'block' : 'none';
+          item.style.display = visible ? 'block' : 'none'
 
-                if (visible && searchTerm) {
-                    item.classList.add('highlight');
-                } else {
-                    item.classList.remove('highlight');
-                }
-            });
+          if (visible && searchTerm) {
+            item.classList.add('highlight')
+          } else {
+            item.classList.remove('highlight')
+          }
+        })
 
-            // Mostrar/ocultar grupos vacíos
-            document.querySelectorAll('.token-group').forEach(group => {
-                const visibleItems = Array.from(group.querySelectorAll('.token-item'))
-                    .filter(item => item.style.display !== 'none');
+        // Mostrar/ocultar grupos vacíos
+        document.querySelectorAll('.token-group').forEach(group => {
+          const visibleItems = Array.from(group.querySelectorAll('.token-item')).filter(
+            item => item.style.display !== 'none'
+          )
 
-                if (visibleItems.length === 0) {
-                    group.style.display = 'none';
-                } else {
-                    group.style.display = 'block';
-                }
-            });
-        }
+          if (visibleItems.length === 0) {
+            group.style.display = 'none'
+          } else {
+            group.style.display = 'block'
+          }
+        })
+      }
 
-        // Event Listeners
-        document.getElementById('searchInput').addEventListener('input', applySearch);
-        document.getElementById('typeFilter').addEventListener('change', applySearch);
+      // Event Listeners
+      document.getElementById('searchInput').addEventListener('input', applySearch)
+      document.getElementById('typeFilter').addEventListener('change', applySearch)
 
-        // Inicializar al cargar
-        window.addEventListener('load', loadTokens);
+      // Inicializar al cargar
+      window.addEventListener('load', loadTokens)
     </script>
-</body>
+  </body>
 </html>

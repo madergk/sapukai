@@ -104,7 +104,7 @@ const formatTypeScriptColors: Format = {
 
     return `/**
  * Color tokens - Auto-generated from Figma
- * DO NOT EDIT DIRECTLY - Run \`npm run sync-tokens\` to update
+ * DO NOT EDIT DIRECTLY - Run \`npm run token:sync\` to update
  * Generated: ${new Date().toISOString()}
  */
 
@@ -156,7 +156,7 @@ const formatTypeScriptTypography: Format = {
 
     return `/**
  * Typography tokens - Auto-generated from Figma
- * DO NOT EDIT DIRECTLY - Run \`npm run sync-tokens\` to update
+ * DO NOT EDIT DIRECTLY - Run \`npm run token:sync\` to update
  * Generated: ${new Date().toISOString()}
  */
 
@@ -208,7 +208,7 @@ const formatTypeScriptSpacing: Format = {
 
     return `/**
  * Spacing tokens - Auto-generated from Figma
- * DO NOT EDIT DIRECTLY - Run \`npm run sync-tokens\` to update
+ * DO NOT EDIT DIRECTLY - Run \`npm run token:sync\` to update
  * Generated: ${new Date().toISOString()}
  */
 
@@ -246,7 +246,7 @@ const formatTypeScriptShadows: Format = {
 
     return `/**
  * Shadow tokens - Auto-generated from Figma
- * DO NOT EDIT DIRECTLY - Run \`npm run sync-tokens\` to update
+ * DO NOT EDIT DIRECTLY - Run \`npm run token:sync\` to update
  * Generated: ${new Date().toISOString()}
  */
 
@@ -308,7 +308,7 @@ const formatCssTheme: Format = {
 
     return `/**
  * CSS Theme Variables - Auto-generated from Figma
- * DO NOT EDIT DIRECTLY - Run \`npm run sync-tokens\` to update
+ * DO NOT EDIT DIRECTLY - Run \`npm run token:sync\` to update
  * Generated: ${new Date().toISOString()}
  * 
  * Compatible with Tailwind CSS v4 @theme directive
@@ -341,7 +341,7 @@ const formatTypeScriptIndex: Format = {
     return `/**
  * Catalyst UI Design System - Design Tokens
  * Auto-generated from Figma - DO NOT EDIT DIRECTLY
- * Run \`npm run sync-tokens\` to update
+ * Run \`npm run token:sync\` to update
  * Generated: ${new Date().toISOString()}
  */
 

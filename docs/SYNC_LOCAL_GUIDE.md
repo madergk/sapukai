@@ -1,6 +1,6 @@
 # 📄 Guía: Sincronización Local de Tokens
 
-## ¿Qué es `sync-tokens-local`?
+## ¿Qué es `token:sync -- --source=local`?
 
 Es un script que **carga tokens directamente desde `figma-tokens.json`** sin hacer fetch desde Figma ni desde API.
 
@@ -20,7 +20,7 @@ Es un script que **carga tokens directamente desde `figma-tokens.json`** sin hac
 ### Opción 1: Carga simple
 
 ```bash
-npm run sync-tokens-local
+npm run token:sync -- --source=local
 ```
 
 Esto:
@@ -33,7 +33,7 @@ Esto:
 ### Opción 2: Con reporte
 
 ```bash
-npm run sync-tokens-local --report
+tsx scripts/tokens/sources/local.ts --report
 ```
 
 Muestra:
@@ -46,7 +46,7 @@ Muestra:
 ### Opción 3: Validación estricta
 
 ```bash
-npm run sync-tokens-local --validate
+tsx scripts/tokens/sources/local.ts --validate
 ```
 
 Valida:
@@ -59,7 +59,7 @@ Valida:
 ### Opción 4: Vista previa (sin cambios)
 
 ```bash
-npm run sync-tokens-local --dry-run
+tsx scripts/tokens/sources/local.ts --dry-run
 ```
 
 Simula el proceso sin hacer cambios reales.
@@ -69,7 +69,7 @@ Simula el proceso sin hacer cambios reales.
 ## 📋 Opciones Completas
 
 ```bash
-npm run sync-tokens-local [options]
+tsx scripts/tokens/sources/local.ts [options]
 
 --report           Mostrar estadísticas detalladas
 --dry-run          Vista previa sin cambios
@@ -83,16 +83,16 @@ npm run sync-tokens-local [options]
 
 ```bash
 # Ver stats sin hacer nada
-npm run sync-tokens-local --report --dry-run
+tsx scripts/tokens/sources/local.ts --report --dry-run
 
 # Cargar y validar estrictamente
-npm run sync-tokens-local --validate --force
+tsx scripts/tokens/sources/local.ts --validate --force
 
 # Cargar sin backup (desarrollo rápido)
-npm run sync-tokens-local --no-backup
+tsx scripts/tokens/sources/local.ts --no-backup
 
 # Cargar todo sin validación
-npm run sync-tokens-local --no-validate --no-backup --dry-run
+tsx scripts/tokens/sources/local.ts --no-validate --no-backup --dry-run
 ```
 
 ---
@@ -108,10 +108,10 @@ npm run sync-tokens-local --no-validate --no-backup --dry-run
 # 2. Copia el JSON a tokens/figma-tokens.json
 
 # 3. Valida la carga
-npm run sync-tokens-local --report
+npm run token:sync -- --source=local --dry-run
 
 # 4. Si todo está bien, sincroniza
-npm run sync-tokens -- --skip-figma
+npm run token:sync -- --source=local
 
 # 5. Verifica cambios
 git diff src/tokens/
@@ -124,24 +124,23 @@ git add . && git commit -m "Update design tokens" && git push
 
 ```bash
 # Durante desarrollo, usa local para rapidez
-npm run sync-tokens-local --dry-run
+tsx scripts/tokens/sources/local.ts --dry-run
 
 # Cuando estés seguro, sincroniza
-npm run sync-tokens-local
-npm run sync-tokens -- --skip-figma
+tsx scripts/tokens/sources/local.ts
+npm run token:sync -- --source=local
 
-# Valida transformación
-npm run validate-tokens
+# Postprocess (reporte + docs)
+npm run token:postprocess -- --skip-storybook
 ```
 
 ### Scenario 3: CI/CD pipeline
 
 ```bash
 # En tu GitHub Actions o similar:
-npm run sync-tokens-local --validate
-npm run sync-tokens -- --skip-figma
-npm run validate-tokens
-npm run validate-components
+tsx scripts/tokens/sources/local.ts --validate
+npm run token:sync -- --source=local
+npm run token:postprocess -- --skip-storybook
 ```
 
 ---
@@ -160,12 +159,12 @@ npm run validate-components
 ✅ Local token load complete!
 
 Tokens are ready for transformation.
-Next: npm run sync-tokens -- --skip-figma
+Next: npm run token:sync -- --source=local
 
 Next steps:
-  1. Review tokens: npm run sync-tokens-local --report
-  2. Transform: npm run sync-tokens -- --skip-figma
-  3. Validate: npm run validate-tokens
+  1. Review tokens: tsx scripts/tokens/sources/local.ts --report
+  2. Transform: npm run token:sync -- --source=local
+  3. Postprocess: npm run token:postprocess -- --skip-storybook
   4. Commit: git add . && git commit
 ```
 
@@ -219,10 +218,10 @@ Si hay errores:
 
 ```bash
 # Saltarlos forzadamente
-npm run sync-tokens-local --force
+tsx scripts/tokens/sources/local.ts --force
 
 # O revisarlos
-npm run sync-tokens-local --validate
+tsx scripts/tokens/sources/local.ts --validate
 ```
 
 ---
@@ -240,22 +239,22 @@ ls -la tokens/.backups/
 
 # Restaurar versión anterior
 cp tokens/.figma-tokens.prev.json tokens/figma-tokens.json
-npm run sync-tokens-local
+tsx scripts/tokens/sources/local.ts
 ```
 
 ---
 
 ## 🆚 Comparativa: Local vs REST API vs Console MCP
 
-| Aspecto        | sync-tokens (REST) | sync-tokens-local | sync-figma-tokens-mcp |
-| -------------- | ------------------ | ----------------- | --------------------- |
-| Origen         | API Figma          | Archivo local     | Console Figma         |
-| Requisitos     | Enterprise         | Ninguno           | Ninguno               |
-| Velocidad      | Lenta (network)    | Rápida            | Media (manual)        |
-| Offline        | ❌ No              | ✅ Sí             | ❌ No                 |
-| CI/CD          | ✅ Ideal           | ✅ Ideal          | ❌ Requiere navegador |
-| Setup          | Complejo           | Simple            | Manual                |
-| Automatización | Completa           | Parcial           | Manual                |
+| Aspecto        | token:sync (API) | token:sync local | token:sync MCP        |
+| -------------- | ---------------- | ---------------- | --------------------- |
+| Origen         | API Figma        | Archivo local    | Console Figma         |
+| Requisitos     | Enterprise       | Ninguno          | Ninguno               |
+| Velocidad      | Lenta (network)  | Rápida           | Media (manual)        |
+| Offline        | ❌ No            | ✅ Sí            | ❌ No                 |
+| CI/CD          | ✅ Ideal         | ✅ Ideal         | ❌ Requiere navegador |
+| Setup          | Complejo         | Simple           | Manual                |
+| Automatización | Completa         | Parcial          | Manual                |
 
 ---
 
@@ -312,24 +311,24 @@ Tu `tokens/figma-tokens.json` debe tener:
 ```bash
 # Necesitas crear este archivo primero
 # Opción 1: Desde Figma Console
-npm run sync-tokens -- --mcp
+npm run token:sync -- --source=mcp
 
 # Opción 2: Manual desde Figma
 # Ver: TOKENS_MCP_GUIDE.md
 
 # Opción 3: De un backup
 cp tokens/.figma-tokens.prev.json tokens/figma-tokens.json
-npm run sync-tokens-local
+tsx scripts/tokens/sources/local.ts
 ```
 
 ### "Validation errors found"
 
 ```bash
 # Revisar estructura
-npm run sync-tokens-local --validate
+tsx scripts/tokens/sources/local.ts --validate
 
 # O forzar ignorando errores
-npm run sync-tokens-local --force
+tsx scripts/tokens/sources/local.ts --force
 
 # O manualmente verificar el JSON
 cat tokens/figma-tokens.json | jq .
@@ -340,14 +339,14 @@ cat tokens/figma-tokens.json | jq .
 Esto es normal si no has actualizado tokens en Figma. Para forzar:
 
 ```bash
-npm run sync-tokens -- --skip-figma --force
+npm run token:sync -- --source=local
 ```
 
 ### "Backup failed"
 
 ```bash
 # Continuar sin backup
-npm run sync-tokens-local --no-backup
+tsx scripts/tokens/sources/local.ts --no-backup
 ```
 
 ---
@@ -361,12 +360,12 @@ Para máxima velocidad en desarrollo:
 # (Ver TOKENS_MCP_GUIDE.md)
 
 # 2. De ahora en adelante usa local (muy rápido)
-npm run sync-tokens-local --no-validate --no-backup
+tsx scripts/tokens/sources/local.ts --no-validate --no-backup
 
 # 3. Cuando publiques, haz validación completa
-npm run sync-tokens-local --report --validate
-npm run sync-tokens -- --skip-figma
-npm run validate-tokens
+tsx scripts/tokens/sources/local.ts --report --validate
+npm run token:sync -- --source=local
+npm run token:postprocess -- --skip-storybook
 ```
 
 ---
@@ -374,15 +373,15 @@ npm run validate-tokens
 ## 🔗 Integración con Otros Scripts
 
 ```bash
-# Flujo completo: Local → Transform → Validate
-npm run sync-tokens-local && \
-npm run sync-tokens -- --skip-figma && \
-npm run validate-tokens
+# Flujo completo: Local → Transform → Postprocess
+tsx scripts/tokens/sources/local.ts && \
+npm run token:sync -- --source=local && \
+npm run token:postprocess -- --skip-storybook
 
-# Con report previo
-npm run sync-tokens-local --report && \
-npm run sync-tokens -- --skip-figma && \
-npm run validate-components
+# Con reporte previo
+tsx scripts/tokens/sources/local.ts --report && \
+npm run token:sync -- --source=local && \
+npm run token:postprocess -- --skip-storybook
 ```
 
 ---
@@ -390,18 +389,17 @@ npm run validate-components
 ## 📚 Relación con Otros Scripts
 
 ```
-sync-tokens.ts (Orquestador)
-├── sync-figma-tokens.ts (REST API - ❌ Bloqueado)
-├── sync-figma-tokens-mcp.ts (Console MCP - Manual)
-└── sync-figma-tokens-local.ts (Archivo local - ✅ Recomendado para CI/CD)
+tokens/sync.ts (Orquestador)
+├── sources/figma-api.ts (REST API - ❌ Bloqueado)
+├── sources/figma-mcp.ts (Console MCP)
+└── sources/local.ts (Archivo local - ✅ Recomendado para CI/CD)
 ```
 
 ### Qué usar cuándo:
 
-- **`sync-tokens`** - Flujo completo con todas las opciones
-- **`sync-tokens-local`** - Desarrollo rápido, CI/CD
-- **`sync-figma-tokens-mcp`** - Cuando necesites actualizar desde Figma
-- **`sync-figma-tokens`** - Solo si tienes plan Enterprise (sin problemas)
+- **`token:sync`** - Flujo completo con source configurable
+- **`token:sync -- --source=local`** - Desarrollo rápido, CI/CD
+- **`token:sync -- --source=mcp`** - Cuando necesites actualizar desde Figma
 
 ---
 
@@ -410,8 +408,8 @@ sync-tokens.ts (Orquestador)
 ### 1. Alias en `.bashrc` o `.zshrc`
 
 ```bash
-alias sync-tokens-quick="npm run sync-tokens-local --no-validate --no-backup"
-alias sync-tokens-strict="npm run sync-tokens-local --report --validate"
+alias token-sync-quick="tsx scripts/tokens/sources/local.ts --no-validate --no-backup"
+alias token-sync-strict="tsx scripts/tokens/sources/local.ts --report --validate"
 ```
 
 ### 2. Pre-commit hook
@@ -419,21 +417,21 @@ alias sync-tokens-strict="npm run sync-tokens-local --report --validate"
 Agregar a `.husky/pre-commit`:
 
 ```bash
-npm run sync-tokens-local --validate
+tsx scripts/tokens/sources/local.ts --validate
 ```
 
 ### 3. GitHub Actions
 
 ```yaml
 - name: Sync tokens
-  run: npm run sync-tokens-local --validate
+  run: tsx scripts/tokens/sources/local.ts --validate
 ```
 
 ### 4. Testing local
 
 ```bash
 # Validar estructura sin cambios
-npm run sync-tokens-local --dry-run --report
+tsx scripts/tokens/sources/local.ts --dry-run --report
 
 # Luego transformar
 npm run build-tokens
@@ -444,7 +442,7 @@ npm run build-tokens
 ## ✅ Checklist: Primeras 5 Minutos
 
 - [ ] Lee esta guía (3 min)
-- [ ] Ejecuta: `npm run sync-tokens-local --report` (1 min)
+- [ ] Ejecuta: `tsx scripts/tokens/sources/local.ts --report` (1 min)
 - [ ] Entiende el output (1 min)
 - [ ] ¡Listo para usar!
 

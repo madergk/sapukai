@@ -8,12 +8,9 @@ import * as fs from 'fs'
 import * as path from 'path'
 import chalk from 'chalk'
 import ora from 'ora'
+import { TOKENS_DIR, TOKENS_FILE, REPORTS_DIR } from './config'
 
-// Paths
-const TOKENS_DIR = path.join(process.cwd(), 'tokens')
-const TOKENS_FILE = path.join(TOKENS_DIR, 'figma-tokens.json')
 const BACKUP_FILE = path.join(TOKENS_DIR, '.figma-tokens.prev.json')
-const REPORTS_DIR = path.join(TOKENS_DIR, '.reports')
 
 interface TokenChange {
   path: string
@@ -54,16 +51,10 @@ interface TokenGroup {
   [key: string]: TokenValue | TokenGroup
 }
 
-/**
- * Check if value is a token
- */
 function isToken(obj: unknown): obj is TokenValue {
   return obj !== null && typeof obj === 'object' && '$value' in obj
 }
 
-/**
- * Flatten tokens into a map with paths
- */
 function flattenTokens(obj: TokenGroup, prefix = ''): Map<string, TokenValue> {
   const tokens = new Map<string, TokenValue>()
 
@@ -85,9 +76,6 @@ function flattenTokens(obj: TokenGroup, prefix = ''): Map<string, TokenValue> {
   return tokens
 }
 
-/**
- * Compare two token sets and generate changes
- */
 function compareTokens(
   oldTokens: Map<string, TokenValue>,
   newTokens: Map<string, TokenValue>
@@ -96,7 +84,6 @@ function compareTokens(
   const modified: TokenChange[] = []
   const removed: TokenChange[] = []
 
-  // Find added and modified tokens
   for (const [path, newToken] of newTokens) {
     const oldToken = oldTokens.get(path)
 
@@ -116,7 +103,6 @@ function compareTokens(
     }
   }
 
-  // Find removed tokens
   for (const [path, oldToken] of oldTokens) {
     if (!newTokens.has(path)) {
       removed.push({
@@ -130,9 +116,6 @@ function compareTokens(
   return { added, modified, removed }
 }
 
-/**
- * Identify breaking changes
- */
 function identifyBreakingChanges(changes: {
   added: TokenChange[]
   modified: TokenChange[]
@@ -140,7 +123,6 @@ function identifyBreakingChanges(changes: {
 }): TokenChange[] {
   const breaking: TokenChange[] = []
 
-  // Removed tokens are breaking changes
   for (const change of changes.removed) {
     breaking.push({
       ...change,
@@ -148,9 +130,7 @@ function identifyBreakingChanges(changes: {
     })
   }
 
-  // Type changes are breaking
   for (const change of changes.modified) {
-    // Check if the value type changed significantly
     const oldType = typeof change.oldValue
     const newType = typeof change.newValue
 
@@ -165,20 +145,15 @@ function identifyBreakingChanges(changes: {
   return breaking
 }
 
-/**
- * Generate a change report
- */
 export async function generateReport(options: {
   compareVersions?: string
 }): Promise<ChangeReport | null> {
   const spinner = ora('Generating change report...').start()
 
-  // Ensure reports directory exists
   if (!fs.existsSync(REPORTS_DIR)) {
     fs.mkdirSync(REPORTS_DIR, { recursive: true })
   }
 
-  // Read current tokens
   if (!fs.existsSync(TOKENS_FILE)) {
     spinner.fail('Current tokens file not found')
     return null
@@ -203,7 +178,6 @@ export async function generateReport(options: {
     }
   }
 
-  // Read previous tokens
   const previousTokens = new Map<string, TokenValue>()
 
   if (fs.existsSync(BACKUP_FILE)) {
@@ -226,14 +200,11 @@ export async function generateReport(options: {
     }
   }
 
-  // Compare tokens
   const changes = compareTokens(previousTokens, currentTokens)
   const breakingChanges = identifyBreakingChanges(changes)
 
-  // Get version from package.json
   const packageJson = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf-8'))
 
-  // Create report
   const report: ChangeReport = {
     version: packageJson.version || '0.0.0',
     timestamp: new Date().toISOString(),
@@ -251,7 +222,6 @@ export async function generateReport(options: {
     },
   }
 
-  // Save report
   const reportFilename = `report-${report.version}-${Date.now()}.json`
   const reportPath = path.join(REPORTS_DIR, reportFilename)
   fs.writeFileSync(reportPath, JSON.stringify(report, null, 2))
@@ -261,20 +231,15 @@ export async function generateReport(options: {
   return report
 }
 
-/**
- * Print report to console
- */
 function printReport(report: ChangeReport): void {
   console.log(chalk.blue(`\n📊 Token Change Report - v${report.version}\n`))
 
-  // Summary
   console.log(chalk.gray('Summary:'))
   console.log(chalk.green(`  + ${report.summary.added} added`))
   console.log(chalk.yellow(`  ~ ${report.summary.modified} modified`))
   console.log(chalk.red(`  - ${report.summary.removed} removed`))
   console.log(chalk.gray(`  = ${report.summary.total} total changes`))
 
-  // Breaking changes warning
   if (report.breakingChanges.length > 0) {
     console.log(chalk.red.bold(`\n⚠️  ${report.breakingChanges.length} BREAKING CHANGES:\n`))
 
@@ -288,7 +253,6 @@ function printReport(report: ChangeReport): void {
     }
   }
 
-  // Details (limited)
   if (report.details.added.length > 0) {
     console.log(chalk.green('\nAdded tokens:'))
     for (const change of report.details.added.slice(0, 5)) {
@@ -323,9 +287,6 @@ function printReport(report: ChangeReport): void {
   console.log('')
 }
 
-/**
- * List all reports
- */
 function listReports(): void {
   if (!fs.existsSync(REPORTS_DIR)) {
     console.log(chalk.yellow('\nNo reports found'))
@@ -352,7 +313,9 @@ function listReports(): void {
     console.log(chalk.cyan(`  ${file}`))
     console.log(
       chalk.gray(
-        `    v${report.version} | ${report.summary.total} changes | ${new Date(report.timestamp).toLocaleString()}`
+        `    v${report.version} | ${report.summary.total} changes | ${new Date(
+          report.timestamp
+        ).toLocaleString()}`
       )
     )
   }
@@ -364,13 +327,9 @@ function listReports(): void {
   console.log('')
 }
 
-/**
- * Main execution
- */
 async function main(): Promise<void> {
   const args = process.argv.slice(2)
 
-  // List reports
   if (args.includes('--list') || args.includes('-l')) {
     listReports()
     return
@@ -379,14 +338,12 @@ async function main(): Promise<void> {
   console.log(chalk.blue('\n📊 Generating change report...\n'))
 
   const report = await generateReport({})
-
   if (report) {
     printReport(report)
   }
 }
 
-// Run if executed directly
-if (process.argv[1]?.includes('generate-report')) {
+if (process.argv[1]?.includes('tokens/report')) {
   main().catch(error => {
     console.error(chalk.red('\nError:'), error.message)
     process.exit(1)

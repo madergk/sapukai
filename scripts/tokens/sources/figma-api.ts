@@ -1,5 +1,5 @@
 /**
- * Figma Token Extraction Script
+ * Figma Token Extraction Script (API)
  * Extracts design tokens (variables) from Figma and saves them as JSON
  */
 
@@ -93,9 +93,6 @@ interface SyncOptions {
   dryRun: boolean
 }
 
-/**
- * Parse command line arguments
- */
 function parseArgs(): SyncOptions {
   const args = process.argv.slice(2)
   const normalizedArgs = args.map(arg => (arg.startsWith('---') ? `--${arg.slice(3)}` : arg))
@@ -104,9 +101,6 @@ function parseArgs(): SyncOptions {
   }
 }
 
-/**
- * Validate environment variables
- */
 function validateEnv(): void {
   if (!FIGMA_ACCESS_TOKEN) {
     console.error(chalk.red('Error: FIGMA_ACCESS_TOKEN is not set'))
@@ -123,9 +117,6 @@ function validateEnv(): void {
   }
 }
 
-/**
- * Convert Figma color to hex
- */
 function rgbaToHex(r: number, g: number, b: number, a: number = 1): string {
   const toHex = (n: number) => {
     const hex = Math.round(n * 255).toString(16)
@@ -138,17 +129,10 @@ function rgbaToHex(r: number, g: number, b: number, a: number = 1): string {
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`
 }
 
-/**
- * Convert Figma variable name to token path
- * e.g., "colors/zinc/500" -> ["colors", "zinc", "500"]
- */
 function nameToPath(name: string): string[] {
   return name.split('/').map(part => part.trim())
 }
 
-/**
- * Set a nested value in an object using a path array
- */
 function setNestedValue(obj: TokenGroup, path: string[], value: TokenValue): void {
   let current = obj
   for (let i = 0; i < path.length - 1; i++) {
@@ -161,9 +145,6 @@ function setNestedValue(obj: TokenGroup, path: string[], value: TokenValue): voi
   current[path[path.length - 1]] = value
 }
 
-/**
- * Fetch variables from Figma API
- */
 async function fetchFigmaVariables(): Promise<FigmaVariablesResponse> {
   const spinner = ora('Fetching variables from Figma API...').start()
 
@@ -202,21 +183,16 @@ async function fetchFigmaVariables(): Promise<FigmaVariablesResponse> {
   }
 }
 
-/**
- * Process Figma variables into token structure
- */
 function processVariables(data: FigmaVariablesResponse): TokensOutput {
   const spinner = ora('Processing variables...').start()
 
   const { variableCollections, variables } = data.meta
 
-  // Create a map of variable ID to variable for alias resolution
   const variableMap = new Map<string, FigmaVariable>()
   for (const variable of Object.values(variables)) {
     variableMap.set(variable.id, variable)
   }
 
-  // Initialize output structure
   const output: TokensOutput = {
     $schema: 'https://design-tokens.org/schema.json',
     $metadata: {
@@ -232,7 +208,6 @@ function processVariables(data: FigmaVariablesResponse): TokensOutput {
     },
   }
 
-  // Process each collection
   for (const collection of Object.values(variableCollections)) {
     const collectionName = collection.name.toLowerCase()
     const isPrimitive =
@@ -241,7 +216,6 @@ function processVariables(data: FigmaVariablesResponse): TokensOutput {
       collectionName.includes('core')
     const modes = collection.modes
 
-    // Process each variable in the collection
     for (const variableId of collection.variableIds) {
       const variable = variableMap.get(variableId)
       if (!variable || variable.hiddenFromPublishing) continue
@@ -249,7 +223,6 @@ function processVariables(data: FigmaVariablesResponse): TokensOutput {
       const tokenPath = nameToPath(variable.name)
       const tokenType = getTokenType(variable.resolvedType)
 
-      // Process each mode
       for (const mode of modes) {
         const value = variable.valuesByMode[mode.modeId]
         if (value === undefined) continue
@@ -266,10 +239,8 @@ function processVariables(data: FigmaVariablesResponse): TokensOutput {
         }
 
         if (isPrimitive) {
-          // Primitives don't have modes
           setNestedValue(output.primitives, tokenPath, tokenValue)
         } else {
-          // Semantic tokens go into light/dark
           const modeName = mode.name.toLowerCase()
           if (modeName.includes('dark')) {
             setNestedValue(output.semantic.dark, tokenPath, tokenValue)
@@ -285,9 +256,6 @@ function processVariables(data: FigmaVariablesResponse): TokensOutput {
   return output
 }
 
-/**
- * Get token type from Figma resolved type
- */
 function getTokenType(resolvedType: FigmaVariable['resolvedType']): TokenValue['$type'] {
   switch (resolvedType) {
     case 'COLOR':
@@ -302,35 +270,27 @@ function getTokenType(resolvedType: FigmaVariable['resolvedType']): TokenValue['
   }
 }
 
-/**
- * Resolve a Figma variable value (handles aliases)
- */
 function resolveValue(
   value: FigmaVariableValue,
   resolvedType: FigmaVariable['resolvedType'],
   variableMap: Map<string, FigmaVariable>
 ): string | number | boolean {
-  // Handle alias references
   if (value.type === 'VARIABLE_ALIAS' && value.id) {
     const aliasedVariable = variableMap.get(value.id)
     if (aliasedVariable) {
-      // Return reference syntax for aliases
       const refPath = nameToPath(aliasedVariable.name).join('.')
       return `{${refPath}}`
     }
   }
 
-  // Handle color values
   if (resolvedType === 'COLOR' && value.r !== undefined) {
     return rgbaToHex(value.r, value.g!, value.b!, value.a)
   }
 
-  // Handle other primitive values
   if (typeof value === 'number') return value
   if (typeof value === 'boolean') return value
   if (typeof value === 'string') return value
 
-  // Fallback for numeric values stored differently
   if ('value' in (value as any)) {
     return (value as any).value
   }
@@ -338,9 +298,6 @@ function resolveValue(
   return String(value)
 }
 
-/**
- * Backup existing tokens file
- */
 function backupExistingTokens(): void {
   if (fs.existsSync(OUTPUT_FILE)) {
     const spinner = ora('Backing up existing tokens...').start()
@@ -349,13 +306,9 @@ function backupExistingTokens(): void {
   }
 }
 
-/**
- * Save tokens to file
- */
 function saveTokens(tokens: TokensOutput): void {
   const spinner = ora('Saving tokens to file...').start()
 
-  // Ensure tokens directory exists
   if (!fs.existsSync(TOKENS_DIR)) {
     fs.mkdirSync(TOKENS_DIR, { recursive: true })
   }
@@ -364,9 +317,6 @@ function saveTokens(tokens: TokensOutput): void {
   spinner.succeed(`Saved tokens to ${chalk.cyan(OUTPUT_FILE)}`)
 }
 
-/**
- * Read tokens from disk
- */
 function readTokensFile(filePath: string): TokensOutput | null {
   if (!fs.existsSync(filePath)) {
     return null
@@ -374,9 +324,6 @@ function readTokensFile(filePath: string): TokensOutput | null {
   return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as TokensOutput
 }
 
-/**
- * Compare tokens and report changes
- */
 function compareTokens(
   newTokens: TokensOutput,
   previousTokens: TokensOutput | null
@@ -389,7 +336,6 @@ function compareTokens(
   let modified = 0
   let removed = 0
 
-  // Simple deep comparison (could be improved for detailed reporting)
   const countTokens = (obj: TokenGroup, prefix = ''): Map<string, any> => {
     const tokens = new Map<string, any>()
     for (const [key, value] of Object.entries(obj)) {
@@ -426,33 +372,25 @@ function compareTokens(
   return { added, modified, removed }
 }
 
-/**
- * Main execution
- */
 async function main(): Promise<void> {
   const options = parseArgs()
   console.log(chalk.blue('\n🎨 Syncing design tokens from Figma...\n'))
 
-  // Validate environment
   validateEnv()
 
-  // Backup existing tokens
   if (!options.dryRun) {
     backupExistingTokens()
   } else {
     console.log(chalk.gray('Dry run: skipping backup and file writes'))
   }
 
-  // Fetch and process variables
   const figmaData = await fetchFigmaVariables()
   const tokens = processVariables(figmaData)
 
-  // Save tokens
   if (!options.dryRun) {
     saveTokens(tokens)
   }
 
-  // Report changes
   const previousTokens = options.dryRun ? readTokensFile(TOKENS_FILE) : readTokensFile(BACKUP_FILE)
   const changes = compareTokens(tokens, previousTokens)
 
@@ -463,14 +401,14 @@ async function main(): Promise<void> {
   console.log(chalk.red(`  • ${changes.removed} tokens removed`))
   console.log('')
 
-  // Return changes for use by main orchestrator
   process.exit(0)
 }
 
-// Run if executed directly
-main().catch(error => {
-  console.error(chalk.red('\nError:'), error.message)
-  process.exit(1)
-})
+if (process.argv[1]?.includes('figma-api')) {
+  main().catch(error => {
+    console.error(chalk.red('\nError:'), error.message)
+    process.exit(1)
+  })
+}
 
 export { main as syncFigmaTokens, TokensOutput, TokenGroup, TokenValue }

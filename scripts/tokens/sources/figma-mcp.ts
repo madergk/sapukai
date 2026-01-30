@@ -2,13 +2,6 @@
 /**
  * Figma Token Extraction Script - MCP Version
  * Extracts design tokens (variables) from Figma using Figma Console MCP
- *
- * This script uses the Figma Console MCP client to fetch variables directly
- * without requiring Figma Enterprise plan or Variables API access.
- *
- * Requirements:
- * - Claude Code with Figma Console MCP integration
- * - FIGMA_FILE_KEY in .env
  */
 
 import 'dotenv/config'
@@ -76,9 +69,6 @@ interface SyncOptions {
   source: 'mcp' | 'manual' | 'file'
 }
 
-/**
- * Parse command line arguments
- */
 function parseArgs(): SyncOptions {
   const args = process.argv.slice(2)
   const normalizedArgs = args.map(arg => (arg.startsWith('---') ? `--${arg.slice(3)}` : arg))
@@ -90,9 +80,6 @@ function parseArgs(): SyncOptions {
   }
 }
 
-/**
- * Validate environment variables
- */
 function validateEnv(): void {
   if (!FIGMA_FILE_KEY) {
     console.error(chalk.red('Error: FIGMA_FILE_KEY is not set'))
@@ -102,9 +89,6 @@ function validateEnv(): void {
   }
 }
 
-/**
- * Convert a path like "colors/zinc/500" to nested object structure
- */
 function setNestedValue(obj: TokenGroup, path: string[], value: TokenValue): void {
   let current = obj
   for (let i = 0; i < path.length - 1; i++) {
@@ -117,23 +101,14 @@ function setNestedValue(obj: TokenGroup, path: string[], value: TokenValue): voi
   current[path[path.length - 1]] = value
 }
 
-/**
- * Fetch variables from local figma-tokens.json (MCP helper)
- * In production, this would connect to the actual Figma Console MCP
- */
 async function fetchFigmaVariablesViaMCP(): Promise<FigmaVariablesCollection> {
   const spinner = ora('Fetching variables via Figma Console MCP...').start()
 
   try {
-    // Since this is a Node.js script, we'll read from existing figma-tokens.json
-    // and provide a way to update it using Claude Code's browser capabilities
-
-    // Check if figma-tokens.json already exists
     if (fs.existsSync(OUTPUT_FILE)) {
       spinner.succeed('Using existing Figma tokens file')
       const existing = JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf-8')) as TokensOutput
 
-      // Convert to FigmaVariablesCollection format
       const variables: FigmaVariablesCollection = {
         primitives: [],
         semantic: {
@@ -142,7 +117,6 @@ async function fetchFigmaVariablesViaMCP(): Promise<FigmaVariablesCollection> {
         },
       }
 
-      // Flatten primitives
       const flattenTokens = (obj: TokenGroup, prefix = ''): FigmaVariable[] => {
         const result: FigmaVariable[] = []
         for (const [key, value] of Object.entries(obj)) {
@@ -169,8 +143,6 @@ async function fetchFigmaVariablesViaMCP(): Promise<FigmaVariablesCollection> {
       return variables
     }
 
-    // If no existing file, try to fetch from browser via MCP
-    // This is where you'd integrate with actual Figma Console MCP
     console.log(chalk.yellow('\n📝 No existing tokens found.'))
     console.log(chalk.gray('To fetch from Figma:'))
     console.log(chalk.gray('  1. Open Figma file in Claude Code browser'))
@@ -187,9 +159,6 @@ async function fetchFigmaVariablesViaMCP(): Promise<FigmaVariablesCollection> {
   }
 }
 
-/**
- * Convert fetched variables to standard token output
- */
 function processVariables(variables: FigmaVariablesCollection): TokensOutput {
   const spinner = ora('Processing variables...').start()
 
@@ -208,7 +177,6 @@ function processVariables(variables: FigmaVariablesCollection): TokensOutput {
     },
   }
 
-  // Process primitives
   for (const variable of variables.primitives) {
     const path = variable.name.split('/').map(p => p.trim())
     const tokenValue: TokenValue = {
@@ -221,7 +189,6 @@ function processVariables(variables: FigmaVariablesCollection): TokensOutput {
     setNestedValue(output.primitives, path, tokenValue)
   }
 
-  // Process semantic tokens (light mode)
   for (const variable of variables.semantic.light) {
     const path = variable.name.split('/').map(p => p.trim())
     const tokenValue: TokenValue = {
@@ -234,7 +201,6 @@ function processVariables(variables: FigmaVariablesCollection): TokensOutput {
     setNestedValue(output.semantic.light, path, tokenValue)
   }
 
-  // Process semantic tokens (dark mode)
   for (const variable of variables.semantic.dark) {
     const path = variable.name.split('/').map(p => p.trim())
     const tokenValue: TokenValue = {
@@ -251,9 +217,6 @@ function processVariables(variables: FigmaVariablesCollection): TokensOutput {
   return output
 }
 
-/**
- * Backup existing tokens file
- */
 function backupExistingTokens(): void {
   if (fs.existsSync(OUTPUT_FILE)) {
     const spinner = ora('Backing up existing tokens...').start()
@@ -262,13 +225,9 @@ function backupExistingTokens(): void {
   }
 }
 
-/**
- * Save tokens to file
- */
 function saveTokens(tokens: TokensOutput): void {
   const spinner = ora('Saving tokens to file...').start()
 
-  // Ensure tokens directory exists
   if (!fs.existsSync(TOKENS_DIR)) {
     fs.mkdirSync(TOKENS_DIR, { recursive: true })
   }
@@ -277,9 +236,6 @@ function saveTokens(tokens: TokensOutput): void {
   spinner.succeed(`Saved tokens to ${chalk.cyan(OUTPUT_FILE)}`)
 }
 
-/**
- * Read tokens from disk
- */
 function readTokensFile(filePath: string): TokensOutput | null {
   if (!fs.existsSync(filePath)) {
     return null
@@ -287,9 +243,6 @@ function readTokensFile(filePath: string): TokensOutput | null {
   return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as TokensOutput
 }
 
-/**
- * Compare tokens and report changes
- */
 function compareTokens(
   newTokens: TokensOutput,
   previousTokens: TokensOutput | null
@@ -302,7 +255,6 @@ function compareTokens(
   let modified = 0
   let removed = 0
 
-  // Count flat tokens
   const countTokens = (obj: TokenGroup): Map<string, any> => {
     const tokens = new Map<string, any>()
     const flatten = (obj: TokenGroup, prefix = '') => {
@@ -339,9 +291,6 @@ function compareTokens(
   return { added, modified, removed }
 }
 
-/**
- * Print instructions for using Figma Console MCP
- */
 function printMCPInstructions(): void {
   console.log(chalk.blue.bold('\n📱 Figma Console MCP Instructions\n'))
 
@@ -362,44 +311,33 @@ function printMCPInstructions(): void {
 
   console.log('4. Copy the JSON output')
   console.log('5. Save it to tokens/figma-tokens.json')
-  console.log('6. Run: npm run sync-tokens -- --skip-figma\n')
+  console.log('6. Run: npm run token:sync -- --source=local\n')
 }
 
-/**
- * Main execution
- */
 async function main(): Promise<void> {
   const options = parseArgs()
 
   console.log(chalk.blue.bold('\n🎨 Syncing design tokens via Figma Console MCP\n'))
 
-  // Validate environment
   validateEnv()
 
-  // Show MCP instructions
   if (options.interactive) {
     printMCPInstructions()
   }
 
-  // Backup existing tokens
   if (!options.dryRun) {
     backupExistingTokens()
   } else {
     console.log(chalk.gray('Dry run: skipping backup and file writes'))
   }
 
-  // Fetch variables
   const variables = await fetchFigmaVariablesViaMCP()
-
-  // Process variables
   const tokens = processVariables(variables)
 
-  // Save tokens
   if (!options.dryRun) {
     saveTokens(tokens)
   }
 
-  // Report changes
   const previousTokens = options.dryRun ? readTokensFile(TOKENS_FILE) : readTokensFile(BACKUP_FILE)
   const changes = compareTokens(tokens, previousTokens)
 
@@ -409,16 +347,15 @@ async function main(): Promise<void> {
   console.log(chalk.yellow(`  • ${changes.modified} tokens modified`))
   console.log(chalk.red(`  • ${changes.removed} tokens removed`))
 
-  console.log(chalk.gray('\nNext: Run npm run sync-tokens to transform and sync\n'))
-
-  // Return changes for use by main orchestrator
+  console.log(chalk.gray('\nNext: Run npm run token:sync to transform and sync\n'))
   process.exit(0)
 }
 
-// Run if executed directly
-main().catch(error => {
-  console.error(chalk.red('\nError:'), error.message)
-  process.exit(1)
-})
+if (process.argv[1]?.includes('figma-mcp')) {
+  main().catch(error => {
+    console.error(chalk.red('\nError:'), error.message)
+    process.exit(1)
+  })
+}
 
 export { main, TokensOutput, TokenGroup, TokenValue }

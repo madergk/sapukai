@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.6] - 2026-01-30
+
+### Changed
+
+- Release 0.1.6
+
 ## [0.1.5] - 2026-01-23
 
 ### Changed
@@ -78,4 +84,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-_Token changes will be automatically logged here when running `npm run sync-tokens`_
+_Token changes will be automatically logged here when running `npm run token:postprocess`_

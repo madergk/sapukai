@@ -27,7 +27,7 @@ Se ha implementado un sistema alternativo de sincronización de tokens diseño u
 
 ### 1. Scripts de Sincronización
 
-#### `scripts/sync-figma-tokens-mcp.ts` (Nueva)
+#### `scripts/tokens/sources/figma-mcp.ts` (Nueva)
 
 - Script que maneja extracción via Console MCP
 - Procesa variables de Figma en formato W3C
@@ -48,11 +48,11 @@ Se ha implementado un sistema alternativo de sincronización de tokens diseño u
   - `parseFigmaConsoleOutput()` - Convierte output a W3C format
   - `guideTokenExtraction()` - Guía interactiva
 
-#### `scripts/sync-tokens.ts` (Actualizado)
+#### `scripts/tokens/sync.ts` (Actualizado)
 
-- Agregado soporte para `--mcp` flag
-- Ahora puede usar tanto REST API como Console MCP
-- Mantiene compatibilidad con flujo antiguo
+- Orquesta fuente configurable (`--source=api|mcp|tokens-studio|local`)
+- Ejecuta Style Dictionary después del fetch
+- Centraliza el flujo de tokens
 
 ### 2. Documentación
 
@@ -110,7 +110,7 @@ Se ha implementado un sistema alternativo de sincronización de tokens diseño u
 │     → cat > tokens/figma-tokens.json << 'EOF' {JSON} EOF        │
 │                                                                   │
 │  4. Sincronizar                                                 │
-│     → npm run sync-tokens -- --skip-figma                       │
+│     → npm run token:sync -- --source=local                      │
 │                                                                   │
 │  5. Validar y hacer push                                        │
 │     → git diff src/tokens/                                      │
@@ -121,7 +121,7 @@ Se ha implementado un sistema alternativo de sincronización de tokens diseño u
 ┌─ OPCIÓN B: AUTOMATIZADA (Cuando MCP esté listo) ──────────────┐
 │                                                                   │
 │  1. Comando único                                               │
-│     → npm run sync-tokens -- --mcp                              │
+│     → npm run token:sync -- --source=mcp                        │
 │                                                                   │
 │  2. Claude Code:                                                │
 │     - Abre Figma en navegador                                   │
@@ -141,7 +141,7 @@ Se ha implementado un sistema alternativo de sincronización de tokens diseño u
 ### Antes (REST API - ❌ Bloqueado)
 
 ```bash
-npm run sync-tokens
+npm run token:sync -- --source=api
 # ❌ Error: HTTP 403 - Requires Enterprise
 ```
 
@@ -154,13 +154,13 @@ npx tsx scripts/demo-figma-extract.ts
 # 2. Manualmente: Copiar JSON desde Figma Console
 # 3. Guardar en tokens/figma-tokens.json
 # 4. Sincronizar sin fetch de API
-npm run sync-tokens -- --skip-figma
+npm run token:sync -- --source=local
 ```
 
 ### Ahora (Opción B: Automática - Próximamente)
 
 ```bash
-npm run sync-tokens -- --mcp
+npm run token:sync -- --source=mcp
 ```
 
 ---
@@ -245,10 +245,10 @@ cat docs/TOKENS_FLOW.md
 
 ```bash
 # Sincronización nueva
-npm run sync-tokens -- --skip-figma          # Sin fetch de API
+npm run token:sync -- --source=local         # Sin fetch de API
 
 # Validación
-npm run validate-tokens                      # Validar estructura
+npm run token:postprocess                    # Reporte + docs
 
 # Rollback
 npm run rollback-tokens -- --list             # Ver versiones
@@ -270,7 +270,7 @@ npx tsx scripts/demo-figma-extract.ts         # Ver instrucciones
 ## ✅ Checklist de Implementación
 
 - [x] Crear scripts de sincronización MCP
-- [x] Actualizar sync-tokens.ts con soporte `--mcp`
+- [x] Actualizar `scripts/tokens/sync.ts` con soporte `--source=mcp`
 - [x] Documentación completa (guía + flujos)
 - [x] Demo interactiva en terminal
 - [x] Ejemplos de output

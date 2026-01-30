@@ -2,18 +2,6 @@
 /**
  * Figma Token Sync - Local File Version
  * Reads tokens directly from figma-tokens.json without fetching from API or Figma
- *
- * Use cases:
- * - Quick local development without network calls
- * - CI/CD pipelines where tokens are already committed
- * - Offline token processing
- * - Testing token transformations
- *
- * This script:
- * 1. Reads existing figma-tokens.json
- * 2. Validates structure
- * 3. Creates backup of current file
- * 4. Ready for Style Dictionary transformation
  */
 
 import 'dotenv/config'
@@ -22,7 +10,6 @@ import * as path from 'path'
 import chalk from 'chalk'
 import ora from 'ora'
 
-// Types
 interface TokenValue {
   $value: string | number | boolean
   $type: 'color' | 'dimension' | 'number' | 'string' | 'boolean'
@@ -56,15 +43,11 @@ interface SyncOptions {
   force: boolean
 }
 
-// Paths
 const TOKENS_DIR = path.join(process.cwd(), 'tokens')
 const TOKENS_FILE = path.join(TOKENS_DIR, 'figma-tokens.json')
 const BACKUP_DIR = path.join(TOKENS_DIR, '.backups')
 const BACKUP_FILE = path.join(TOKENS_DIR, '.figma-tokens.prev.json')
 
-/**
- * Parse command line arguments
- */
 function parseArgs(): SyncOptions {
   const args = process.argv.slice(2)
   const normalizedArgs = args.map(arg => (arg.startsWith('---') ? `--${arg.slice(3)}` : arg))
@@ -78,24 +61,18 @@ function parseArgs(): SyncOptions {
   }
 }
 
-/**
- * Check if tokens file exists
- */
 function checkTokensFile(): boolean {
   if (!fs.existsSync(TOKENS_FILE)) {
     console.error(chalk.red(`Error: ${TOKENS_FILE} not found`))
     console.error(chalk.yellow('You need to create this file first by either:'))
     console.error(chalk.gray('  1. Using Figma Console MCP to extract tokens'))
-    console.error(chalk.gray('  2. Running: npm run sync-tokens'))
+    console.error(chalk.gray('  2. Running: npm run token:sync'))
     console.error(chalk.gray('  3. Manually creating the file from Figma\n'))
     return false
   }
   return true
 }
 
-/**
- * Read tokens from file
- */
 function readTokensFile(): TokensOutput | null {
   const spinner = ora('Reading tokens from file...').start()
 
@@ -111,35 +88,27 @@ function readTokensFile(): TokensOutput | null {
   }
 }
 
-/**
- * Validate tokens structure
- */
 function validateTokens(tokens: any): { valid: boolean; errors: string[] } {
   const errors: string[] = []
 
-  // Check if it's a valid tokens object (must have at least some structure)
   if (!tokens || typeof tokens !== 'object') {
     errors.push('Invalid tokens file: must be a valid JSON object')
     return { valid: false, errors }
   }
 
-  // W3C Format validation (preferred)
   const isW3CFormat = tokens.$schema && tokens.$metadata && tokens.primitives && tokens.semantic
 
   if (!isW3CFormat) {
-    // Try legacy format or other formats
     const hasTokenData = Object.keys(tokens).length > 0
     if (!hasTokenData) {
       errors.push('File appears to be empty or not a valid tokens file')
     }
-    // If it's not W3C format, we'll warn but not fail
     return {
       valid: Object.keys(tokens).length > 0,
       errors: errors.length > 0 ? errors : [],
     }
   }
 
-  // W3C Format validation
   if (!tokens.$schema) {
     errors.push('Missing $schema')
   }
@@ -164,7 +133,6 @@ function validateTokens(tokens: any): { valid: boolean; errors: string[] } {
     if (!tokens.semantic.dark) errors.push('Missing semantic.dark')
   }
 
-  // Count tokens (if W3C format)
   if (isW3CFormat && (tokens.primitives || tokens.semantic)) {
     const countTokens = (obj: any, depth = 0): number => {
       let count = 0
@@ -193,24 +161,18 @@ function validateTokens(tokens: any): { valid: boolean; errors: string[] } {
   }
 }
 
-/**
- * Create backup of tokens file
- */
 function createBackup(tokens: TokensOutput): void {
   const spinner = ora('Creating backup...').start()
 
   try {
-    // Create backups directory if it doesn't exist
     if (!fs.existsSync(BACKUP_DIR)) {
       fs.mkdirSync(BACKUP_DIR, { recursive: true })
     }
 
-    // Copy to prev backup
     if (fs.existsSync(TOKENS_FILE)) {
       fs.copyFileSync(TOKENS_FILE, BACKUP_FILE)
     }
 
-    // Create versioned backup
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
     const versionedBackup = path.join(BACKUP_DIR, `figma-tokens-${timestamp}.json`)
     fs.writeFileSync(versionedBackup, JSON.stringify(tokens, null, 2))
@@ -221,9 +183,6 @@ function createBackup(tokens: TokensOutput): void {
   }
 }
 
-/**
- * Generate statistics report
- */
 function generateReport(tokens: any): void {
   console.log(chalk.cyan('\n📊 Token Statistics:\n'))
 
@@ -277,7 +236,6 @@ function generateReport(tokens: any): void {
 
   console.log(chalk.green(`Grand Total: ${primitiveTotal + lightTotal + darkTotal} tokens\n`))
 
-  // Metadata
   console.log(chalk.cyan('📋 Metadata:\n'))
   console.log(chalk.gray(`Source: ${tokens.$metadata.source}`))
   console.log(chalk.gray(`File Key: ${tokens.$metadata.fileKey}`))
@@ -285,9 +243,6 @@ function generateReport(tokens: any): void {
   console.log(chalk.gray(`Extracted: ${tokens.$metadata.extractedAt}\n`))
 }
 
-/**
- * Compare with previous version
- */
 function compareWithPrevious(current: TokensOutput): void {
   if (!fs.existsSync(BACKUP_FILE)) {
     console.log(chalk.gray('No previous version to compare'))
@@ -343,15 +298,12 @@ function compareWithPrevious(current: TokensOutput): void {
   }
 }
 
-/**
- * Print help message
- */
 function printHelp(): void {
   console.log(`
 ${chalk.blue('Local Token Sync - Load tokens from file')}
 
 ${chalk.yellow('Usage:')}
-  npm run sync-tokens-local [options]
+  tsx scripts/tokens/sources/local.ts [options]
 
 ${chalk.yellow('Options:')}
   --dry-run        Preview without making changes
@@ -360,28 +312,12 @@ ${chalk.yellow('Options:')}
   --report         Show detailed token statistics
   --force          Skip confirmation prompts
   --help           Show this help message
-
-${chalk.yellow('Examples:')}
-  npm run sync-tokens-local                # Load and validate tokens
-  npm run sync-tokens-local --dry-run      # Preview only
-  npm run sync-tokens-local --report       # Show statistics
-  npm run sync-tokens-local --no-validate  # Skip validation
-
-${chalk.yellow('Notes:')}
-  - This script reads tokens from: tokens/figma-tokens.json
-  - No API calls or Figma fetching occurs
-  - Suitable for offline development and CI/CD
-  - Automatically creates backups before updating
 `)
 }
 
-/**
- * Main execution
- */
 async function main(): Promise<void> {
   const options = parseArgs()
 
-  // Show help
   if (process.argv.includes('--help')) {
     printHelp()
     process.exit(0)
@@ -389,18 +325,15 @@ async function main(): Promise<void> {
 
   console.log(chalk.blue.bold('\n📄 Loading tokens from local file...\n'))
 
-  // Check if file exists
   if (!checkTokensFile()) {
     process.exit(1)
   }
 
-  // Read tokens
   const tokens = readTokensFile()
   if (!tokens) {
     process.exit(1)
   }
 
-  // Validate
   if (options.validate) {
     const spinner = ora('Validating tokens structure...').start()
     const validation = validateTokens(tokens)
@@ -418,39 +351,29 @@ async function main(): Promise<void> {
     }
   }
 
-  // Create backup
   if (options.backup && !options.dryRun) {
     createBackup(tokens)
   }
 
-  // Generate report
   if (options.report) {
     generateReport(tokens)
     compareWithPrevious(tokens)
   }
 
-  // Summary
   console.log(chalk.green.bold('\n✅ Local token load complete!\n'))
-
   if (options.dryRun) {
     console.log(chalk.yellow('(Dry run - no changes were made)\n'))
   } else {
     console.log(chalk.gray('Tokens are ready for transformation.'))
-    console.log(chalk.gray('Next: npm run sync-tokens -- --skip-figma\n'))
+    console.log(chalk.gray('Next: npm run token:sync -- --source=local\n'))
   }
-
-  // Next steps
-  console.log(chalk.cyan('Next steps:'))
-  console.log(chalk.gray('  1. Review tokens: npm run sync-tokens-local --report'))
-  console.log(chalk.gray('  2. Transform: npm run sync-tokens -- --skip-figma'))
-  console.log(chalk.gray('  3. Validate: npm run validate-tokens'))
-  console.log(chalk.gray('  4. Commit: git add . && git commit\n'))
 }
 
-// Run
-main().catch(error => {
-  console.error(chalk.red('\n✗ Error:'), error.message)
-  process.exit(1)
-})
+if (process.argv[1]?.includes('sources/local')) {
+  main().catch(error => {
+    console.error(chalk.red('\n✗ Error:'), error.message)
+    process.exit(1)
+  })
+}
 
 export { main }

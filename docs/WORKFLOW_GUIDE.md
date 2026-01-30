@@ -22,7 +22,7 @@ A comprehensive guide to the automated workflows and development tools in this d
 npm install
 
 # Verify everything works
-npm run validate
+npm run typecheck
 
 # Start development
 npm run dev          # Start Vite dev server
@@ -71,7 +71,6 @@ DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
 | `npm run format`       | Format code with Prettier |
 | `npm run format:check` | Check code formatting     |
 | `npm run typecheck`    | TypeScript type checking  |
-| `npm run validate`     | Run all validations       |
 
 ### Testing
 
@@ -86,9 +85,8 @@ DISCORD_WEBHOOK_URL=https://discord.com/api/webhooks/...
 
 When you commit, the following checks run automatically:
 
-1. **Token JSON files** → Token validation (schema, contrast, naming)
-2. **TypeScript/TSX files** → ESLint with auto-fix
-3. **All supported files** → Prettier formatting
+1. **TypeScript/TSX files** → ESLint with auto-fix
+2. **All supported files** → Prettier formatting
 
 ```bash
 # Commit normally - hooks run automatically
@@ -131,42 +129,26 @@ git commit -m "wip" --no-verify
 ### Sync Commands
 
 ```bash
-# Full sync from Figma
-npm run sync-tokens
+# Sync from specific sources
+npm run token:sync -- --source=api           # Figma API
+npm run token:sync -- --source=mcp           # Figma Console MCP
+npm run token:sync -- --source=tokens-studio # Tokens Studio export
+npm run token:sync -- --source=local         # Local figma-tokens.json
 
-# Sync with interactive step selection
-npm run sync-tokens -- --interactive
-
-# Sync with options
-npm run sync-tokens -- --dry-run           # Preview changes
-npm run sync-tokens -- --force             # Force sync
-npm run sync-tokens -- --no-version        # Skip version bump
-npm run sync-tokens -- --skip-figma        # Use local tokens
-npm run sync-tokens -- --notify            # Send notifications
-npm run sync-tokens -- --retries=5         # More retries
+# Sync options
+npm run token:sync -- --source=api --dry-run           # Preview changes
+npm run token:sync -- --source=api --skip-style-dictionary
 ```
 
-### Token Validation
+### Token Postprocess
 
 ```bash
-# Validate token schema, contrast, and naming
-npm run validate-tokens
+# Generate report + update references + docs + Storybook
+npm run token:postprocess
 
-# Validate component token usage
-npm run validate-components
-
-# Run both validations
-npm run validate
+# Skip Storybook build
+npm run token:postprocess -- --skip-storybook
 ```
-
-Validation checks include:
-
-- ✅ DTCG schema compliance
-- ✅ WCAG AA contrast ratios
-- ✅ Naming conventions
-- ✅ Light/dark mode parity
-- ✅ Reference resolution
-- ✅ Duplicate detection
 
 ### Rollback Tokens
 
@@ -187,11 +169,11 @@ npm run rollback-tokens -- --version=0.1.0 --dry-run
 ### Change Reports
 
 ```bash
-# Generate change report
-npm run generate-report
+# Generate change report (via postprocess)
+npm run token:postprocess -- --skip-storybook
 
-# List all reports
-npm run generate-report -- --list
+# List reports directly
+tsx scripts/tokens/report.ts -- --list
 ```
 
 Reports include:
@@ -223,15 +205,8 @@ After syncing, tokens are generated for multiple platforms:
 Run all checks before pushing:
 
 ```bash
-npm run validate
+npm run typecheck
 ```
-
-This runs:
-
-1. Token validation
-2. Component validation
-3. ESLint
-4. TypeScript type check
 
 ### CI Command
 
@@ -261,10 +236,9 @@ Jobs:
 
 1. **Lint & Format** - ESLint + Prettier
 2. **TypeScript Check** - Type checking
-3. **Validate Tokens** - Token validation + reports
-4. **Unit Tests** - Vitest with coverage
-5. **Build** - Production build
-6. **Storybook** - Build Storybook
+3. **Unit Tests** - Vitest with coverage
+4. **Build** - Production build
+5. **Storybook** - Build Storybook
 
 #### `tokens-sync.yml` - Automated Token Sync
 
@@ -277,7 +251,7 @@ Features:
 
 - Fetches tokens from Figma
 - Creates PR with changes
-- Generates change reports
+- Runs postprocess for reports/docs
 
 ### Manual Workflow Trigger
 
@@ -298,7 +272,7 @@ Features:
 
 ```bash
 # Check what's failing
-npm run validate
+npm run typecheck
 
 # Fix lint issues
 npm run lint:fix
@@ -307,16 +281,11 @@ npm run lint:fix
 npm run format
 ```
 
-#### Token validation fails
+#### Token postprocess fails
 
 ```bash
-# Check specific issues
-npm run validate-tokens
-
-# Common fixes:
-# - Ensure colors are in hex format (#RRGGBB)
-# - Check contrast ratios (WCAG AA: 4.5:1)
-# - Ensure light/dark mode parity
+# Generate report without Storybook
+npm run token:postprocess -- --skip-storybook
 ```
 
 #### Figma sync fails
@@ -326,11 +295,11 @@ npm run validate-tokens
 echo $FIGMA_ACCESS_TOKEN
 echo $FIGMA_FILE_KEY
 
-# Try with more retries
-npm run sync-tokens -- --retries=5
+# Try with API source
+npm run token:sync -- --source=api
 
 # Use local tokens instead
-npm run sync-tokens -- --skip-figma
+npm run token:sync -- --source=local
 ```
 
 #### Rollback needed
@@ -359,16 +328,14 @@ npm run build-tokens
 
 ### Token Updates
 
-1. Always run `npm run validate-tokens` before committing token changes
-2. Review WCAG contrast warnings
-3. Ensure light/dark mode parity
-4. Use semantic token names
+1. Always run `npm run token:postprocess` before committing token changes
+2. Review reports in `tokens/.reports/`
+3. Use semantic token names
 
 ### Component Development
 
 1. Always use tokens from `@/tokens` - never hardcode colors
-2. Run `npm run validate-components` to check for issues
-3. Test in Storybook with both light and dark modes
+2. Test in Storybook with both light and dark modes
 
 ### Git Workflow
 
@@ -401,16 +368,10 @@ sapukai/
 │   └── tokens.json       # Flat JSON
 ├── scripts/               # Automation scripts
 │   ├── __tests__/        # Script tests
-│   ├── bump-version.ts
-│   ├── convert-tokens-studio.ts
-│   ├── generate-report.ts
 │   ├── notify.ts
 │   ├── rollback-tokens.ts
-│   ├── sync-figma-tokens.ts
-│   ├── sync-tokens.ts
-│   ├── update-docs.ts
-│   ├── validate-components.ts
-│   └── validate-tokens.ts
+│   ├── bump-version.ts
+│   └── tokens/           # Consolidated token automation
 ├── src/
 │   ├── components/       # React components
 │   ├── tokens/           # Generated tokens
@@ -436,14 +397,13 @@ sapukai/
 │    npm run storybook        Start Storybook                      │
 │                                                                  │
 │  QUALITY                                                         │
-│    npm run validate         Run all checks                       │
+│    npm run typecheck        Type check                            │
 │    npm run lint:fix         Fix lint issues                      │
 │    npm run format           Format code                          │
 │                                                                  │
 │  TOKENS                                                          │
-│    npm run sync-tokens      Full Figma sync                      │
-│    npm run sync-tokens -- -i Interactive mode                    │
-│    npm run validate-tokens  Validate tokens                      │
+│    npm run token:sync       Fetch + build tokens                 │
+│    npm run token:postprocess  Report + docs + Storybook          │
 │    npm run rollback-tokens -- --list  Show backups               │
 │                                                                  │
 │  TESTING                                                         │

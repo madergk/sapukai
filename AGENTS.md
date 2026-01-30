@@ -5,6 +5,7 @@ This file provides instructions for AI coding agents (GitHub Copilot, Cursor, Cl
 ## Project Overview
 
 **Sapukai** is a modern React component library and design system built with:
+
 - React 19.2.0 + TypeScript 5.9
 - Tailwind CSS 4.1 with CSS custom properties
 - Radix UI primitives for accessibility
@@ -26,14 +27,13 @@ npm run format           # Format with Prettier
 npm run typecheck        # TypeScript type checking
 npm run test             # Run Vitest tests
 
-# Full validation pipeline
-npm run validate         # validate-tokens + validate-components + typecheck
-npm run validate:strict  # validate + lint
-npm run ci               # validate + test + build
+# CI pipeline
+npm run ci               # typecheck + test + build
 
 # Token management
-npm run sync-tokens      # Full Figma sync pipeline
-npm run validate-tokens  # Validate token schema
+npm run token:sync       # Fetch + build tokens (choose source)
+npm run token:postprocess # Report + refs + docs + Storybook
+npm run token:publish    # Branch + commit + push
 ```
 
 ## Critical Rules for Agents
@@ -56,6 +56,7 @@ import { semanticColors } from '@/tokens';
 ### 2. Component Structure
 
 Components follow this organization:
+
 ```
 src/components/
 ├── primitives/    # Avatar, Badge, Button, Divider, Heading, Text
@@ -70,6 +71,7 @@ src/components/
 ### 3. Component File Pattern
 
 Each component follows this structure:
+
 ```
 ComponentName/
 ├── ComponentName.tsx       # Main component
@@ -85,8 +87,8 @@ ComponentName/
 - Use **class-variance-authority (CVA)** for component variants
 
 ```tsx
-import { cn } from '@/utils/cn';
-import { cva } from 'class-variance-authority';
+import { cn } from '@/utils/cn'
+import { cva } from 'class-variance-authority'
 
 const buttonVariants = cva('inline-flex items-center', {
   variants: {
@@ -103,7 +105,7 @@ const buttonVariants = cva('inline-flex items-center', {
     variant: 'primary',
     size: 'md',
   },
-});
+})
 ```
 
 ### 5. Accessibility Requirements
@@ -120,12 +122,12 @@ const buttonVariants = cva('inline-flex items-center', {
 - Use proper React types
 
 ```tsx
-import { type ComponentPropsWithoutRef } from 'react';
+import { type ComponentPropsWithoutRef } from 'react'
 
 export interface ButtonProps extends ComponentPropsWithoutRef<'button'> {
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'sm' | 'md' | 'lg';
-  isLoading?: boolean;
+  variant?: 'primary' | 'secondary' | 'outline'
+  size?: 'sm' | 'md' | 'lg'
+  isLoading?: boolean
 }
 
 export function Button({ variant, size, isLoading, ...props }: ButtonProps) {
@@ -137,17 +139,17 @@ export function Button({ variant, size, isLoading, ...props }: ButtonProps) {
 
 ### Token Locations
 
-| Location | Purpose |
-|----------|---------|
-| `tokens/figma-tokens.json` | Raw tokens from Figma |
-| `tokens/tokens.json` | Processed tokens |
-| `src/tokens/colors.ts` | Color token definitions |
-| `src/tokens/typography.ts` | Typography tokens |
-| `src/tokens/spacing.ts` | Spacing scale |
-| `src/tokens/shadows.ts` | Shadow definitions |
-| `src/tokens/motion.ts` | Animation tokens |
-| `src/tokens/theme.css` | CSS custom properties |
-| `src/tokens/motion-theme.css` | Motion CSS variables |
+| Location                      | Purpose                 |
+| ----------------------------- | ----------------------- |
+| `tokens/figma-tokens.json`    | Raw tokens from Figma   |
+| `tokens/tokens.json`          | Processed tokens        |
+| `src/tokens/colors.ts`        | Color token definitions |
+| `src/tokens/typography.ts`    | Typography tokens       |
+| `src/tokens/spacing.ts`       | Spacing scale           |
+| `src/tokens/shadows.ts`       | Shadow definitions      |
+| `src/tokens/motion.ts`        | Animation tokens        |
+| `src/tokens/theme.css`        | CSS custom properties   |
+| `src/tokens/motion-theme.css` | Motion CSS variables    |
 
 ### Token Naming Convention
 
@@ -183,13 +185,12 @@ Use Tailwind classes: `p-1` (4px), `p-2` (8px), `p-4` (16px), etc.
 1. **Run linting**: `npm run lint`
 2. **Run type check**: `npm run typecheck`
 3. **Run tests**: `npm run test`
-4. **Validate tokens**: `npm run validate-tokens` (if tokens changed)
+4. **Postprocess tokens**: `npm run token:postprocess` (if tokens changed)
 
 ### Test Files Location
 
 Tests are in `scripts/__tests__/`:
-- `validate-tokens.test.ts`
-- `generate-report.test.ts`
+
 - `rollback-tokens.test.ts`
 
 ## Git Workflow
@@ -197,6 +198,7 @@ Tests are in `scripts/__tests__/`:
 ### Pre-commit Hooks
 
 Husky + lint-staged automatically runs on commit:
+
 - Token validation (for `tokens/*.json`)
 - ESLint fix (for `*.ts`, `*.tsx`)
 - Prettier format (for all supported files)
@@ -204,6 +206,7 @@ Husky + lint-staged automatically runs on commit:
 ### Commit Message Format
 
 Use descriptive commit messages:
+
 ```
 feat(Button): add loading state variant
 fix(tokens): correct primary color value
@@ -234,16 +237,15 @@ refactor(Input): extract shared styles
 ### Modifying Tokens
 
 1. Update tokens in Figma (preferred) OR edit `tokens/tokens.json`
-2. Run `npm run sync-tokens` (or `npm run build-tokens` for local changes)
-3. Run `npm run validate-tokens` to verify
-4. Run `npm run validate-components` to check for breaking changes
-5. Update affected components if needed
+2. Run `npm run token:sync -- --source=api` (or `--source=local`)
+3. Run `npm run token:postprocess` to generate report + update docs
+4. Update affected components if needed
 
 ### Adding Storybook Stories
 
 ```tsx
-import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from './Button';
+import type { Meta, StoryObj } from '@storybook/react'
+import { Button } from './Button'
 
 const meta: Meta<typeof Button> = {
   title: 'Primitives/Button',
@@ -255,17 +257,17 @@ const meta: Meta<typeof Button> = {
       options: ['primary', 'secondary', 'outline'],
     },
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof Button>;
+export default meta
+type Story = StoryObj<typeof Button>
 
 export const Primary: Story = {
   args: {
     children: 'Click me',
     variant: 'primary',
   },
-};
+}
 ```
 
 ## CI/CD Pipeline
@@ -274,27 +276,27 @@ GitHub Actions runs on push/PR to `main` and `develop`:
 
 1. **Lint & Format** - ESLint + Prettier check
 2. **TypeScript Check** - Type validation
-3. **Validate Tokens** - Token schema validation
-4. **Unit Tests** - Vitest test suite
-5. **Build** - Production build
-6. **Build Storybook** - Documentation build
+3. **Unit Tests** - Vitest test suite
+4. **Build** - Production build
+5. **Build Storybook** - Documentation build
 
 ## File Patterns to Know
 
 ### Important Configuration Files
 
-| File | Purpose |
-|------|---------|
-| `vite.config.ts` | Vite bundler configuration |
-| `tsconfig.json` | TypeScript configuration |
-| `eslint.config.js` | ESLint rules (flat config) |
-| `.prettierrc` | Prettier formatting rules |
-| `style-dictionary.config.ts` | Token transformation |
-| `.storybook/main.ts` | Storybook configuration |
+| File                         | Purpose                    |
+| ---------------------------- | -------------------------- |
+| `vite.config.ts`             | Vite bundler configuration |
+| `tsconfig.json`              | TypeScript configuration   |
+| `eslint.config.js`           | ESLint rules (flat config) |
+| `.prettierrc`                | Prettier formatting rules  |
+| `style-dictionary.config.ts` | Token transformation       |
+| `.storybook/main.ts`         | Storybook configuration    |
 
 ### Import Aliases
 
 The project uses path aliases:
+
 - `@/` → `src/`
 - `@/components` → `src/components`
 - `@/tokens` → `src/tokens`
@@ -304,25 +306,28 @@ The project uses path aliases:
 
 ### Common Issues
 
-**Token validation fails**
+**Token workflow fails**
+
 ```bash
-npm run validate-tokens -- --verbose
+npm run token:postprocess -- --skip-storybook
 npm run rollback-tokens  # Restore backup if needed
 ```
 
 **TypeScript errors after token sync**
+
 ```bash
 npm run typecheck
 # Check src/tokens/*.ts for issues
 ```
 
 **Component breaking after token update**
+
 ```bash
-npm run validate-components
-# Review the report for affected components
+# Review the report under tokens/.reports and update components as needed
 ```
 
 **Storybook build fails**
+
 ```bash
 npm run build-storybook -- --debug
 # Check for missing imports or syntax errors
@@ -331,19 +336,23 @@ npm run build-storybook -- --debug
 ## Dependencies Overview
 
 ### Core UI
+
 - `@radix-ui/*` - Accessible primitives
 - `@headlessui/react` - Additional UI components
 - `class-variance-authority` - Variant management
 - `clsx` + `tailwind-merge` - Class utilities
 
 ### Icons
+
 - `@heroicons/react` - Heroicons
 - `lucide-react` - Lucide icons
 
 ### Animation
+
 - `motion` - Animation library (Framer Motion fork)
 
 ### Development
+
 - `storybook` - Component documentation
 - `vitest` - Testing framework
 - `style-dictionary` - Token transformation
@@ -367,4 +376,4 @@ npm run build-storybook -- --debug
 
 ---
 
-*Last updated: January 2026*
+_Last updated: January 2026_

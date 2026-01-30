@@ -141,8 +141,8 @@ EOF
 ### Paso 6: Sincroniza los tokens
 
 ```bash
-# Usa --skip-figma para evitar intentar usar la API
-npm run sync-tokens -- --skip-figma
+# Usa source=local para evitar intentar usar la API
+npm run token:sync -- --source=local
 ```
 
 ## 🤖 Método 2: Automatización con Claude Code
@@ -150,8 +150,8 @@ npm run sync-tokens -- --skip-figma
 Si quieres automatizar este proceso:
 
 ```bash
-# Usa el script MCP (pendiente de desarrollo completo)
-npm run sync-tokens -- --mcp
+# Usa el script MCP
+npm run token:sync -- --source=mcp
 ```
 
 Este método:
@@ -205,7 +205,7 @@ Figma Console
 JSON Output
     ↓ (Copiar & Pegar)
 tokens/figma-tokens.json
-    ↓ (npm run sync-tokens -- --skip-figma)
+    ↓ (npm run token:sync -- --source=local)
 style-dictionary.config.ts
     ↓ (Transformación)
 src/tokens/
@@ -240,11 +240,8 @@ const cssOutput = allVariables.map(v =>
 ### Validar antes de usar
 
 ```bash
-# Validar estructura de tokens
-npm run validate-tokens
-
-# Validar que los componentes usan los tokens
-npm run validate-components
+# Generar reporte + actualizar docs
+npm run token:postprocess -- --skip-storybook
 ```
 
 ## ❌ Troubleshooting
@@ -286,16 +283,16 @@ link.click()
 
 ## 📚 Archivos Relacionados
 
-- 📄 `/scripts/sync-figma-tokens-mcp.ts` - Script MCP
+- 📄 `/scripts/tokens/sources/figma-mcp.ts` - Script MCP
 - 📄 `/scripts/figma-console-helper.ts` - Utilidades de consola
-- 📄 `/scripts/sync-tokens.ts` - Orquestador principal
+- 📄 `/scripts/tokens/sync.ts` - Orquestador principal
 - 📄 `/style-dictionary.config.ts` - Configuración de transformación
 - 📄 `/tokens/figma-tokens.json` - Archivo de tokens (W3C format)
 
 ## 🎯 Próximos Pasos
 
 1. ✅ Extrae variables con Figma Console
-2. ✅ Sincroniza con `npm run sync-tokens -- --skip-figma`
+2. ✅ Sincroniza con `npm run token:sync -- --source=local`
 3. ✅ Verifica cambios: `git diff src/tokens/`
 4. ✅ Ejecuta Storybook: `npm run storybook`
 5. ✅ Haz push: `git push origin main`
@@ -312,5 +309,5 @@ link.click()
 **¿Necesitas ayuda?** Revisa los logs:
 
 ```bash
-npm run sync-tokens -- --dry-run
+npm run token:sync -- --source=mcp --dry-run
 ```
