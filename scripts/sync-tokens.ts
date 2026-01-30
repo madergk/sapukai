@@ -32,6 +32,7 @@ interface SyncOptions {
   skipDocs: boolean
   tagOnly: boolean
   skipFigma: boolean
+  useMCP: boolean
   interactive: boolean
   notify: boolean
   retries: number
@@ -69,6 +70,7 @@ function parseArgs(): SyncOptions {
     skipDocs: normalizedArgs.includes('--skip-docs'),
     tagOnly: normalizedArgs.includes('--tag-only'),
     skipFigma: normalizedArgs.includes('--skip-figma'),
+    useMCP: normalizedArgs.includes('--mcp'),
     interactive: normalizedArgs.includes('--interactive') || normalizedArgs.includes('-i'),
     notify: normalizedArgs.includes('--notify'),
     retries,
@@ -361,6 +363,7 @@ ${chalk.yellow('Options:')}
   --skip-validation Skip component validation
   --skip-docs       Skip documentation update
   --skip-figma      Skip Figma fetch, use existing tokens/figma-tokens.json
+  --mcp             Use Figma Console MCP instead of REST API
   --tag-only        Skip version bump and tag current version
   --interactive, -i Run in interactive mode (select steps)
   --notify          Send notifications on completion
@@ -368,7 +371,8 @@ ${chalk.yellow('Options:')}
   --help            Show this help message
 
 ${chalk.yellow('Examples:')}
-  npm run sync-tokens                    # Full sync
+  npm run sync-tokens                    # Full sync (REST API)
+  npm run sync-tokens --mcp              # Sync using Figma Console MCP
   npm run sync-tokens --dry-run          # Preview changes
   npm run sync-tokens --no-version       # Sync without version bump
   npm run sync-tokens --interactive      # Interactive step selection
@@ -430,8 +434,18 @@ async function main(): Promise<void> {
       }
     } else {
       console.log(chalk.cyan('Step 1/7: Fetching tokens from Figma'))
+
+      // Choose between REST API and MCP
+      const scriptPath = options.useMCP
+        ? 'scripts/sync-figma-tokens-mcp.ts'
+        : 'scripts/sync-figma-tokens.ts'
       const fetchArgs = options.dryRun ? ['--dry-run'] : []
-      const fetchResult = await runScript('scripts/sync-figma-tokens.ts', fetchArgs, {
+
+      if (options.useMCP) {
+        console.log(chalk.gray('  Using Figma Console MCP method'))
+      }
+
+      const fetchResult = await runScript(scriptPath, fetchArgs, {
         retries: options.retries,
         retryDelay: 2000,
       })

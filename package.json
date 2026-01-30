@@ -20,6 +20,7 @@
     "build-storybook": "storybook build",
     "sync-tokens": "tsx scripts/sync-tokens.ts",
     "sync-figma": "tsx scripts/sync-figma-tokens.ts",
+    "sync-tokens-local": "tsx scripts/sync-figma-tokens-local.ts",
     "convert-tokens": "tsx scripts/convert-tokens-studio.ts",
     "build-tokens": "tsx style-dictionary.config.ts",
     "validate": "npm run validate-tokens && npm run validate-components && npm run typecheck",
