@@ -46,14 +46,15 @@ jobs:
 
       - name: Sync tokens from Figma
         if: env.SKIP_FIGMA != 'true'
-        run: npm run sync-tokens -- --skip-docs
+        run: npm run token:sync -- --source=api
         continue-on-error: true
 
       - name: Build tokens (fallback)
         if: env.SKIP_FIGMA == 'true'
         run: npm run build-tokens
 
-      - run: npm run validate-tokens || true
+      - name: Postprocess tokens
+        run: npm run token:postprocess -- --skip-storybook
 
       - name: Check for changes
         id: changes
@@ -63,10 +64,6 @@ jobs:
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
-
-      - name: Generate report
-        if: steps.changes.outputs.has_changes == 'true'
-        run: npm run generate-report || true
 
       - name: Create Pull Request
         if: steps.changes.outputs.has_changes == 'true' && inputs.skip_pr != true
