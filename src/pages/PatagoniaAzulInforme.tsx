@@ -50,9 +50,18 @@ export function PatagoniaAzulInforme() {
                 <Calendar className="h-4 w-4" />
                 18-20 Feb, 2026
               </span>
-              <span className="border border-amber-700 bg-amber-600 px-3 py-1 text-xs font-bold text-white">
-                IN PROGRESS
-              </span>
+              <div className="flex w-28 flex-col gap-1">
+                <span className="text-xs font-bold uppercase text-green-700">in progress</span>
+                <div className="h-1.5 overflow-hidden rounded-full bg-green-200">
+                  <div
+                    className="h-full w-1/2 animate-[shimmer_1.5s_ease-in-out_infinite] rounded-full bg-green-600"
+                    role="progressbar"
+                    aria-valuemin={0}
+                    aria-valuemax={100}
+                    aria-label="In progress"
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -85,7 +94,7 @@ export function PatagoniaAzulInforme() {
               </div>
               <div className="mt-2 text-sm font-bold text-green-600">
                 <CheckCircle className="mr-1 inline h-4 w-4" />
-                Migración Exitosa
+                In progress
               </div>
             </div>
 
