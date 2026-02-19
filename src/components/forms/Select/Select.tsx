@@ -29,10 +29,7 @@ const SelectValue = React.forwardRef<HTMLSpanElement, SelectValueProps>(
     <ListboxSelectedOption
       as="span"
       ref={ref}
-      className={cn(
-        'truncate text-left text-[var(--color-blue-100)] bg-[var(--background-inverseprimary)]',
-        className
-      )}
+      className={cn('truncate text-left text-[var(--motion-text-primary)]', className)}
       placeholder={placeholder}
       options={options}
       {...props}
@@ -50,8 +47,8 @@ const SelectTrigger = React.forwardRef<
   <ListboxButton
     ref={ref}
     className={cn(
-      'flex h-9 w-full items-center justify-between rounded-lg border bg-[var(--background-inverseprimary)] px-3 py-2',
-      'text-sm text-[var(--motion-text-inverse)] placeholder:text-zinc-400',
+      'flex h-9 w-full items-center justify-between rounded-lg border bg-[var(--background-secondary)] px-3 py-2',
+      'text-sm text-[var(--motion-text-primary)] placeholder:text-zinc-400',
       'transition-colors duration-150',
       'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
       'focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-950',

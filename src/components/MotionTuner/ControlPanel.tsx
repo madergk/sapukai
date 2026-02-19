@@ -33,7 +33,7 @@ function TabButton({ active, onClick, children }: TabButtonProps) {
         'relative px-4 py-2 text-sm font-semibold transition-colors',
         'border-b-2',
         active
-          ? 'border-[var(--motion-brand-primary)] text-[var(--motion-brand-primary)]'
+          ? 'border-[var(--motion-brand-primary)] text-[var(--motion-text-primary)]'
           : 'border-transparent text-[var(--motion-text-secondary)] hover:text-[var(--motion-text-primary)]'
       )}
     >
@@ -131,7 +131,7 @@ function EasingTab() {
           className={cn(
             'flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors',
             !showM3Presets
-              ? 'bg-[var(--motion-brand-primary)] text-[var(--motion-text-inverse)]'
+              ? 'bg-[var(--motion-brand-primary)] text-[var(--color-zinc-50)]'
               : 'text-[var(--motion-text-secondary)] hover:bg-[var(--motion-surface-primary)]'
           )}
         >
@@ -142,7 +142,7 @@ function EasingTab() {
           className={cn(
             'flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors',
             showM3Presets
-              ? 'bg-[var(--motion-brand-primary)] text-[var(--motion-text-inverse)]'
+              ? 'bg-[var(--motion-brand-primary)] text-[var(--color-zinc-50)]'
               : 'text-[var(--motion-text-secondary)] hover:bg-[var(--motion-surface-primary)]'
           )}
         >

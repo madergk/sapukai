@@ -2,6 +2,8 @@ import * as React from 'react'
 import { Home } from '@/pages/Home'
 import { MotionTuner } from '@/pages/MotionTuner'
 import { TokensVisualizer } from '@/pages/TokensVisualizer'
+import { AlgorithmicTypography } from '@/pages/AlgorithmicTypography'
+import { PatagoniaAzulInforme } from '@/pages/PatagoniaAzulInforme'
 
 function App() {
   const [path, setPath] = React.useState(() => window.location.pathname || '/')
@@ -27,6 +29,14 @@ function App() {
 
   if (path === '/tokens-visualizer') {
     return <TokensVisualizer currentPath={path} onNavigate={navigate} />
+  }
+
+  if (path === '/algorithmic-typography') {
+    return <AlgorithmicTypography />
+  }
+
+  if (path === '/patagonia-azul-informe') {
+    return <PatagoniaAzulInforme />
   }
 
   if (path === '/') {

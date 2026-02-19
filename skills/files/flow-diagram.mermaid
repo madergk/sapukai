@@ -1,0 +1,52 @@
+flowchart TD
+    A([Start]) --> B[Home / Dashboard]
+
+    subgraph Home ["Home & Tool Exploration"]
+        B -->|Scroll down| C[Tool Catalog - Surveys]
+        C -->|Continue scrolling| D[Tool Catalog - Prototype Testing]
+        D -->|Continue scrolling| E[Tool Catalog - First-click Testing]
+        E -->|Continue scrolling| F[Knowledge Base - Guides]
+    end
+
+    B -->|Tap hamburger menu| G[Side Menu / Drawer]
+
+    subgraph Navigation ["Navigation & Account"]
+        G -->|Tap user avatar ⋮| H[User Popover - Profile/Logout]
+        H -->|Tap My Profile| I[My Profile - Form]
+        I -->|Scroll down| J[My Profile - Google Account & Research Panel]
+    end
+
+    G -->|Tap Workspace Settings| K[Workspace Settings]
+
+    subgraph Settings ["Workspace Configuration"]
+        K -->|Scroll down| L[Workspace Branding - Logo & Color]
+    end
+
+    subgraph Menu Expanded ["Expanded Menu Navigation"]
+        G -->|Return to Home| B
+        G -->|Tap Studies| M[Side Menu - Studies Selected]
+        M -->|Tap user avatar ⋮| N[User Popover from Studies]
+        N -->|Tap My Profile| I
+    end
+
+    B -->|Apply filter: Explore the problem| O[Home - Filtered View]
+    B -->|Apply filter: Structure content| P[Home - Filtered View 2]
+    P -->|Scroll| Q[Tool Catalog - Filtered Results]
+
+    subgraph Study Creation ["Study Creation Flow"]
+        Q -->|Navigate to Studies| R[Create Your First Study]
+        R -->|Scroll| S[Recruiting Participants Options]
+    end
+
+    G -->|Tap workspace dropdown| T[Workspace Switcher Dropdown]
+    T -->|Select workspace| G
+
+    K -->|Return via menu| G
+
+    style A fill:#e8f5e9,stroke:#4caf50
+    style B fill:#e3f2fd,stroke:#1976d2
+    style G fill:#fff3e0,stroke:#f57c00
+    style I fill:#fce4ec,stroke:#c62828
+    style K fill:#f3e5f5,stroke:#7b1fa2
+    style R fill:#e8f5e9,stroke:#388e3c
+    style T fill:#fff8e1,stroke:#ffa000

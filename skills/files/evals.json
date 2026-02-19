@@ -1,0 +1,48 @@
+{
+  "skill_name": "flow-analyzer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I uploaded a screen recording of Spotify's onboarding flow on iOS. Can you analyze it and document the flow?",
+      "expected_output": "Markdown report + Mermaid diagram identifying onboarding screens (welcome, value prop, permissions, account setup, completion). Each screen should have type, key components, and primary interaction. Mermaid diagram should show the flow with labeled transitions.",
+      "files": [],
+      "expectations": [
+        "Extracts frames from video using ffmpeg",
+        "Identifies and deduplicates unique screens",
+        "Classifies the overall flow as 'Onboarding'",
+        "Each screen has: type, key components, primary interaction",
+        "Generates a valid Mermaid flowchart TD diagram",
+        "Generates a markdown report following the template",
+        "Both files saved to /mnt/user-data/outputs/",
+        "Mermaid file presented first, markdown second"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Here are 6 screenshots of a checkout flow from an e-commerce site. Please analyze the flow and create documentation.",
+      "expected_output": "Markdown report + Mermaid diagram identifying checkout screens (cart, shipping, payment, review, confirmation). Screenshots analyzed directly without ffmpeg. Flow type classified as Checkout/Purchase.",
+      "files": [],
+      "expectations": [
+        "Does NOT attempt ffmpeg extraction (input is images, not video)",
+        "Analyzes all 6 screenshots in sequence",
+        "Classifies flow as 'Checkout/Purchase'",
+        "Each screen card has type, components, interaction",
+        "Mermaid diagram includes decision points where applicable",
+        "Report includes Flow Observations section"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Analyze this short 8-second screen recording of a login flow on a banking app.",
+      "expected_output": "Should extract at higher fps (2fps) due to short duration. Identify login-related screens. Classify as Authentication flow.",
+      "files": [],
+      "expectations": [
+        "Adjusts ffmpeg fps for short video (higher than default)",
+        "Identifies authentication-related screens",
+        "Classifies flow as 'Authentication'",
+        "Handles potentially few unique frames gracefully",
+        "Produces both Mermaid and Markdown outputs"
+      ]
+    }
+  ]
+}
