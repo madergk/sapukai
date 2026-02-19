@@ -174,7 +174,9 @@ export function PatagoniaAzulInforme() {
                         ns12.infomaniak.ch
                       </div>
                     </div>
-                    <p className="mt-2 text-xs italic">Registrador: DonWeb (Sin efecto).</p>
+                    <p className="mt-2 text-xs italic">
+                      Registrador: DonWeb (Configurado en Infomaniak).
+                    </p>
                   </div>
                 </div>
               </div>
@@ -279,8 +281,8 @@ export function PatagoniaAzulInforme() {
                       </div>
                     </td>
                     <td className="border-r border-black px-6 py-4">
-                      <span className="border border-orange-500 px-2 py-1 text-xs font-bold text-orange-600">
-                        MEDIA
+                      <span className="border border-green-600 px-2 py-1 text-xs font-bold text-green-600">
+                        RESUELTO
                       </span>
                     </td>
                     <td className="px-6 py-4 text-xs">
@@ -302,7 +304,7 @@ export function PatagoniaAzulInforme() {
                         RESUELTO
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-xs">Actualizado el 20 de febrero.</td>
+                    <td className="px-6 py-4 text-xs">Actualizado el 19 de febrero.</td>
                   </tr>
                   <tr className="bg-white">
                     <td className="w-12 border-r border-black px-6 py-4 text-center text-green-600">
@@ -382,9 +384,6 @@ export function PatagoniaAzulInforme() {
                   <Check className="h-5 w-5 text-green-600" />
                 </div>
               </div>
-              <div className="border-t border-black bg-white px-6 py-3 text-center text-xs italic">
-                Checklist generado automáticamente
-              </div>
             </section>
 
             {/* Sitemap Status */}
@@ -432,7 +431,7 @@ export function PatagoniaAzulInforme() {
             {/* Downloads / Actions */}
             <section>
               <a
-                href="https://drive.google.com/file/d/1KygDPCLA03BJ49Z352bvkTFbO9VGc7qY/view?usp=sharing"
+                href="https://drive.google.com/file/d/19jMnD7iRznwteuZGMtoPBO3yhtwt0yea/view?usp=drive_link"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex w-full items-center justify-center gap-2 border border-black bg-black py-3 font-bold text-white shadow-none transition-colors hover:bg-white hover:text-black"
