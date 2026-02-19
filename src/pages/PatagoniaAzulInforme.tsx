@@ -431,14 +431,15 @@ export function PatagoniaAzulInforme() {
 
             {/* Downloads / Actions */}
             <section>
-              <button
-                type="button"
-                onClick={() => window.alert('Descargando PDF completo...')}
+              <a
+                href="https://drive.google.com/file/d/1KygDPCLA03BJ49Z352bvkTFbO9VGc7qY/view?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex w-full items-center justify-center gap-2 border border-black bg-black py-3 font-bold text-white shadow-none transition-colors hover:bg-white hover:text-black"
               >
                 <FileDown className="h-5 w-5" />
                 Descargar Informe PDF
-              </button>
+              </a>
               <p className="mt-2 text-center text-xs italic">
                 Documento original: Informe_Rewilding_PatagoniaAzul_2026.pdf
               </p>
