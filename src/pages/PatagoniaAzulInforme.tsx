@@ -271,8 +271,8 @@ export function PatagoniaAzulInforme() {
               <table className="w-full text-left text-sm">
                 <tbody className="divide-y divide-black">
                   <tr className="bg-white">
-                    <td className="w-12 border-r border-black px-6 py-4 text-center text-orange-500">
-                      <AlertTriangle className="mx-auto h-5 w-5" />
+                    <td className="w-12 border-r border-black px-6 py-4 text-center text-green-600">
+                      <CheckCircle className="mx-auto h-5 w-5" />
                     </td>
                     <td className="border-r border-black px-6 py-4">
                       <div className="font-bold">Mixed Content (Imágenes en HTTP)</div>
