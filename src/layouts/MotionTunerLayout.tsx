@@ -22,15 +22,13 @@ import { useTheme } from '@/context/ThemeContext'
 interface MotionTunerLayoutProps {
   previewPanel: React.ReactNode
   controlPanel?: React.ReactNode
-  currentPath: string
-  onNavigate: (path: string) => void
+  onNavigateHome?: () => void
 }
 
 export function MotionTunerLayout({
   previewPanel,
   controlPanel,
-  currentPath,
-  onNavigate,
+  onNavigateHome,
 }: MotionTunerLayoutProps) {
   const [collapsed, setCollapsed] = React.useState(false)
   const { resolvedTheme, toggleTheme } = useTheme()
@@ -79,10 +77,9 @@ export function MotionTunerLayout({
               <SidebarNavItem
                 href="/"
                 icon={<HomeIcon className="h-5 w-5" />}
-                active={currentPath === '/'}
                 onClick={event => {
                   event.preventDefault()
-                  onNavigate('/')
+                  onNavigateHome?.()
                 }}
                 title={collapsed ? 'Home' : undefined}
               >
@@ -91,11 +88,7 @@ export function MotionTunerLayout({
               <SidebarNavItem
                 href="/motion-tuner"
                 icon={<Square2StackIcon className="h-5 w-5" />}
-                active={currentPath === '/motion-tuner'}
-                onClick={event => {
-                  event.preventDefault()
-                  onNavigate('/motion-tuner')
-                }}
+                active
                 title={collapsed ? 'Create' : undefined}
               >
                 {!collapsed && 'Create'}
@@ -103,10 +96,6 @@ export function MotionTunerLayout({
               <SidebarNavItem
                 href="/settings"
                 icon={<Cog6ToothIcon className="h-5 w-5" />}
-                onClick={event => {
-                  event.preventDefault()
-                  onNavigate('/settings')
-                }}
                 title={collapsed ? 'Settings' : undefined}
               >
                 {!collapsed && 'Settings'}
@@ -140,10 +129,6 @@ export function MotionTunerLayout({
               <SidebarNavItem
                 href="/support"
                 icon={<QuestionMarkCircleIcon className="h-5 w-5" />}
-                onClick={event => {
-                  event.preventDefault()
-                  onNavigate('/support')
-                }}
                 title={collapsed ? 'Support' : undefined}
               >
                 {!collapsed && 'Support'}
@@ -151,10 +136,6 @@ export function MotionTunerLayout({
               <SidebarNavItem
                 href="/changelog"
                 icon={<SparklesIcon className="h-5 w-5" />}
-                onClick={event => {
-                  event.preventDefault()
-                  onNavigate('/changelog')
-                }}
                 title={collapsed ? 'Changelog' : undefined}
               >
                 {!collapsed && 'Changelog'}

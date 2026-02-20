@@ -24,7 +24,7 @@ function App() {
   )
 
   if (path === '/motion-tuner') {
-    return <MotionTuner currentPath={path} onNavigate={navigate} />
+    return <MotionTuner onNavigate={navigate} />
   }
 
   if (path === '/tokens-visualizer') {
