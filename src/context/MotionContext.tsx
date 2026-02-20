@@ -43,6 +43,7 @@ export type ExportFormat =
   | 'gsap'
   | 'design-tokens'
   | 'm3-tokens'
+  | 'figma-variables'
   | 'bootstrap'
   | 'angular'
   | 'mui'

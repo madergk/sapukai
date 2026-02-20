@@ -3,6 +3,7 @@ import { useMotion, type ExportFormat } from '@/context/MotionContext'
 import { Button } from '@/components/primitives/Button'
 import { copyToClipboard } from '@/utils/clipboard'
 import { cn, generateFramerMotionExport } from '@/utils'
+import { easingTokens, durationTokens, m3MotionPresets, resolveM3Preset } from '@/tokens/motion'
 
 const EXPORT_FORMATS: Array<{ value: ExportFormat; label: string; description: string }> = [
   { value: 'css', label: 'CSS', description: 'Standard CSS custom properties and transitions' },
@@ -17,6 +18,11 @@ const EXPORT_FORMATS: Array<{ value: ExportFormat; label: string; description: s
     value: 'm3-tokens',
     label: 'M3 Tokens',
     description: 'Material Design 3 motion token format',
+  },
+  {
+    value: 'figma-variables',
+    label: 'Figma Variables',
+    description: 'Tokens Studio JSON — import directly into Figma',
   },
   {
     value: 'bootstrap',
@@ -179,6 +185,66 @@ gsap.to(".element", {
     "description": "Complete transition definition"
   }
 }`
+
+      case 'figma-variables': {
+        // Build the easing group — all presets + current custom curve
+        const easingGroup: Record<string, { value: string; type: string; description: string }> = {}
+        for (const [, token] of Object.entries(easingTokens)) {
+          easingGroup[token.name] = {
+            value: token.value,
+            type: 'other',
+            description: token.description,
+          }
+        }
+        easingGroup['Custom'] = {
+          value: currentEasingCSS,
+          type: 'other',
+          description: 'Currently selected easing curve from Motion Tuner',
+        }
+
+        // Build the duration group — all presets + current custom duration
+        const durationGroup: Record<string, { value: string; type: string; description: string }> =
+          {}
+        for (const [, token] of Object.entries(durationTokens)) {
+          durationGroup[token.name] = {
+            value: String(token.value),
+            type: 'other',
+            description: token.description,
+          }
+        }
+        durationGroup['Custom'] = {
+          value: String(currentDurationMS),
+          type: 'other',
+          description: 'Currently selected duration (ms) from Motion Tuner',
+        }
+
+        // Build the M3 presets group — composite transition tokens
+        const m3Group: Record<string, { value: string; type: string; description: string }> = {}
+        for (const [, preset] of Object.entries(m3MotionPresets)) {
+          const resolved = resolveM3Preset(
+            Object.keys(m3MotionPresets).find(
+              k => m3MotionPresets[k as keyof typeof m3MotionPresets] === preset
+            ) as keyof typeof m3MotionPresets
+          )
+          m3Group[preset.name] = {
+            value: resolved.css,
+            type: 'other',
+            description: preset.description,
+          }
+        }
+
+        return JSON.stringify(
+          {
+            Motion: {
+              Easing: easingGroup,
+              Duration: durationGroup,
+              'M3 Presets': m3Group,
+            },
+          },
+          null,
+          2
+        )
+      }
 
       case 'bootstrap':
         return `/* Bootstrap-friendly CSS variables */
@@ -479,6 +545,16 @@ export function MotionPanel({ open }: { open: boolean }) {
               <li>Follows Material Design 3 naming conventions</li>
               <li>Use md.sys.motion prefix for system motion tokens</li>
               <li>Compatible with Material Theme Builder</li>
+            </>
+          )}
+          {state.exportFormat === 'figma-variables' && (
+            <>
+              <li>Open Tokens Studio plugin in Figma and create a new token set</li>
+              <li>Paste this JSON into the token set editor to import all motion tokens</li>
+              <li>
+                Tokens are grouped under Motion/Easing, Motion/Duration, and Motion/M3 Presets
+              </li>
+              <li>The &quot;Custom&quot; tokens reflect your current Motion Tuner selection</li>
             </>
           )}
           {state.exportFormat === 'bootstrap' && (
