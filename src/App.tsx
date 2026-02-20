@@ -36,7 +36,7 @@ function App() {
   }
 
   if (path === '/patagonia-azul-informe') {
-    return <PatagoniaAzulInforme />
+    return <PatagoniaAzulInforme onNavigate={navigate} />
   }
 
   if (path === '/') {

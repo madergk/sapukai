@@ -15,7 +15,7 @@ function TabButton({ active, onClick, children }: TabButtonProps) {
     <button
       onClick={onClick}
       className={cn(
-        'px-4 py-2 text-base transition-colors',
+        'shrink-0 px-3 py-2 text-sm transition-colors sm:px-4 sm:text-base',
         'border-b-2',
         active
           ? 'border-[var(--motion-brand-primary)] text-[var(--motion-text-primary)]'
@@ -38,7 +38,7 @@ function ComponentButton({ active, onClick, children }: ComponentButtonProps) {
     <button
       onClick={onClick}
       className={cn(
-        'rounded-full px-4 py-2 text-base font-normal transition-colors',
+        'rounded-full px-3 py-1.5 text-sm font-normal transition-colors sm:px-4 sm:py-2 sm:text-base',
         active
           ? 'bg-[var(--motion-brand-primary)] text-[var(--motion-text-inverse)]'
           : 'border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] text-[var(--motion-text-primary)] hover:bg-[var(--motion-surface-tertiary)]'
@@ -113,10 +113,12 @@ export function PreviewPanel() {
   }, [currentOptions, setPreviewComponent, state.previewComponent])
 
   return (
-    <div className="flex h-full flex-col bg-[var(--motion-surface-secondary)]">
+    <div className="flex h-full w-full flex-col bg-[var(--motion-surface-secondary)]">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-[var(--motion-border-default)] px-6 py-4">
-        <h2 className="text-2xl font-semibold text-[var(--motion-text-primary)]">Preview</h2>
+      <div className="flex items-center justify-between border-b border-[var(--motion-border-default)] px-4 py-4 sm:px-6">
+        <h2 className="text-xl font-semibold text-[var(--motion-text-primary)] sm:text-2xl">
+          Preview
+        </h2>
         <div className="flex gap-2">
           <button
             className="flex h-[34px] w-[34px] items-center justify-center rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] text-[var(--motion-text-secondary)] transition-colors hover:bg-[var(--motion-surface-tertiary)]"
@@ -155,14 +157,14 @@ export function PreviewPanel() {
       </div>
 
       {/* Description */}
-      <div className="border-b border-[var(--motion-border-default)] px-6 py-3">
-        <p className="text-base text-[var(--motion-text-muted)]">
+      <div className="w-full border-b border-[var(--motion-border-default)] px-4 py-3 sm:px-6">
+        <p className="text-sm text-[var(--motion-text-muted)] sm:text-base">
           Visualize how it is going to look like
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex border-b border-[var(--motion-border-default)] px-6">
+      {/* Tabs — scrollable on small screens */}
+      <div className="flex overflow-x-auto border-b border-[var(--motion-border-default)] px-4 sm:px-6 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <TabButton
           active={state.previewMode === 'components'}
           onClick={() => setPreviewMode('components')}
@@ -189,22 +191,22 @@ export function PreviewPanel() {
         </TabButton>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto px-6 py-6">
-        <div className="flex flex-col gap-6">
-          {/* Component Selector */}
-          <div className="flex flex-wrap gap-2">
-            {currentOptions.map(option => (
-              <ComponentButton
-                key={option.value}
-                active={state.previewComponent === option.value}
-                onClick={() => setPreviewComponent(option.value)}
-              >
-                {option.label}
-              </ComponentButton>
-            ))}
-          </div>
+      {/* Component Selector */}
+      <div className="flex flex-wrap gap-2 px-4 py-3 sm:px-6">
+        {currentOptions.map(option => (
+          <ComponentButton
+            key={option.value}
+            active={state.previewComponent === option.value}
+            onClick={() => setPreviewComponent(option.value)}
+          >
+            {option.label}
+          </ComponentButton>
+        ))}
+      </div>
 
+      {/* Content */}
+      <div className="h-fit w-full flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-6">
+        <div className="flex w-full flex-col items-start justify-start gap-6">
           {/* Preview Area */}
           {state.previewMode === 'motion-primitives' ? (
             <MotionPrimitivesPreview component={state.previewComponent} />
@@ -213,13 +215,13 @@ export function PreviewPanel() {
           )}
 
           {/* CSS Implementation */}
-          <div className="flex flex-col gap-2 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-tertiary)] p-4">
-            <p className="text-base text-[var(--motion-text-muted)]">
+          <div className="w-full rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-tertiary)] p-4">
+            <p className="mb-2 text-sm text-[var(--motion-text-muted)] sm:text-base">
               {state.previewMode === 'motion-primitives'
                 ? 'Motion Implementation'
                 : 'CSS Implementation'}
             </p>
-            <div className="rounded-lg bg-[var(--motion-surface-primary)] p-3">
+            <div className="w-full overflow-x-auto rounded-lg bg-[var(--motion-surface-primary)] p-3">
               <pre className="font-mono text-xs text-[var(--motion-text-primary)]">
                 <code>
                   {state.previewMode === 'motion-primitives'

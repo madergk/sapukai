@@ -47,7 +47,7 @@ const SelectTrigger = React.forwardRef<
   <ListboxButton
     ref={ref}
     className={cn(
-      'flex h-9 w-full items-center justify-between rounded-lg border bg-[var(--background-secondary)] px-3 py-2',
+      'flex h-auto min-h-9 w-full items-end justify-start rounded-lg border bg-[var(--background-secondary)] px-3 py-2',
       'text-sm text-[var(--motion-text-primary)] placeholder:text-zinc-400',
       'transition-colors duration-150',
       'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',

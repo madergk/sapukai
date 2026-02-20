@@ -69,7 +69,7 @@ function ModalDialogPreview() {
   }
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
+    <div className="flex w-full flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
         <h4 className="text-base font-normal text-[var(--motion-text-primary)]">
           Modal Dialog Animation
@@ -474,7 +474,7 @@ function DrawerPreview() {
   const [isOpen, setIsOpen] = React.useState(false)
 
   return (
-    <div className="flex flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
+    <div className="flex w-full flex-col gap-6 rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-6">
       <div className="flex flex-col gap-4">
         <h4 className="text-base font-normal text-[var(--motion-text-primary)]">
           Navigation Drawer

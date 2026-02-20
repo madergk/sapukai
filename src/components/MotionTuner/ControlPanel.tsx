@@ -30,7 +30,7 @@ function TabButton({ active, onClick, children }: TabButtonProps) {
     <button
       onClick={onClick}
       className={cn(
-        'relative px-4 py-2 text-sm font-semibold transition-colors',
+        'relative shrink-0 px-3 py-2 text-sm font-semibold transition-colors md:px-4',
         'border-b-2',
         active
           ? 'border-[var(--motion-brand-primary)] text-[var(--motion-text-primary)]'
@@ -46,17 +46,19 @@ export function ControlPanel() {
   const { state, setActiveTab, currentEasingCSS } = useMotion()
 
   return (
-    <div className="flex h-full flex-col bg-[var(--motion-surface-primary)]">
+    <div className="flex h-full w-full flex-col bg-[var(--motion-surface-primary)]">
       {/* Header */}
-      <div className="flex flex-col gap-2 border-b border-[var(--motion-border-default)] px-8 pt-6 pb-4">
-        <h2 className="text-[34px] font-semibold leading-[42px] text-[var(--motion-text-primary)]">
+      <div className="flex flex-col gap-1 border-b border-[var(--motion-border-default)] px-4 pb-4 pt-5 md:px-8 md:pt-6">
+        <h2 className="text-2xl font-semibold text-[var(--motion-text-primary)] md:text-[34px] md:leading-[42px]">
           Customize
         </h2>
-        <p className="text-base text-[var(--motion-text-muted)]">Customize your swag curve</p>
+        <p className="text-sm text-[var(--motion-text-muted)] md:text-base">
+          Customize your swag curve
+        </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex border-b border-[var(--motion-border-default)] px-8">
+      {/* Tabs — horizontally scrollable on narrow screens */}
+      <div className="flex overflow-x-auto border-b border-[var(--motion-border-default)] px-4 md:px-8 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <TabButton active={state.activeTab === 'easing'} onClick={() => setActiveTab('easing')}>
           Easing Curve
         </TabButton>
@@ -75,11 +77,11 @@ export function ControlPanel() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto px-8 py-6">
-        <div className="flex flex-col gap-6">
+      <div className="flex-1 overflow-y-auto px-4 py-6 md:px-8">
+        <div className="flex flex-col items-center justify-start gap-6">
           {/* Code Display */}
-          <div className="rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-tertiary)] px-4 py-3">
-            <code className="font-mono text-base text-[var(--motion-text-primary)]">
+          <div className="w-full overflow-x-auto rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-tertiary)] px-4 py-3">
+            <code className="block whitespace-nowrap font-mono text-sm text-[var(--motion-text-primary)] md:text-base">
               {currentEasingCSS}
             </code>
           </div>
@@ -106,6 +108,20 @@ function EasingTab() {
   const { state, applyEasingPreset, setDuration } = useMotion()
   const [showM3Presets, setShowM3Presets] = React.useState(false)
   const [selectedM3Category, setSelectedM3Category] = React.useState<string>('m3-components')
+  const canvasContainerRef = React.useRef<HTMLDivElement>(null)
+  const [canvasSize, setCanvasSize] = React.useState(360)
+
+  React.useEffect(() => {
+    const el = canvasContainerRef.current
+    if (!el) return
+    const update = (w: number) => setCanvasSize(Math.max(200, Math.min(400, Math.floor(w - 32))))
+    update(el.clientWidth)
+    const observer = new ResizeObserver(entries => {
+      for (const entry of entries) update(entry.contentRect.width)
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   const easingOptions = Object.entries(easingTokens).map(([key, value]) => ({
     value: key,
@@ -179,10 +195,10 @@ function EasingTab() {
             </Select>
           </div>
 
-          {/* Canvas */}
-          <div className="flex items-center justify-center">
+          {/* Canvas — fills available width, square */}
+          <div ref={canvasContainerRef} className="flex w-full items-center justify-center">
             <div className="rounded-xl border border-[var(--motion-border-default)] bg-[var(--motion-surface-primary)] p-4 shadow-sm">
-              <BezierCanvas width={400} height={400} />
+              <BezierCanvas width={canvasSize} height={canvasSize} />
             </div>
           </div>
         </>
@@ -309,7 +325,7 @@ function DurationTab() {
         <label className="text-sm font-medium text-[var(--motion-text-secondary)]">
           Duration Presets
         </label>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-2">
           {Object.entries(durationTokens).map(([key, value]) => (
             <button
               key={key}
@@ -459,7 +475,7 @@ ${transitionCode};
         <label className="text-sm font-medium text-[var(--motion-text-secondary)]">
           Transition Preset
         </label>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-2">
           {TRANSITION_PRESETS.map(preset => (
             <button
               key={preset.id}
