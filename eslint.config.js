@@ -35,6 +35,11 @@ export default defineConfig([
       '@typescript-eslint/no-explicit-any': 'warn',
       // Allow exporting non-components (for variants, types, etc.)
       'react-refresh/only-export-components': 'off',
+      // Allow _-prefixed variables to be intentionally unused
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
     },
   },
 ])

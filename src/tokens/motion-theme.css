@@ -12,6 +12,10 @@
   --motion-brand-primary-soft: #f0fdfa;
   --motion-brand-primary-accent: #ffffff;
 
+  /* Motion - Control Point Accent Colors */
+  --motion-accent-p1: #0d9488;
+  --motion-accent-p2: #8b5cf6;
+
   /* Motion - Surface Tokens (Light Mode) */
   --motion-surface-primary: #ffffff;
   --motion-surface-secondary: #fafafa;
@@ -154,6 +158,10 @@
   --motion-brand-primary-hover: #2dd4bf;
   --motion-brand-primary-soft: rgba(20, 184, 166, 0.1);
   --motion-brand-primary-accent: #5eead4;
+
+  /* Motion - Control Point Accent Colors (Dark Mode) */
+  --motion-accent-p1: #2dd4bf;
+  --motion-accent-p2: #a78bfa;
 
   /* Motion - Surface Tokens (Dark Mode) */
   --motion-surface-primary: #09090b;
