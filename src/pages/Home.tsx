@@ -60,19 +60,18 @@ export function Home({ onNavigate }: HomeProps) {
 
         <div className="flex flex-col gap-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-8">
           <Heading type="subheading" as="h3">
-            Create algorithmic typography
+            Token Lab (Variable Collections)
           </Heading>
           <Text className="text-zinc-500">
-            Experiment with kinetic text animations powered by algorithmic motion. Control particle
-            systems, flow fields, and harmonic oscillations with interactive parameters and
-            reproducible seeded randomness.
+            Connect to the Variable Collection module to explore token sets, review mappings, and
+            sync updates directly from the Token Lab module.
           </Text>
           <div>
             <Button
-              onClick={() => onNavigate('/algorithmic-typography')}
+              onClick={() => onNavigate('/token-lab')}
               className="bg-[var(--motion-brand-primary)] hover:bg-[var(--motion-brand-primary-hover)]"
             >
-              Open Algorithmic Typography
+              Open Token Lab
             </Button>
           </div>
         </div>

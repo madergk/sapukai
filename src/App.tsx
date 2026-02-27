@@ -4,6 +4,7 @@ import { MotionTuner } from '@/pages/MotionTuner'
 import { TokensVisualizer } from '@/pages/TokensVisualizer'
 import { AlgorithmicTypography } from '@/pages/AlgorithmicTypography'
 import { PatagoniaAzulInforme } from '@/pages/PatagoniaAzulInforme'
+import { TokenLab } from '@/pages/TokenLab'
 
 function App() {
   const [path, setPath] = React.useState(() => window.location.pathname || '/')
@@ -29,6 +30,10 @@ function App() {
 
   if (path === '/tokens-visualizer') {
     return <TokensVisualizer currentPath={path} onNavigate={navigate} />
+  }
+
+  if (path === '/token-lab') {
+    return <TokenLab onNavigate={navigate} />
   }
 
   if (path === '/algorithmic-typography') {
