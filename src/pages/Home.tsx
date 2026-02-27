@@ -75,24 +75,6 @@ export function Home({ onNavigate }: HomeProps) {
             </Button>
           </div>
         </div>
-
-        <div className="flex flex-col gap-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-8">
-          <Heading type="subheading" as="h3">
-            Informe de Migración Patagonia Azul 2026
-          </Heading>
-          <Text className="text-zinc-500">
-            Informe técnico de migración del sitio Patagonia Azul: estado general, infraestructura,
-            auditoría de redirecciones y SEO, y checklist de salud técnica.
-          </Text>
-          <div>
-            <Button
-              onClick={() => onNavigate('/patagonia-azul-informe')}
-              className="bg-[var(--motion-brand-primary)] hover:bg-[var(--motion-brand-primary-hover)]"
-            >
-              Ver Informe
-            </Button>
-          </div>
-        </div>
       </div>
     </div>
   )
