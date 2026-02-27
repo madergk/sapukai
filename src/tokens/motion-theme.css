@@ -7,37 +7,37 @@
 
 @theme {
   /* Motion - Brand Tokens (Light Mode) */
-  --motion-brand-primary: #00686f;
-  --motion-brand-primary-hover: #0d9488;
-  --motion-brand-primary-soft: #f0fdfa;
+  --motion-brand-primary: #0f172a;
+  --motion-brand-primary-hover: #111827;
+  --motion-brand-primary-soft: #f8fafc;
   --motion-brand-primary-accent: #ffffff;
 
   /* Motion - Control Point Accent Colors */
-  --motion-accent-p1: #0d9488;
-  --motion-accent-p2: #8b5cf6;
+  --motion-accent-p1: #0f172a;
+  --motion-accent-p2: #475569;
 
   /* Motion - Surface Tokens (Light Mode) */
   --motion-surface-primary: #ffffff;
-  --motion-surface-secondary: #fafafa;
-  --motion-surface-tertiary: #f4f4f5;
+  --motion-surface-secondary: #f8fafc;
+  --motion-surface-tertiary: #f1f5f9;
   --motion-surface-elevated: #ffffff;
-  --motion-surface-overlay: rgba(0, 0, 0, 0.5);
+  --motion-surface-overlay: rgba(15, 23, 42, 0.5);
 
   /* Motion - Border Tokens (Light Mode) */
-  --motion-border-default: #e4e4e7;
-  --motion-border-muted: #f4f4f5;
+  --motion-border-default: #e2e8f0;
+  --motion-border-muted: #f1f5f9;
 
   /* Motion - Text Tokens (Light Mode) */
-  --motion-text-primary: #09090b;
-  --motion-text-secondary: #71717a;
-  --motion-text-muted: #a1a1aa;
+  --motion-text-primary: #0f172a;
+  --motion-text-secondary: #475569;
+  --motion-text-muted: #64748b;
   --motion-text-inverse: #ffffff;
 
   /* Motion - Canvas Tokens (Light Mode) */
-  --motion-canvas-grid: rgba(0, 0, 0, 0.08);
-  --motion-canvas-axis-label: rgba(0, 0, 0, 0.38);
-  --motion-canvas-control-line: rgba(0, 0, 0, 0.2);
-  --motion-canvas-label: rgba(0, 0, 0, 0.6);
+  --motion-canvas-grid: rgba(15, 23, 42, 0.08);
+  --motion-canvas-axis-label: rgba(15, 23, 42, 0.38);
+  --motion-canvas-control-line: rgba(15, 23, 42, 0.2);
+  --motion-canvas-label: rgba(15, 23, 42, 0.6);
 
   /* Motion - Easing Tokens */
 
@@ -154,35 +154,35 @@
 
 /* Dark Mode Overrides */
 .dark {
-  --motion-brand-primary: #14b8a6;
-  --motion-brand-primary-hover: #2dd4bf;
-  --motion-brand-primary-soft: rgba(20, 184, 166, 0.1);
-  --motion-brand-primary-accent: #5eead4;
+  --motion-brand-primary: #f8fafc;
+  --motion-brand-primary-hover: #e2e8f0;
+  --motion-brand-primary-soft: #1e293b;
+  --motion-brand-primary-accent: #0f172a;
 
   /* Motion - Control Point Accent Colors (Dark Mode) */
-  --motion-accent-p1: #2dd4bf;
-  --motion-accent-p2: #a78bfa;
+  --motion-accent-p1: #f8fafc;
+  --motion-accent-p2: #cbd5e1;
 
   /* Motion - Surface Tokens (Dark Mode) */
-  --motion-surface-primary: #09090b;
-  --motion-surface-secondary: #18181b;
-  --motion-surface-tertiary: #27272a;
-  --motion-surface-elevated: #27272a;
+  --motion-surface-primary: #0f172a;
+  --motion-surface-secondary: #111827;
+  --motion-surface-tertiary: #1e293b;
+  --motion-surface-elevated: #1e293b;
   --motion-surface-overlay: rgba(0, 0, 0, 0.7);
 
   /* Motion - Border Tokens (Dark Mode) */
-  --motion-border-default: #3f3f46;
-  --motion-border-muted: #27272a;
+  --motion-border-default: #334155;
+  --motion-border-muted: #1e293b;
 
   /* Motion - Text Tokens (Dark Mode) */
-  --motion-text-primary: #ececec;
-  --motion-text-secondary: #a1a1aa;
-  --motion-text-muted: #71717a;
-  --motion-text-inverse: #111111;
+  --motion-text-primary: #f8fafc;
+  --motion-text-secondary: #cbd5e1;
+  --motion-text-muted: #94a3b8;
+  --motion-text-inverse: #0f172a;
 
   /* Motion - Canvas Tokens (Dark Mode) */
-  --motion-canvas-grid: rgba(255, 255, 255, 0.1);
-  --motion-canvas-axis-label: rgba(255, 255, 255, 0.5);
-  --motion-canvas-control-line: rgba(255, 255, 255, 0.25);
-  --motion-canvas-label: rgba(255, 255, 255, 0.7);
+  --motion-canvas-grid: rgba(248, 250, 252, 0.1);
+  --motion-canvas-axis-label: rgba(248, 250, 252, 0.5);
+  --motion-canvas-control-line: rgba(248, 250, 252, 0.25);
+  --motion-canvas-label: rgba(248, 250, 252, 0.7);
 }

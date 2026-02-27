@@ -1,15 +1,15 @@
-/* Default theme overrides (neutral look and feel) */
+/* Default theme overrides (minimal look and feel) */
 :root {
-  --motion-brand-primary: #0b0b0b;
+  --motion-brand-primary: #0f172a;
   --motion-brand-primary-hover: #111827;
-  --motion-brand-primary-soft: #f4f4f5;
-  --motion-brand-primary-accent: #111827;
+  --motion-brand-primary-soft: #f8fafc;
+  --motion-brand-primary-accent: #ffffff;
 }
 
 body {
   font-family: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
-  color: #525252;
-  background-color: #f8f8f8;
+  color: var(--content-primary);
+  background-color: var(--background-secondary);
   font-size: 16px;
   line-height: 1.6;
 }
