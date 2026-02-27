@@ -75,6 +75,23 @@ export function Home({ onNavigate }: HomeProps) {
             </Button>
           </div>
         </div>
+
+        <div className="flex flex-col gap-4 rounded-2xl border border-zinc-200 bg-zinc-50 p-8">
+          <Heading type="subheading" as="h3">
+            Rhythm Machine
+          </Heading>
+          <Text className="text-zinc-500">
+            Generate drum patterns from text prompts, tweak the sequencer, and export loops.
+          </Text>
+          <div>
+            <Button
+              onClick={() => window.location.assign('/rhythm-machine/index.html')}
+              className="bg-[var(--motion-brand-primary)] hover:bg-[var(--motion-brand-primary-hover)]"
+            >
+              Open Rhythm Machine
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   )

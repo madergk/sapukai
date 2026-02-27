@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Rhythm Machine</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap');
+
+      /* ─── TOKENS ─────────────────────────────────────────────────── */
+      :root {
+        --bg: #0c0d0f;
+        --surface: #141518;
+        --surface2: #1c1e23;
+        --border: #2c2f38;
+        --border2: #383c47;
+        --accent: #f97315;
+        --accent-10: rgba(249, 115, 21, 0.1);
+        --accent-25: rgba(249, 115, 21, 0.25);
+        --text: #f0f1f3;
+        --text-2: #9aa0ad;
+        --text-3: #555b67;
+
+        /* spacing scale: 4 · 8 · 12 · 16 · 20 · 24 */
+        --sp-1: 4px;
+        --sp-2: 8px;
+        --sp-3: 12px;
+        --sp-4: 16px;
+        --sp-5: 20px;
+        --sp-6: 24px;
+
+        /* typography */
+        --font: 'Geist Mono', monospace;
+        --fs-xs: 10px;
+        --fs-sm: 11px;
+        --fs-md: 13px;
+        --fs-lg: 15px;
+
+        --radius-sm: 6px;
+        --radius-md: 10px;
+        --radius-full: 999px;
+
+        --safe-b: env(safe-area-inset-bottom, 0px);
+      }
+
+      /* ─── RESET ──────────────────────────────────────────────────── */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+        font-family: var(--font);
+      }
+
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-size: var(--fs-md);
+        line-height: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ─── HEADER ─────────────────────────────────────────────────── */
+      .header {
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 var(--sp-4);
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .logo {
+        font-size: var(--fs-lg);
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text);
+      }
+      .logo-dot {
+        color: var(--accent);
+      }
+
+      .bpm-control {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+      }
+
+      .bpm-value {
+        font-size: var(--fs-sm);
+        font-weight: 600;
+        color: var(--text);
+        letter-spacing: 0.06em;
+        min-width: 60px;
+        text-align: right;
+      }
+
+      input[type='range'] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 88px;
+        height: 2px;
+        background: var(--border2);
+        border-radius: 1px;
+        outline: none;
+        cursor: pointer;
+      }
+      input[type='range']::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 14px;
+        height: 14px;
+        background: var(--accent);
+        border-radius: 50%;
+        border: 2px solid var(--bg);
+        box-shadow: 0 0 0 1px var(--accent);
+      }
+
+      .led {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--border2);
+        transition: background 0.15s, box-shadow 0.15s;
+        flex-shrink: 0;
+      }
+      .led.on {
+        background: var(--accent);
+        box-shadow: 0 0 6px var(--accent);
+      }
+
+      /* ─── AI BAR ─────────────────────────────────────────────────── */
+      .ai-bar {
+        height: 52px;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+        padding: 0 var(--sp-4);
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .ai-input {
+        flex: 1;
+        height: 36px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 0 var(--sp-3);
+        font-size: var(--fs-md);
+        color: var(--text);
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      .ai-input:focus {
+        border-color: var(--accent);
+      }
+      .ai-input::placeholder {
+        color: var(--text-3);
+      }
+
+      .btn-gen {
+        height: 36px;
+        padding: 0 var(--sp-4);
+        background: var(--accent);
+        border: none;
+        border-radius: var(--radius-sm);
+        font-size: var(--fs-sm);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        color: #fff;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: opacity 0.15s;
+      }
+      .btn-gen:disabled {
+        opacity: 0.45;
+      }
+
+      /* ─── CHIPS ROW ──────────────────────────────────────────────── */
+      .chips-row {
+        height: 44px;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+        padding: 0 var(--sp-4);
+        border-bottom: 1px solid var(--border);
+        overflow-x: auto;
+        scrollbar-width: none;
+        flex-shrink: 0;
+      }
+      .chips-row::-webkit-scrollbar {
+        display: none;
+      }
+
+      .chip {
+        height: 28px;
+        padding: 0 var(--sp-3);
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-full);
+        font-size: var(--fs-xs);
+        font-weight: 500;
+        letter-spacing: 0.05em;
+        color: var(--text-2);
+        white-space: nowrap;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        transition: border-color 0.12s, color 0.12s, background 0.12s;
+        flex-shrink: 0;
+      }
+      .chip:active {
+        background: var(--accent-10);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* ─── SEQUENCER ──────────────────────────────────────────────── */
+      .sequencer {
+        flex: 1;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: var(--sp-3) var(--sp-4);
+        gap: var(--sp-2);
+      }
+      .sequencer::-webkit-scrollbar {
+        display: none;
+      }
+
+      .track {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-3);
+        height: 48px;
+        min-width: max-content;
+      }
+
+      .track-lbl {
+        width: 48px;
+        font-size: var(--fs-xs);
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-3);
+        text-align: right;
+        flex-shrink: 0;
+        line-height: 1;
+      }
+
+      .steps {
+        display: flex;
+        gap: 3px;
+      }
+
+      /* group gaps every 4 */
+      .step:nth-child(4n + 1) {
+        margin-left: 4px;
+      }
+      .step:nth-child(1) {
+        margin-left: 0;
+      }
+
+      .step {
+        width: 48px;
+        height: 48px;
+        flex-shrink: 0;
+        border-radius: var(--radius-sm);
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        transition: background 0.08s, transform 0.08s, border-color 0.08s;
+        touch-action: manipulation;
+      }
+      .step.active {
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+      .step.playing {
+        transform: scale(1.1);
+        box-shadow: 0 0 10px var(--accent-25);
+      }
+      .step.active.playing {
+        background: #fff;
+        border-color: #fff;
+      }
+
+      /* ─── PRESETS ────────────────────────────────────────────────── */
+      .presets-row {
+        height: 40px;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+        padding: 0 var(--sp-4);
+        border-top: 1px solid var(--border);
+        overflow-x: auto;
+        scrollbar-width: none;
+        flex-shrink: 0;
+      }
+      .presets-row::-webkit-scrollbar {
+        display: none;
+      }
+
+      .preset-chip {
+        height: 28px;
+        padding: 0 var(--sp-3);
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-full);
+        font-size: var(--fs-xs);
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-3);
+        white-space: nowrap;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        transition: border-color 0.12s, color 0.12s;
+        flex-shrink: 0;
+      }
+      .preset-chip:active {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* ─── SAVED LOOPS ────────────────────────────────────────────── */
+      .saved-row {
+        height: 40px;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+        padding: 0 var(--sp-4);
+        border-top: 1px solid var(--border);
+        overflow-x: auto;
+        scrollbar-width: none;
+        flex-shrink: 0;
+      }
+      .saved-row::-webkit-scrollbar {
+        display: none;
+      }
+
+      .saved-empty {
+        font-size: var(--fs-xs);
+        color: var(--text-3);
+        font-style: italic;
+        flex-shrink: 0;
+      }
+
+      .saved-tag {
+        height: 28px;
+        padding: 0 var(--sp-2) 0 var(--sp-3);
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-full);
+        font-size: var(--fs-xs);
+        font-weight: 500;
+        color: var(--text);
+        white-space: nowrap;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: var(--sp-1);
+        flex-shrink: 0;
+        transition: border-color 0.12s;
+      }
+      .saved-tag:hover {
+        border-color: var(--border2);
+      }
+
+      .tag-name {
+        pointer-events: none;
+      }
+
+      .tag-btn {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1;
+        cursor: pointer;
+        flex-shrink: 0;
+        color: var(--text-2);
+        transition: background 0.12s, color 0.12s;
+      }
+      .tag-btn.dl:active {
+        background: var(--accent);
+        color: #fff;
+      }
+      .tag-btn.del:active {
+        background: #ef4444;
+        color: #fff;
+      }
+
+      /* ─── TRANSPORT ──────────────────────────────────────────────── */
+      .transport {
+        height: calc(64px + var(--safe-b));
+        padding: 0 var(--sp-4);
+        padding-bottom: var(--safe-b);
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+      }
+
+      .t-group {
+        display: flex;
+        align-items: center;
+        gap: var(--sp-2);
+      }
+
+      /* square icon buttons */
+      .btn-sq {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--radius-sm);
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--text-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: border-color 0.12s, color 0.12s, transform 0.08s;
+        flex-shrink: 0;
+      }
+      .btn-sq:active {
+        transform: scale(0.9);
+        border-color: var(--border2);
+        color: var(--text);
+      }
+      .btn-sq svg {
+        pointer-events: none;
+        display: block;
+      }
+
+      /* big play */
+      .btn-play {
+        width: 52px;
+        height: 52px;
+        border-radius: var(--radius-md);
+        background: var(--accent);
+        border: none;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: opacity 0.12s, transform 0.08s;
+        flex-shrink: 0;
+      }
+      .btn-play:active {
+        opacity: 0.8;
+        transform: scale(0.92);
+      }
+      .btn-play svg {
+        pointer-events: none;
+        display: block;
+      }
+
+      /* ─── TOAST ──────────────────────────────────────────────────── */
+      .toast {
+        position: fixed;
+        top: 60px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-8px);
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-full);
+        padding: 0 var(--sp-4);
+        height: 32px;
+        display: flex;
+        align-items: center;
+        font-size: var(--fs-xs);
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: var(--text);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s, transform 0.2s;
+        white-space: nowrap;
+        z-index: 200;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      .toast.success {
+        border-color: #10b981;
+        color: #10b981;
+      }
+      .toast.error {
+        border-color: #ef4444;
+        color: #ef4444;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- HEADER -->
+    <div class="header">
+      <div class="logo">RHYTHM<span class="logo-dot">.</span>AI</div>
+      <div class="bpm-control">
+        <input type="range" id="tempoSlider" min="60" max="180" value="120" />
+        <span class="bpm-value" id="bpmDisplay">120 BPM</span>
+        <div class="led" id="led"></div>
+      </div>
+    </div>
+
+    <!-- AI BAR -->
+    <div class="ai-bar">
+      <input
+        class="ai-input"
+        type="text"
+        id="beatInput"
+        placeholder="describe a beat..."
+        autocomplete="off"
+      />
+      <button class="btn-gen" id="generateBtn">GENERATE</button>
+    </div>
+
+    <!-- QUICK IDEAS -->
+    <div class="chips-row">
+      <div class="chip" data-idea="808 cowbell rhythm">808 Cowbell</div>
+      <div class="chip" data-idea="experimental glitch drums">Glitch</div>
+      <div class="chip" data-idea="jazz fusion groove">Jazz Fusion</div>
+      <div class="chip" data-idea="afrobeat percussion">Afrobeat</div>
+      <div class="chip" data-idea="lo-fi hip hop beat">Lo-Fi</div>
+      <div class="chip" data-idea="stadium rock drums">Stadium Rock</div>
+      <div class="chip" data-idea="ambient electronic pulse">Ambient</div>
+    </div>
+
+    <!-- SEQUENCER -->
+    <div class="sequencer" id="sequencer"></div>
+
+    <!-- PRESETS -->
+    <div class="presets-row">
+      <div class="preset-chip" data-preset="techno">Techno</div>
+      <div class="preset-chip" data-preset="house">House</div>
+      <div class="preset-chip" data-preset="trap">Trap</div>
+      <div class="preset-chip" data-preset="breakbeat">Break</div>
+      <div class="preset-chip" data-preset="minimal">Minimal</div>
+    </div>
+
+    <!-- SAVED LOOPS -->
+    <div class="saved-row" id="savedRow">
+      <span class="saved-empty" id="savedEmpty">no saved loops</span>
+    </div>
+
+    <!-- TRANSPORT -->
+    <div class="transport">
+      <div class="t-group">
+        <div class="btn-sq" id="stopBtn">
+          <svg width="14" height="14" viewBox="0 0 14 14">
+            <rect x="1" y="1" width="12" height="12" rx="2" fill="currentColor" />
+          </svg>
+        </div>
+        <div class="btn-sq" id="clearBtn">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          >
+            <path d="M12 2H4.5L1 7l3.5 5H12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1Z" />
+            <line x1="10" y1="4.5" x2="6.5" y2="9.5" />
+            <line x1="6.5" y1="4.5" x2="10" y2="9.5" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="btn-play" id="playBtn">
+        <svg id="playIcon" width="22" height="22" viewBox="0 0 22 22" fill="currentColor">
+          <polygon points="5,3 19,11 5,19" />
+        </svg>
+      </div>
+
+      <div class="t-group">
+        <div class="btn-sq" id="saveBtn">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M11 13H3a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6.5L13 4.5V12a1 1 0 0 1-1 1Z" />
+            <polyline points="10,13 10,7.5 4,7.5 4,13" />
+            <polyline points="4,1 4,4.5 9,4.5" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+      /* ─── DATA ──────────────────────────────────────────────────── */
+      const STEPS = 16
+      const INSTRUMENTS = ['kick', 'snare', 'hihat', 'openhat', 'clap']
+      const LABELS = { kick: 'Kick', snare: 'Snare', hihat: 'HiHat', openhat: 'Open', clap: 'Clap' }
+
+      const PRESETS = {
+        techno: {
+          kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+          snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+          hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+          openhat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+          clap: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        },
+        house: {
+          kick: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+          snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+          hihat: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+          openhat: [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
+          clap: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        },
+        trap: {
+          kick: [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0],
+          snare: [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+          hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1],
+          openhat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+          clap: [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+        },
+        breakbeat: {
+          kick: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+          snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0],
+          hihat: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+          openhat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+          clap: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        },
+        minimal: {
+          kick: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+          snare: [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+          hihat: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1],
+          openhat: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          clap: [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+        },
+      }
+
+      let pattern = {}
+      INSTRUMENTS.forEach(i => (pattern[i] = new Array(STEPS).fill(0)))
+
+      let audioCtx,
+        isPlaying = false,
+        curStep = 0,
+        intervalId = null
+      let savedLoops = [],
+        loopCount = 1
+
+      /* ─── BUILD SEQUENCER ───────────────────────────────────────── */
+      const seqEl = document.getElementById('sequencer')
+      INSTRUMENTS.forEach(inst => {
+        const row = document.createElement('div')
+        row.className = 'track'
+
+        const lbl = document.createElement('div')
+        lbl.className = 'track-lbl'
+        lbl.textContent = LABELS[inst]
+        row.appendChild(lbl)
+
+        const stepsEl = document.createElement('div')
+        stepsEl.className = 'steps'
+
+        for (let s = 0; s < STEPS; s++) {
+          const step = document.createElement('div')
+          step.className = 'step'
+          step.dataset.inst = inst
+          step.dataset.s = s
+          step.addEventListener('click', () => {
+            pattern[inst][s] ^= 1
+            step.classList.toggle('active', !!pattern[inst][s])
+          })
+          stepsEl.appendChild(step)
+        }
+
+        row.appendChild(stepsEl)
+        seqEl.appendChild(row)
+      })
+
+      function updatePattern() {
+        INSTRUMENTS.forEach(inst => {
+          pattern[inst].forEach((v, s) => {
+            const el = document.querySelector(`.step[data-inst="${inst}"][data-s="${s}"]`)
+            if (el) el.classList.toggle('active', !!v)
+          })
+        })
+      }
+
+      /* ─── AUDIO ─────────────────────────────────────────────────── */
+      function initAudio() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+      }
+
+      function playSound(inst, ctx, when) {
+        const sr = ctx.sampleRate
+        switch (inst) {
+          case 'kick': {
+            const o = ctx.createOscillator(),
+              g = ctx.createGain()
+            o.connect(g)
+            g.connect(ctx.destination)
+            o.frequency.setValueAtTime(60, when)
+            o.frequency.exponentialRampToValueAtTime(0.01, when + 0.5)
+            g.gain.setValueAtTime(1, when)
+            g.gain.exponentialRampToValueAtTime(0.01, when + 0.5)
+            o.start(when)
+            o.stop(when + 0.5)
+            break
+          }
+          case 'snare': {
+            const buf = ctx.createBuffer(1, sr * 0.2, sr)
+            const d = buf.getChannelData(0)
+            for (let i = 0; i < buf.length; i++) d[i] = Math.random() * 2 - 1
+            const s = ctx.createBufferSource(),
+              g = ctx.createGain()
+            s.buffer = buf
+            s.connect(g)
+            g.connect(ctx.destination)
+            g.gain.setValueAtTime(0.3, when)
+            g.gain.exponentialRampToValueAtTime(0.01, when + 0.2)
+            s.start(when)
+            break
+          }
+          case 'hihat':
+          case 'openhat': {
+            const dur = inst === 'openhat' ? 0.3 : 0.05
+            const buf = ctx.createBuffer(1, Math.ceil(sr * dur), sr)
+            const d = buf.getChannelData(0)
+            for (let i = 0; i < buf.length; i++)
+              d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (sr * 0.1))
+            const s = ctx.createBufferSource(),
+              f = ctx.createBiquadFilter(),
+              g = ctx.createGain()
+            f.type = 'highpass'
+            f.frequency.value = 8000
+            s.buffer = buf
+            s.connect(f)
+            f.connect(g)
+            g.connect(ctx.destination)
+            g.gain.setValueAtTime(0.1, when)
+            g.gain.exponentialRampToValueAtTime(0.01, when + dur)
+            s.start(when)
+            break
+          }
+          case 'clap': {
+            const buf = ctx.createBuffer(1, Math.ceil(sr * 0.1), sr)
+            const d = buf.getChannelData(0)
+            for (let i = 0; i < buf.length; i++) d[i] = Math.random() * 2 - 1
+            const s = ctx.createBufferSource(),
+              g = ctx.createGain()
+            s.buffer = buf
+            s.connect(g)
+            g.connect(ctx.destination)
+            g.gain.setValueAtTime(0.2, when)
+            g.gain.exponentialRampToValueAtTime(0.01, when + 0.1)
+            s.start(when)
+            break
+          }
+        }
+      }
+
+      /* ─── SEQUENCER TICK ────────────────────────────────────────── */
+      function tick() {
+        document.querySelectorAll('.step.playing').forEach(el => el.classList.remove('playing'))
+        INSTRUMENTS.forEach(inst => {
+          const el = document.querySelector(`.step[data-inst="${inst}"][data-s="${curStep}"]`)
+          if (!el) return
+          el.classList.add('playing')
+          if (pattern[inst][curStep]) playSound(inst, audioCtx, audioCtx.currentTime)
+        })
+        curStep = (curStep + 1) % STEPS
+      }
+
+      /* ─── TRANSPORT ─────────────────────────────────────────────── */
+      function play() {
+        initAudio()
+        if (isPlaying) {
+          pause()
+          return
+        }
+        isPlaying = true
+        document.getElementById('led').classList.add('on')
+        document.getElementById('playIcon').innerHTML =
+          '<rect x="4" y="3" width="5" height="16" rx="1"/><rect x="13" y="3" width="5" height="16" rx="1"/>'
+        const bpm = parseInt(document.getElementById('tempoSlider').value)
+        tick()
+        intervalId = setInterval(tick, (60 / bpm / 4) * 1000)
+      }
+
+      function pause() {
+        isPlaying = false
+        clearInterval(intervalId)
+        document.getElementById('led').classList.remove('on')
+        document.getElementById('playIcon').innerHTML = '<polygon points="5,3 19,11 5,19"/>'
+      }
+
+      function stop() {
+        pause()
+        curStep = 0
+        document.querySelectorAll('.step.playing').forEach(el => el.classList.remove('playing'))
+      }
+
+      function clear() {
+        INSTRUMENTS.forEach(i => pattern[i].fill(0))
+        updatePattern()
+      }
+
+      /* ─── SAVE / DOWNLOAD ───────────────────────────────────────── */
+      function saveLoop() {
+        if (!INSTRUMENTS.some(i => pattern[i].some(v => v))) {
+          toast('Nothing to save', 'error')
+          return
+        }
+        const name = document.getElementById('beatInput').value.trim() || `Loop ${loopCount}`
+        loopCount++
+        savedLoops.push({ name, pattern: JSON.parse(JSON.stringify(pattern)) })
+        renderSaved()
+        toast(`Saved "${name}"`, 'success')
+      }
+
+      async function downloadLoop(loop) {
+        initAudio()
+        const bpm = parseInt(document.getElementById('tempoSlider').value)
+        const stepDur = 60 / bpm / 4
+        const sr = audioCtx.sampleRate
+        const off = new OfflineAudioContext(1, Math.ceil(sr * stepDur * STEPS * 1.5), sr)
+        INSTRUMENTS.forEach(inst => {
+          loop.pattern[inst].forEach((v, s) => {
+            if (v) playSound(inst, off, s * stepDur)
+          })
+        })
+        const buf = await off.startRendering()
+        const n = buf.length
+        const wav = new ArrayBuffer(44 + n * 2)
+        const dv = new DataView(wav)
+        const ws = (o, str) => {
+          for (let i = 0; i < str.length; i++) dv.setUint8(o + i, str.charCodeAt(i))
+        }
+        ws(0, 'RIFF')
+        dv.setUint32(4, 36 + n * 2, true)
+        ws(8, 'WAVE')
+        ws(12, 'fmt ')
+        dv.setUint32(16, 16, true)
+        dv.setUint16(20, 1, true)
+        dv.setUint16(22, 1, true)
+        dv.setUint32(24, sr, true)
+        dv.setUint32(28, sr * 2, true)
+        dv.setUint16(32, 2, true)
+        dv.setUint16(34, 16, true)
+        ws(36, 'data')
+        dv.setUint32(40, n * 2, true)
+        const ch = buf.getChannelData(0)
+        for (let i = 0; i < n; i++) {
+          const s = Math.max(-1, Math.min(1, ch[i]))
+          dv.setInt16(44 + i * 2, s < 0 ? s * 0x8000 : s * 0x7fff, true)
+        }
+        const a = document.createElement('a')
+        a.href = URL.createObjectURL(new Blob([wav], { type: 'audio/wav' }))
+        a.download = `${loop.name.replace(/[^a-z0-9]/gi, '_')}.wav`
+        a.click()
+        URL.revokeObjectURL(a.href)
+        toast(`Downloaded "${loop.name}.wav"`, 'success')
+      }
+
+      function renderSaved() {
+        const row = document.getElementById('savedRow')
+        row.querySelectorAll('.saved-tag').forEach(el => el.remove())
+        document.getElementById('savedEmpty').style.display = savedLoops.length ? 'none' : ''
+        savedLoops.forEach((loop, i) => {
+          const tag = document.createElement('div')
+          tag.className = 'saved-tag'
+          tag.innerHTML = `<span class="tag-name">${loop.name}</span><span class="tag-btn dl">↓</span><span class="tag-btn del">×</span>`
+          tag.querySelector('.tag-name').addEventListener('click', () => {
+            pattern = JSON.parse(JSON.stringify(loop.pattern))
+            updatePattern()
+            toast(`Loaded "${loop.name}"`, 'success')
+          })
+          tag.querySelector('.dl').addEventListener('click', e => {
+            e.stopPropagation()
+            downloadLoop(loop)
+          })
+          tag.querySelector('.del').addEventListener('click', e => {
+            e.stopPropagation()
+            savedLoops.splice(i, 1)
+            renderSaved()
+          })
+          row.appendChild(tag)
+        })
+      }
+
+      /* ─── AI GENERATE ───────────────────────────────────────────── */
+      async function generateBeat() {
+        const input = document.getElementById('beatInput').value.trim()
+        if (!input) {
+          toast('Describe a beat first', 'error')
+          return
+        }
+
+        const btn = document.getElementById('generateBtn')
+        btn.disabled = true
+        btn.textContent = '...'
+
+        try {
+          const res = await fetch('/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              prompt: `Classify this drum beat description: "${input}" into one of: techno, house, trap, breakbeat, minimal. Reply with ONLY the category name in lowercase.`,
+            }),
+          })
+
+          if (!res.ok) throw new Error(`HTTP ${res.status}`)
+
+          const { text } = await res.json()
+          const key = text.trim().toLowerCase()
+          pattern = JSON.parse(JSON.stringify(PRESETS[key] || PRESETS.techno))
+          updatePattern()
+          toast(`Generated: ${key}`, 'success')
+        } catch (e) {
+          toast('Generation failed', 'error')
+        } finally {
+          btn.disabled = false
+          btn.textContent = 'GENERATE'
+        }
+      }
+
+      /* ─── TOAST ─────────────────────────────────────────────────── */
+      let toastTimer
+      function toast(msg, type = 'info') {
+        const el = document.getElementById('toast')
+        el.textContent = msg
+        el.className = `toast show ${type}`
+        clearTimeout(toastTimer)
+        toastTimer = setTimeout(() => el.classList.remove('show'), 2600)
+      }
+
+      /* ─── EVENTS ────────────────────────────────────────────────── */
+      document.getElementById('playBtn').addEventListener('click', play)
+      document.getElementById('stopBtn').addEventListener('click', stop)
+      document.getElementById('clearBtn').addEventListener('click', clear)
+      document.getElementById('saveBtn').addEventListener('click', saveLoop)
+      document.getElementById('generateBtn').addEventListener('click', generateBeat)
+      document.getElementById('beatInput').addEventListener('keypress', e => {
+        if (e.key === 'Enter') generateBeat()
+      })
+
+      document.getElementById('tempoSlider').addEventListener('input', e => {
+        document.getElementById('bpmDisplay').textContent = `${e.target.value} BPM`
+        if (isPlaying) {
+          pause()
+          play()
+        }
+      })
+
+      document.querySelectorAll('.chip').forEach(c => {
+        c.addEventListener('click', () => {
+          document.getElementById('beatInput').value = c.dataset.idea
+          generateBeat()
+        })
+      })
+
+      document.querySelectorAll('.preset-chip').forEach(c => {
+        c.addEventListener('click', () => {
+          pattern = JSON.parse(JSON.stringify(PRESETS[c.dataset.preset]))
+          updatePattern()
+          toast(`Loaded: ${c.dataset.preset}`, 'success')
+        })
+      })
+    </script>
+  </body>
+</html>

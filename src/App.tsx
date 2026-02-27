@@ -44,6 +44,11 @@ function App() {
     return <PatagoniaAzulInforme onNavigate={navigate} />
   }
 
+  if (path.startsWith('/rhythm-machine')) {
+    window.location.assign('/rhythm-machine/index.html')
+    return null
+  }
+
   if (path === '/') {
     return <Home onNavigate={navigate} />
   }
